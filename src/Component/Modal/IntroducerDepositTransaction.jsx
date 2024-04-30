@@ -3,11 +3,13 @@ import { useAuth } from "../../Utils/Auth";
 import AccountService from "../../Services/AccountService";
 import { toast } from "react-toastify";
 import TransactionSercvice from "../../Services/TransactionSercvice";
+import FullScreenLoader from "../FullScreenLoader";
 
 const IntroducerDepositTransaction = ({ IntroducerName }) => {
   const auth = useAuth();
   const [Amount, SetAmount] = useState(0);
   const [Remarks, SetRemarks] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handelamtchange = (e) => {
     SetAmount(e.target.value);
@@ -26,6 +28,7 @@ const IntroducerDepositTransaction = ({ IntroducerName }) => {
       toast.error("Amount and Remarks fields cannot be empty.");
       return;
     }
+    setIsLoading(true);
     const data = {
       amount: Number(Amount),
       transactionType: "Deposit",
@@ -35,12 +38,14 @@ const IntroducerDepositTransaction = ({ IntroducerName }) => {
     TransactionSercvice.IntroducerDepositTransaction(data, auth.user)
       .then((res) => {
         // console.log(response.data);
+        setIsLoading(false);
         if (res.status === 200) {
           alert(res.data.message);
           window.location.reload();
         }
       })
       .catch((error) => {
+        setIsLoading(false);
         alert(error.response.data.message);
         console.log(error);
         // alert.error("e.message");
@@ -49,6 +54,7 @@ const IntroducerDepositTransaction = ({ IntroducerName }) => {
 
   return (
     <div>
+      <FullScreenLoader show={isLoading} />
       <div
         class="modal fade"
         id="depositModal"

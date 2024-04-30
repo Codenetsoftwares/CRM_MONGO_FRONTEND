@@ -3,11 +3,13 @@ import { useAuth } from "../../Utils/Auth";
 import AccountService from "../../Services/AccountService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import FullScreenLoader from "../FullScreenLoader";
 
 const ModalWthWbl = ({ ID }) => {
   const auth = useAuth();
   const [Amount, SetAmount] = useState(0);
   const [Remarks, SetRemarks] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handelamtchange = (e) => {
     SetAmount(e.target.value);
@@ -27,6 +29,7 @@ const ModalWthWbl = ({ ID }) => {
       toast.error("Amount and Remarks fields cannot be empty.");
       return;
     }
+    setIsLoading(true);
     const data = {
       amount: Number(Amount),
       transactionType: "Manual-Website-Withdraw",
@@ -37,12 +40,14 @@ const ModalWthWbl = ({ ID }) => {
     AccountService.ManualWebsiteEntryWithdraw(ID, data, auth.user)
       .then((res) => {
         // console.log(response.data);
+        setIsLoading(false);
         if (res.status === 200) {
           alert(res.data.message);
           window.location.reload();
         }
       })
       .catch((error) => {
+        setIsLoading(false);
         alert(error.response.data.message);
         // alert.error("e.message");
       });
@@ -50,6 +55,7 @@ const ModalWthWbl = ({ ID }) => {
 
   return (
     <div>
+      <FullScreenLoader show={isLoading} />
       <div
         className="modal fade"
         id="modalWithdrawBlwebsite"

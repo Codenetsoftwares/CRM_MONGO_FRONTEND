@@ -82,7 +82,7 @@ function Withdraw() {
         .catch((error) => {
           // Handle error from the backend
           console.error(error);
-          alert(error.response.data);
+          alert(error.response.data.message);
           //  alert("Failed! Transaction ID Does Not Exists");
         });
     }
@@ -243,14 +243,22 @@ function Withdraw() {
                   <i class="fa fa-credit-card"></i>
                 </span>
               </div>
-              <input
+              <select
                 type="text"
-                className="form-control"
-                placeholder="Payment Method"
+                className="form-select"
+                value={paymentMethod || ""}
                 onChange={(e) => {
-                  setPaymentMethod(e.target.value); // Parse the JSON string back to an array
+                  setPaymentMethod(e.target.value);
                 }}
-              />
+              >
+                <option selected>Select PaymentMethod</option>
+                <option value="UPI">
+                  <b>UPI</b>
+                </option>
+                <option value="IMPS">
+                  <b>IMPS</b>
+                </option>
+              </select>
             </div>
 
             <div className="input-group mb-3">

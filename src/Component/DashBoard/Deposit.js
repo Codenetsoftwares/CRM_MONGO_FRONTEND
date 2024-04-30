@@ -253,14 +253,22 @@ function Deposit() {
                   <i class="fa fa-credit-card"></i>
                 </span>
               </div>
-              <input
+              <select
                 type="text"
-                className="form-control"
-                placeholder="Payment Method"
+                className="form-select"
+                value={paymentMethod || ""}
                 onChange={(e) => {
                   setPaymentMethod(e.target.value);
                 }}
-              />
+              >
+                <option selected>Select PaymentMethod</option>
+                <option value="UPI">
+                  <b>UPI</b>
+                </option>
+                <option value="IMPS">
+                  <b>IMPS</b>
+                </option>
+              </select>
             </div>
 
             <div className="input-group mb-3">
