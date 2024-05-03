@@ -416,7 +416,7 @@ const FilterMainTransaction = ({ purpose, handleData, page, handlePage, handleTo
 
                 <div className="row row-cols-4 row-cols-lg-4 g-2 g-lg-3 w-100 " style={{ paddingLeft: '5rem' }} >
                     <div className="d-flex col  justify-content-center"  >
-                        <h6 className="fw-bold text-nowrap pt-2"> Search By </h6>
+                        <h6 className="fw-bold text-nowrap pt-2"> Search By TXN ID </h6>
                         <input
                             className="form-control mx-3 w-75"
                             type='text'
