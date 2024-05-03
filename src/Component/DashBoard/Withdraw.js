@@ -3,6 +3,7 @@ import { BsArrowLeftRight } from "react-icons/bs";
 import { useAuth } from "../../Utils/Auth";
 import AccountService from "../../Services/AccountService";
 import DashService from "../../Services/DashService";
+import FullScreenLoader from "../FullScreenLoader";
 
 function Withdraw() {
   const auth = useAuth();
@@ -23,6 +24,8 @@ function Withdraw() {
   const [bankCharges, setBankCharges] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOptions, setFilteredOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
     AccountService.getActiveBank(auth.user).then((res) => setBank(res.data));
@@ -71,16 +74,19 @@ function Withdraw() {
     const confirmed = window.confirm(
       "Please double-check the form on obhiasb before confirming, as changes or deletions won't be possible afterward."
     );
+    setIsLoading(true);
     if (confirmed) {
       DashService.CreateTransactionWithdraw(data, auth.user)
         .then((response) => {
           // Handle successful response from the backend
           console.log(response.data);
           alert("Transaction Created Successfully!!");
+          setIsLoading(false);
           window.location.reload();
         })
         .catch((error) => {
           // Handle error from the backend
+          setIsLoading(false);
           console.error(error);
           alert(error.response.data.message);
           //  alert("Failed! Transaction ID Does Not Exists");
@@ -120,6 +126,7 @@ function Withdraw() {
         color: "white",
       }}
     >
+      <FullScreenLoader show={isLoading} />
       <div
         className="form-box"
         style={{
