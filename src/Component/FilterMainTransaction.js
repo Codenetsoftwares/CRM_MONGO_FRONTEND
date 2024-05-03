@@ -24,6 +24,7 @@ const FilterMainTransaction = ({ purpose, handleData, page, handlePage, handleTo
     const [documentView, setDocumentView] = useState([]);
     const [minAmount, setMinAmount] = useState(0);
     const [maxAmount, setMaxAmount] = useState(0);
+    const [searchByTransactionId, setSearchByTransactionId] = useState("");
 
 
     const handleFilter = () => {
@@ -36,7 +37,8 @@ const FilterMainTransaction = ({ purpose, handleData, page, handlePage, handleTo
             sdate: moment(startDatevalue).toDate(),
             edate: moment(endDatevalue).toDate(),
             maxAmount: maxAmount,
-            minAmount: minAmount
+            minAmount: minAmount,
+            transactionID: searchByTransactionId
         }
         TransactionSercvice.filterTransaction(data, page, auth.user).then((res) => {
             return (
@@ -64,6 +66,7 @@ const FilterMainTransaction = ({ purpose, handleData, page, handlePage, handleTo
         setIntroducer("");
         handleFilter();
         handlePage(1)
+        setSearchByTransactionId("")
         window.location.reload();
     };
     useEffect(() => {
@@ -106,7 +109,10 @@ const FilterMainTransaction = ({ purpose, handleData, page, handlePage, handleTo
         const value = e.target.value;
         setSubAdmin(value);
     };
-
+    const handleSearchByTransactionId = (e) => {
+        const value = e.target.value;
+        setSearchByTransactionId(value);
+    };
     const handleIntroducer = (e) => {
         const value = e.target.value;
         setIntroducer(value);
@@ -409,6 +415,21 @@ const FilterMainTransaction = ({ purpose, handleData, page, handlePage, handleTo
 
 
                 <div className="row row-cols-4 row-cols-lg-4 g-2 g-lg-3 w-100 " style={{ paddingLeft: '5rem' }} >
+                    <div className="d-flex col  justify-content-center"  >
+                        <h6 className="fw-bold text-nowrap pt-2"> Search By </h6>
+                        <input
+                            className="form-control mx-3 w-75"
+                            type='text'
+                            value={searchByTransactionId || ""}
+                            onChange={handleSearchByTransactionId}
+                            placeholder='Search'
+                            style={{
+                                border: "0.5px solid black",
+                                borderRadius: "6px",
+                            }}
+                        />
+
+                    </div>
                     <div className="d-flex col justify-content-center ">
                         <h6 className="fw-bold text-nowrap pt-2 pr-2"> Start Date</h6>
                         <Datetime
@@ -454,6 +475,7 @@ const FilterMainTransaction = ({ purpose, handleData, page, handlePage, handleTo
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     )

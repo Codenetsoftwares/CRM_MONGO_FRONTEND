@@ -5,6 +5,7 @@ import AccountService from "../../Services/AccountService";
 import DashService from "../../Services/DashService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import FullScreenLoader from "../FullScreenLoader";
 function Deposit() {
   const auth = useAuth();
   const [Bank, setBank] = useState([]);
@@ -24,6 +25,8 @@ function Deposit() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
     AccountService.getActiveBank(auth.user).then((res) => setBank(res.data));
@@ -78,16 +81,19 @@ function Deposit() {
     const confirmed = window.confirm(
       "Please double-check the form on obhiasb before confirming, as changes or deletions won't be possible afterward."
     );
+    setIsLoading(true);
     if (confirmed) {
       DashService.CreateTransactionDeposit(data, auth.user)
         .then((response) => {
           // Handle successful response from the backend
           console.log(response.data);
           alert("Transaction Created Successfully!!");
+          setIsLoading(false);
           window.location.reload();
         })
         .catch((error) => {
           // Handle error from the backend
+          setIsLoading(false);
           console.error(error);
           alert(error.response.data.message);
         });
@@ -130,6 +136,7 @@ function Deposit() {
         color: "white",
       }}
     >
+      <FullScreenLoader show={isLoading} />
       <div
         className="form-box"
         style={{

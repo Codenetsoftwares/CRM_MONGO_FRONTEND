@@ -118,6 +118,11 @@ const TableMainTransaction = ({ FilterData, purpose, page, handlePage, totalPage
                             Amount
                         </th>
                         <th scope="col text-break fs-6" className="text-primary">
+                            Bonus
+                        </th> <th scope="col text-break fs-6" className="text-primary">
+                            Bank Charges
+                        </th>
+                        <th scope="col text-break fs-6" className="text-primary">
                             Txn Id
                         </th>
                         <th scope="col text-break fs-6" className="text-primary">
@@ -195,6 +200,16 @@ const TableMainTransaction = ({ FilterData, purpose, page, handlePage, totalPage
                                         {data?.withdrawAmount && (
                                             <p className="col fs-6">{data?.withdrawAmount}</p>
                                         )}
+                                    </td>
+                                    <td>
+                                        {data?.bonus ? (
+                                            <p className="col fs-6">{data?.bonus}</p>
+                                        ) : <p className="col fs-6">N.A</p>}
+                                    </td>
+                                    <td>
+                                        {data?.bankCharges ? (
+                                            <p className="col fs-6">{data?.bankCharges}</p>
+                                        ) : <p className="col fs-6">N.A</p>}
                                     </td>
                                     <td>
                                         {data?.transactionID && (
