@@ -197,8 +197,8 @@ const FilterMainTransaction = ({ purpose, handleData, page, handlePage, handleTo
                         <option selected>Select subAdmin</option>
                         {subAdminlist.map((data) => {
                             return (
-                                <option key={data._id} value={data.firstname}>
-                                    {data.firstname}
+                                <option key={data._id} value={data.userName}>
+                                    {data.userName}
                                 </option>
                             );
                         })}
