@@ -242,7 +242,7 @@ const MyTxn = () => {
   let filterLastPage = Math.ceil(documentFilter.length / 10);
   console.log(lastPage);
   console.log(page);
-  console.log(documentView);
+  console.log(documentView); 
   return (
     <>
    <div className="card card-body rounded-8px ">
