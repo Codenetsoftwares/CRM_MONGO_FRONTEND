@@ -245,170 +245,131 @@ const MyTxn = () => {
   console.log(documentView);
   return (
     <>
-      <div className="">
-        {/* This is for Normal View */}
-        <div
-          className="card card-body rounded-1 "
-          style={{ backgroundColor: "#fff4ec" }}
+   <div className="card card-body rounded-8px ">
+  {/* This is for Normal View */}
+  <div
+    className="card card-body rounded-8px shadow"
+    style={{
+      backgroundColor: "#e6f7ff",
+      maxWidth: "1500px",
+      margin: "auto",
+    }}
+  >
+    <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+      <div className="col d-flex flex-column align-items-center pt-3">
+        <h6 className="fw-bold text-nowrap">Transaction</h6>
+        <select
+          className="form-control w-100"
+          value={select || ""}
+          autoComplete="off"
+          onChange={handleChange}
+          style={{
+            border: "0.5px solid #ced4da",
+            borderRadius: "6px",
+          }}
         >
-          <div className="row row-cols-2 row-cols-lg-3 g-2 g-lg-2">
-            <div className="d-flex col pt-3 justify-content-center">
-              <h6 className="fw-bold text-nowrap pt-2">Transaction</h6>
-              <select
-                className="form-control mx-3 w-50"
-                value={select || ""}
-                autoComplete="off"
-                onChange={handleChange}
-                style={{
-                  // boxShadow: " 17px 15px 27px -9px rgba(0,0,0,0.41)",
-                  border: "0.5px solid black",
-                  borderRadius: "6px",
-                }}
-              >
-                <option className="d-flex" value="All">
-                  <b>All</b>
-                </option>
-                <option className="d-flex" value="Deposit">
-                  <b>Deposit</b>
-                </option>
-                <option className="d-flex" value="Withdraw">
-                  <b>Withdraw</b>
-                </option>
-                <option className="d-flex" value="Manual-Bank-Deposit">
-                  <b>Manual Bank Deposit</b>
-                </option>{" "}
-                <option className="d-flex" value="Manual-Bank-Withdraw">
-                  <b>Manual Bank Withdraw</b>
-                </option>
-                <option className="d-flex" value="Manual-Website-Deposit">
-                  <b>Manual Website Deposit</b>
-                </option>{" "}
-                <option className="d-flex" value="Manual-Website-Withdraw">
-                  <b>Manual Website Withdraw</b>
-                </option>
-              </select>
-            </div>
+          <option value="All"><b>All</b></option>
+          <option value="Deposit"><b>Deposit</b></option>
+          <option value="Withdraw"><b>Withdraw</b></option>
+          <option value="Manual-Bank-Deposit"><b>Manual Bank Deposit</b></option>
+          <option value="Manual-Bank-Withdraw"><b>Manual Bank Withdraw</b></option>
+          <option value="Manual-Website-Deposit"><b>Manual Website Deposit</b></option>
+          <option value="Manual-Website-Withdraw"><b>Manual Website Withdraw</b></option>
+        </select>
+      </div>
 
-            {/* <div className="d-flex col pt-3 justify-content-center">
-              <h6 className="fw-bold text-nowrap pt-2"> SubAdminlist</h6>
-              <select
-                className="form-control mx-3 w-50"
-                value={subAdmin || ""}
-                autoComplete="off"
-                onChange={handleSubAdmin}
-                style={{
-                  // boxShadow: " 17px 15px 27px -9px rgba(0,0,0,0.41)",
-                  border: "0.5px solid black",
-                  borderRadius: "6px",
-                }}
-                required
-              >
-                <option selected>Select subAdmin</option>
-                {subAdminlist.map((data) => {
-                  return (
-                    <option key={data._id} value={data.firstname}>
-                      {data.firstname}
-                    </option>
-                  );
-                })}
-              </select>
-            </div> */}
+      <div className="col d-flex flex-column align-items-center pt-3">
+        <h6 className="fw-bold text-nowrap">Range Of Amount</h6>
+        <div className="d-flex flex-column flex-md-row align-items-center w-100">
+          <input
+            className="form-control mb-2 mb-md-0 mx-0 mx-md-2"
+            type="number"
+            value={minAmount || ""}
+            autoComplete="off"
+            onChange={handleMinAmount}
+            placeholder="Min Amt"
+            style={{
+              border: "0.5px solid #ced4da",
+              borderRadius: "6px",
+            }}
+            required
+            min={1}
+          />
+          <h6 className="fw-bold mx-2">To</h6>
+          <input
+            className="form-control mx-0 mx-md-2"
+            type="number"
+            value={maxAmount || ""}
+            autoComplete="off"
+            onChange={handleMaxAmount}
+            placeholder="Max Amt"
+            style={{
+              border: "0.5px solid #ced4da",
+              borderRadius: "6px",
+            }}
+            min={1}
+            required
+          />
+        </div>
+      </div>
 
-            <div className="d-flex col pt-3 justify-content-center"  >
-              <h6 className="fw-bold text-nowrap pt-2"> Range Of Amount</h6>
-              <input
-                className="form-control mx-3 w-25"
-                type='number'
-                value={minAmount || ""}
-                autoComplete="off"
-                onChange={handleMinAmount}
-                placeholder='Min Amt'
-                style={{
-                  border: "0.5px solid black",
-                  borderRadius: "6px",
-                }}
-                required
-                min={1}
-              />
-              <h6 className="fw-bold text-nowrap pt-2"> To</h6>
-              <input
-                className="form-control mx-3 w-25"
-                type='number'
-                value={maxAmount || ""}
-                autoComplete="off"
-                onChange={handleMaxAmount}
-                placeholder='Max Amt'
-                style={{
-                  border: "0.5px solid black",
-                  borderRadius: "6px",
-                }}
-                min={1}
-                required
-              />
-            </div>
-
-            <div
-              className="row row-cols-4 row-cols-lg-4 g-2 g-lg-3 w-100 "
-              style={{ paddingLeft: "5rem" }}
-            >
-              <div className="d-flex col justify-content-center ">
-                <h6 className="fw-bold text-nowrap pt-2 pr-2">Start Date</h6>
-                <Datetime
-                  value={startDatevalue}
-                  onChange={handleStartDatevalue}
-                  dateFormat="DD-MM-YYYY"
-                  timeFormat="HH:mm"
-                />
-              </div>
-              <div className="d-flex col  justify-content-center">
-                <h6 className="fw-bold text-nowrap pt-2 pr-2">End Date</h6>
-                <Datetime
-                  value={endDatevalue}
-                  onChange={handleEndDatevalue}
-                  dateFormat="DD-MM-YYYY"
-                  timeFormat="HH:mm"
-                />
-              </div>
-              <div className="d-flex col justify-content-center">
-                <div className="mx-2">
-                  <button
-                    type="button"
-                    className="btn btn-dark"
-                    // style={{ boxShadow: "17px 15px 27px -9px rgba(0, 0, 0, 0.41)" }}
-                    onClick={handleFilter}
-                  >
-                    Filter
-                  </button>
-                </div>
-                <div className="mx-2">
-                  <button
-                    type="button"
-                    className="btn btn-dark"
-                    // style={{ boxShadow: "17px 15px 27px -9px rgba(0, 0, 0, 0.41)" }}
-                    onClick={handleReset}
-                  >
-                    Reset
-                  </button>
-                </div>
-                {toggle ? (
-                  <div className="mx-2">
-                    <CSVLink data={documentView} className="btn btn-success">
-                      Download Data
-                    </CSVLink>
-                  </div>
-                ) : (
-                  <div className="mx-2">
-                    <CSVLink data={documentFilter} className="btn btn-success">
-                      Download Filter Data
-                    </CSVLink>
-                  </div>
-                )}
-              </div>
-            </div>
+      <div className="col d-flex flex-column align-items-center pt-3">
+        <div className="d-flex flex-column flex-md-row align-items-center w-100">
+          <div className="d-flex flex-column mx-0 mx-md-2 w-100">
+            <h6 className="fw-bold text-nowrap">Start Date</h6>
+            <Datetime
+              value={startDatevalue}
+              onChange={handleStartDatevalue}
+              dateFormat="DD-MM-YYYY"
+              timeFormat="HH:mm"
+              className="w-100"
+            />
+          </div>
+          <div className="d-flex flex-column mx-0 mx-md-2 w-100">
+            <h6 className="fw-bold text-nowrap">End Date</h6>
+            <Datetime
+              value={endDatevalue}
+              onChange={handleEndDatevalue}
+              dateFormat="DD-MM-YYYY"
+              timeFormat="HH:mm"
+              className="w-100"
+            />
           </div>
         </div>
+      </div>
+
+      <div className="col-12 d-flex justify-content-center pt-3">
+        <div className="d-flex flex-wrap justify-content-center w-100">
+          <button
+            type="button"
+            className="btn btn-dark mx-2"
+            onClick={handleFilter}
+          >
+            Filter
+          </button>
+          <button
+            type="button"
+            className="btn btn-dark mx-2"
+            onClick={handleReset}
+          >
+            Reset
+          </button>
+          {toggle ? (
+            <CSVLink data={documentView} className="btn btn-success mx-2">
+              Download Data
+            </CSVLink>
+          ) : (
+            <CSVLink data={documentFilter} className="btn btn-success mx-2">
+              Download Filter Data
+            </CSVLink>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
         {toggle ? (
-          <div>
+          <div >
             {/* Normal View */}
             <table className="table table-bordered  table-sm table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl">
               <thead className="table-success">
@@ -1153,7 +1114,7 @@ const MyTxn = () => {
             )}
           </div>
         )}
-      </div>
+      
       <EditTransaction id={dataId} />
     </>
   );
