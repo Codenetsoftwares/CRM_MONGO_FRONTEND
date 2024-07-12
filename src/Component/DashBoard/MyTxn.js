@@ -369,10 +369,13 @@ const MyTxn = () => {
   </div>
 </div>
         {toggle ? (
-          <div >
+          <div>
             {/* Normal View */}
             <table className="table table-bordered  table-sm table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl">
-              <thead className="table-success">
+              <thead className="table-success"   style={{
+            border: "1px solid red",
+            // borderRadius: "6px",
+          }}>
                 <tr align="center" bgcolor="green" className="fs-6">
                   <th scope="col fs-6" className="text-primary">
                     Date & Time
@@ -734,11 +737,13 @@ const MyTxn = () => {
             )}
           </div>
         ) : (
-          <div>
+          <div className="container-fluid">
             {/* Filter View */}
-            <table class="table table-bordered  table-sm table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl">
-              <thead className="table-success">
-                <tr align="center" bgcolor="green" className="fs-6">
+            <div className="table-responsive">
+            <table  className="table table-striped table-bordered table-hover">
+             
+              <thead className="bg-red">
+                <tr align="center"  className="fs-6">
                   <th scope="col fs-6" className="text-primary">
                     Date & Time
                   </th>
@@ -780,6 +785,7 @@ const MyTxn = () => {
                   </th>
                 </tr>
               </thead>
+              
               {/* </div> */}
               <tbody>
                 {documentFilter.length > 0 ? (
@@ -1082,6 +1088,7 @@ const MyTxn = () => {
                 )}
               </tbody>
             </table>
+            </div>
             {documentFilter.length > 0 && (
               //   (
               // <div className="d-flex justify-content-center">
