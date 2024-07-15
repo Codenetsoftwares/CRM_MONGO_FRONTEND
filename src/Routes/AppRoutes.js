@@ -7,7 +7,7 @@ import ErrorPage from "../pages/ErrorPage";
 import Login from "../Component/Login/Login";
 import AdminLayout from "../Component/Sidebar/AdminLayout";
 import Withdraw from "../Component/DashBoard/Withdraw";
-import Deposit from "../Component/DashBoard/Deposit";
+// import Deposit from "../Component/DashBoard/Deposit";
 import AdminBank from "../Component/DashBoard/AdminBank";
 import WebsiteDetails from "../Component/DashBoard/WebsiteDetails";
 import AdminList from "../Component/SuperAdmin/AdminList";
@@ -47,6 +47,7 @@ import EditBnkTransaction from "../Component/DashBoard/EditBnkTransaction ";
 import EditBank from "../Component/EditBank";
 import ResetPassword from "../Component/DashBoard/ResetPassword";
 import BankStatement from "../Component/DashBoard/BankStatement";
+import Deposit from "../pages/createTransaction/Deposit";
 
 const AppRoutes = () => {
   const userrole = sessionStorage.getItem("role") || "";

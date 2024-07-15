@@ -1,3 +1,23 @@
 body{
   background-color: #fff4ec;
 }
+
+/* src/components/CustomForm.css */
+.form-control {
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  padding-left: 2.25rem; /* space for the search icon */
+}
+
+.form-control::placeholder {
+  color: #adb5bd;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+}
+
+.form-label svg {
+  margin-right: 0.5rem;
+}

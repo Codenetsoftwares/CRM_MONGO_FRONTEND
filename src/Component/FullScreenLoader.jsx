@@ -1,7 +1,7 @@
 import React from 'react';
 
 const FullScreenLoader = (props) => {
-  console.log("show",props.show);
+  // console.log("show",props.show);
   return (
     props.show
       ? <React.Fragment>
