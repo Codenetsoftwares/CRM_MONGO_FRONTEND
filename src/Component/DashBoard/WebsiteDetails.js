@@ -577,22 +577,22 @@ const WebsiteDetails = () => {
                 {getWebsite.map((data) => (
                   <div
                     key={data._id}
-                    className={`col ${activeCard === data._id ? 'card-animate-forward' : ''} ${hoveredCard === data._id ? 'card-hover-highlight' : ''}`}
+                    className={`col  ${hoveredCard === data._id ? 'card-hover-highlight' : ''}`}
                     onClick={() => handleCardClick(data._id)}
                     onMouseEnter={() => setHoveredCard(data._id)}
                     onMouseLeave={() => setHoveredCard(null)}
                   >
-                    <div className="card d-flex justify-content-between">
-                      <div className="card-body">
-                        <p className="font-weight-bold">
+                    <div className="card d-flex justify-content-between" style={{ borderRadius:"20px", height:"200px"}}>
+                      <div className="card-body" >
+                        <p className="font-weight-bold fs-4" >
                           {data.websiteName}
                           <br />
-                          <span className="text-success">Balance: {data.balance}</span>
+                          <span className="text-success fs-5">Balance: {data.balance}</span>
                         </p>
-                        <div className="d-flex justify-content-center gap-1">
+                        <div className="d-flex justify-content-center gap-4">
                           <button
                             type="button"
-                            className="btn btn-danger btn-sm "
+                            className="btn btn-danger btn-sm btn-zoom-out "
                             data-bs-toggle="modal"
                             data-bs-target="#modalWithdrawBlwebsite"
                             onClick={() => {
@@ -601,11 +601,11 @@ const WebsiteDetails = () => {
                             disabled={!data.isWithdraw}
                             title="Withdraw"
                           >
-                            <FontAwesomeIcon icon={faMinus} className="add-icon" />
+                            <FontAwesomeIcon icon={faMinus} className="add-icon"  />
                           </button>
                           <button
                             type="button"
-                            className="btn btn-success btn-sm"
+                            className="btn btn-success btn-sm btn-zoom-out"
                             data-bs-toggle="modal"
                             data-bs-target="#modalAddBlWebsite"
                             onClick={() => {
@@ -618,7 +618,7 @@ const WebsiteDetails = () => {
                           </button>
                           <button
                             type="button"
-                            className="btn btn-info btn-sm"
+                            className="btn btn-info btn-sm btn-zoom-out"
                             onClick={(e) => {
                               handelstatement(e, data._id);
                             }}
@@ -628,7 +628,7 @@ const WebsiteDetails = () => {
                           </button>
                           <button
                             type="button"
-                            className="btn btn-warning btn-sm"
+                            className="btn btn-warning btn-sm btn-zoom-out"
                             onClick={() => {
                               handelWebsiteEdit(data._id, data.websiteName);
                             }}
@@ -641,7 +641,7 @@ const WebsiteDetails = () => {
                           </button>
                           <button
                             type="button"
-                            className="btn btn-danger btn-sm"
+                            className="btn btn-danger btn-sm btn-zoom-out"
                             onClick={(e) => {
                               handeldeletewebsite(data._id);
                             }}
@@ -652,7 +652,7 @@ const WebsiteDetails = () => {
                           </button>
                           <button
                             type="button"
-                            className="btn btn-primary btn-sm"
+                            className="btn btn-primary btn-sm btn-zoom-out"
                             data-toggle="modal"
                             data-target="#RenewWebsitePermission"
                             onClick={() => {
@@ -666,7 +666,7 @@ const WebsiteDetails = () => {
                           {data.isActive === false ? (
                             <button
                               type="button"
-                              className="btn btn-dark btn-sm"
+                              className="btn btn-dark btn-sm btn-zoom-out"
                               title="Active"
                               onClick={() => {
                                 handelactive(data._id);
@@ -677,7 +677,7 @@ const WebsiteDetails = () => {
                           ) : (
                             <button
                               type="button"
-                              className="btn btn-dark btn-sm"
+                              className="btn btn-dark btn-sm btn-zoom-out"
                               title="Inactive"
                               onClick={() => {
                                 handelinactive(data._id);
