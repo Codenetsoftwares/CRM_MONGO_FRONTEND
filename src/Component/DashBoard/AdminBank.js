@@ -86,6 +86,7 @@ const AdminBank = () => {
   const handleDeleteBank = (e, id) => {
     e.preventDefault();
 
+  
     const userConfirmed = window.confirm(
       "Are You Sure You Want to Delete This Bank?"
     );

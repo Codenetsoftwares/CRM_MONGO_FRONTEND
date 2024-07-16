@@ -13,6 +13,7 @@ import PasswordCU from "./PasswordCU";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AccountService from "../../Services/AccountService";
+import SingleCard from "../../common/singleCard";
 
 const CreateActualUser = () => {
   const auth = useAuth();
@@ -185,26 +186,24 @@ const CreateActualUser = () => {
     };
 
   return (
-    <div
-      style={{
-        ...styles,
-        background:
-          "linear-gradient(90deg, rgba(23,183,184,1) 0%, rgba(23,184,155,0.9668242296918768) 100%)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-      className="d-flex align-items-center justify-content-center"
-    >
-      <div className="container pt-5">
-        <div className="row justify-content-center">
+ 
+    <>
+        <div className="row justify-content-center " >
           <div className="col-lg-9">
             <div className="row justify-content-center">
-              <div className="card">
+              <SingleCard className="mt-2"style={{
+          backgroundColor: "#e6f7ff",
+        }}>
+              <SingleCard className="card shadow-lg p-3 mb-5 bg-white rounded" style={{
+    boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.1)',
+    borderRadius: '10px',
+    padding: '20px',
+    backgroundColor: '#f8f9fa',
+  }}  >
                 <div className="card-body">
                   <form>
                     <div className="row g-3">
-                      <div className="col-md-6">
+                      <div className=" col-md-4">
                         <label htmlFor="Your-email" className="form-label">
                           <FaEnvelope /> User Name
                           <span className="text-danger">*</span>
@@ -220,7 +219,7 @@ const CreateActualUser = () => {
                           required
                         />
                       </div>
-                      <div className="col-md-6">
+                      <div className=" col-md-4">
                         <label htmlFor="your-surname" className="form-label">
                           <FaMobile /> Enter Contact No.
                           <span className="text-danger">*</span>
@@ -235,7 +234,7 @@ const CreateActualUser = () => {
                           placeholder=" Contact Number"
                         />
                       </div>
-                      <div className="col-md-6">
+                      <div className=" col-md-4">
                         <label htmlFor="" className="form-label">
                           <FaUser /> First Name
                           <span className="text-danger">*</span>
@@ -251,7 +250,7 @@ const CreateActualUser = () => {
                           required
                         />
                       </div>
-                      <div className="col-md-6">
+                      <div className=" col-md-4">
                         <label htmlFor="" className="form-label">
                           <FaUser /> Last Name
                           <span className="text-danger">*</span>
@@ -269,7 +268,7 @@ const CreateActualUser = () => {
                       </div>
 
                       {/* Introducer 1 start */}
-                      <div className="col-md-6">
+                      <div className=" col-md-4">
                         <label htmlFor="" className="form-label">
                           <FaIdCard /> Lvl 1 Intro Name
                           <span className="text-danger">*</span>
@@ -305,7 +304,7 @@ const CreateActualUser = () => {
                         </div>
                       </div>
 
-                      <div className="col-md-6">
+                      <div className=" col-md-4">
                         <label htmlFor="" className="form-label">
                           <FaPercent />
                           &nbsp;Lvl 1 Intro Percentage
@@ -326,7 +325,7 @@ const CreateActualUser = () => {
                       {/* Introducer 1 end */}
 
                       {/* Introducer 2 start */}
-                      <div className="col-md-6">
+                      <div className=" col-md-4 ">
                         <label htmlFor="" className="form-label">
                           <FaIdCard /> &nbsp;Lvl 2 Intro Name
                           <span className="text-danger">*</span>
@@ -362,7 +361,7 @@ const CreateActualUser = () => {
                         </div>
                       </div>
 
-                      <div className="col-md-6">
+                      <div className=" col-md-4">
                         <label htmlFor="" className="form-label">
                           <FaPercent />
                           &nbsp;Lvl 2 Intro Percentage
@@ -383,7 +382,7 @@ const CreateActualUser = () => {
                       {/* Introducer 2 end */}
 
                       {/* Introducer 3 start */}
-                      <div className="col-md-6">
+                      <div className=" col-md-4">
                         <label htmlFor="" className="form-label">
                           <FaIdCard /> &nbsp;Lvl 3 Intro Name
                           <span className="text-danger">*</span>
@@ -419,7 +418,7 @@ const CreateActualUser = () => {
                         </div>
                       </div>
 
-                      <div className="col-md-6">
+                      <div className=" col-md-4">
                         <label htmlFor="" className="form-label">
                           <FaPercent />
                           &nbsp;Lvl 3 Intro Percentage
@@ -439,7 +438,7 @@ const CreateActualUser = () => {
                       </div>
                       {/* Introducer 3 end */}
 
-                      <div className="col-md-6">
+                      <div className=" col-md-4">
                         <label htmlFor="" className="form-label">
                           <FaLock /> Password
                           <span className="text-danger">*</span>
@@ -456,7 +455,7 @@ const CreateActualUser = () => {
                         />
                       </div>
 
-                      <div className="col-md-6">
+                      <div className=" col-md-4">
                         <label htmlFor="" className="form-label">
                           <FaKey /> Confirm Password
                           <span className="text-danger">*</span>
@@ -508,12 +507,14 @@ const CreateActualUser = () => {
                     </div>
                   </form>
                 </div>
-              </div>
+              </SingleCard>
+              </SingleCard>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+</>
+      
+  
   );
 };
 

@@ -1,0 +1,20 @@
+/* Add this to your CSS file */
+
+.card-animate-forward {
+    animation: moveForward 0.3s forwards;
+  }
+  
+  @keyframes moveForward {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(10px);
+    }
+  }
+  
+  .card-hover-highlight {
+    transition: box-shadow 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
