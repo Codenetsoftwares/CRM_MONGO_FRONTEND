@@ -12,21 +12,31 @@ function Deposit() {
   const [Website, setWebsite] = useState([]);
   const [WebsiteName, setWebsiteName] = useState([]);
   const [UId, setUId] = useState([]);
-  const [remarks, setRemarks] = useState("");
+  // const [remarks, setRemarks] = useState("");
   const [SendUId, setSendUId] = useState([]);
   const [introducerId, setIntroducerId] = useState([]);
   const [Sendintroducer, setSendIntroducer] = useState([]);
   const [BankAccNo, SetBankAccNo] = useState([]);
-  const [transactionId, setTransactionId] = useState("");
-  const [transactionType, setTransactionType] = useState("");
-  const [amount, setAmount] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [bonus, setBonus] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [transactionId, setTransactionId] = useState("");
+  // const [transactionType, setTransactionType] = useState("");
+  // const [amount, setAmount] = useState("");
+  // const [paymentMethod, setPaymentMethod] = useState("");
+  // const [bonus, setBonus] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [formData, setFormData] = useState({
+    transactionID: "",
+    amount: 0,
+    paymentMethod: "",
+    userName: "",
+    bankName: "",
+    websiteName: "",
+    transactionType: "Deposit",
+    bonus: 0,
+    remarks:""
+  });
 
   useEffect(() => {
     AccountService.getActiveBank(auth.user).then((res) => setBank(res.data));
@@ -108,8 +118,8 @@ function Deposit() {
 
     const filtered = value
       ? UId.filter((data) =>
-        data.userName.toLowerCase().includes(value.toLowerCase())
-      )
+          data.userName.toLowerCase().includes(value.toLowerCase())
+        )
       : [];
 
     setFilteredOptions(filtered);
@@ -402,4 +412,4 @@ function Deposit() {
   );
 }
 
-export default Deposit;
+// export default Deposit;
