@@ -32,6 +32,7 @@ const Deposit = () => {
   const [isBankDropdownVisible, setIsBankDropdownVisible] = useState(false);
   const [isWebsiteDropdownVisible, setIsWebsiteDropdownVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const auth = useAuth();
 
   useEffect(() => {
@@ -94,6 +95,24 @@ const Deposit = () => {
     }, 1300), [websiteOptions]
   );
 
+  const handleKeyDown = (e, setFieldValue) => {
+    if (e.key === 'ArrowDown') {
+      setActiveIndex((prevIndex) => (prevIndex + 1) % filteredUserNameOptions.length);
+    } else if (e.key === 'ArrowUp') {
+      setActiveIndex((prevIndex) => (prevIndex - 1 + filteredUserNameOptions.length) % filteredUserNameOptions.length);
+    } else if (e.key === 'Enter'||"Tab" && activeIndex >= 0) {
+      setFieldValue('userName', filteredUserNameOptions[activeIndex].userName);
+      setIsDropdownVisible(false);
+      setActiveIndex(-1);
+    }
+  };
+
+  const handleOptionClick = (option, setFieldValue) => {
+    setFieldValue('userName', option.userName);
+    setIsDropdownVisible(false);
+    setActiveIndex(-1);
+  };
+
   const handleSubmit = (values) => {
     // Convert amount from string to number
     values.amount = parseFloat(values.amount); // Or use parseInt if it should be an integer
@@ -152,7 +171,10 @@ const Deposit = () => {
                       onChange={(e) => {
                         handleChange(e);
                         handleSearchUserName(e.target.value);
+                        setIsDropdownVisible(true);
+                        setActiveIndex(-1);
                       }}
+                      onKeyDown={(e) => handleKeyDown(e, setFieldValue)}
                       placeholder="Search Customer Name"
                     />
                     <ErrorMessage name="userName" component="div" className="text-danger" />
@@ -162,11 +184,12 @@ const Deposit = () => {
                           filteredUserNameOptions.map((option, index) => (
                             <li
                               key={index}
-                              onClick={() => {
-                                setFieldValue('userName', option.userName);
-                                setIsDropdownVisible(false);
+                              onClick={() => handleOptionClick(option, setFieldValue)}
+                              style={{
+                                padding: '8px',
+                                cursor: 'pointer',
+                                backgroundColor: activeIndex === index ? '#f0f0f0' : 'white'
                               }}
-                              style={{ padding: '8px', cursor: 'pointer' }}
                             >
                               {option.userName}
                             </li>
@@ -252,12 +275,7 @@ const Deposit = () => {
                       }}
                       placeholder="Search Website Name"
                     />
-
-                    <ErrorMessage
-                      name="websiteName"
-                      component="div"
-                      className="text-danger"
-                    />
+                    <ErrorMessage name="websiteName" component="div" className="text-danger" />
                     {isWebsiteDropdownVisible && (
                       <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '200px', overflow: 'auto' }}>
                         {filteredWebsiteOptions.length > 0 ? (
@@ -294,11 +312,7 @@ const Deposit = () => {
                       <option value="UPI">UPI</option>
                       <option value="IMPS">IMPS</option>
                     </Field>
-                    <ErrorMessage
-                      name="paymentMethod"
-                      component="div"
-                      className="text-danger"
-                    />
+                    <ErrorMessage name="paymentMethod" component="div" className="text-danger" />
                   </div>
                 </Col>
                 <Col md={6}>
@@ -310,17 +324,12 @@ const Deposit = () => {
                       className="form-control"
                       placeholder="Enter amount"
                     />
-                    <ErrorMessage
-                      name="amount"
-                      component="div"
-                      className="text-danger"
-                    />
+                    <ErrorMessage name="amount" component="div" className="text-danger" />
                   </div>
                 </Col>
               </Row>
 
               <Row className="mb-3">
-
                 <Col md={6}>
                   <div className="form-group">
                     <label htmlFor="bonus">Bonus</label>
@@ -330,11 +339,7 @@ const Deposit = () => {
                       className="form-control"
                       placeholder="Enter Bonus"
                     />
-                    <ErrorMessage
-                      name="bonus"
-                      component="div"
-                      className="text-danger"
-                    />
+                    <ErrorMessage name="bonus" component="div" className="text-danger" />
                   </div>
                 </Col>
                 <Col md={6}>
@@ -347,11 +352,7 @@ const Deposit = () => {
                       className="form-control"
                       placeholder="Enter Remarks"
                     />
-                    <ErrorMessage
-                      name="remarks"
-                      component="div"
-                      className="text-danger"
-                    />
+                    <ErrorMessage name="remarks" component="div" className="text-danger" />
                   </div>
                 </Col>
               </Row>
