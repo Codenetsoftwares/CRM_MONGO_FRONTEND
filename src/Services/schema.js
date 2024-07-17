@@ -10,7 +10,24 @@ export const LoginSchema = Yup.object().shape({
     .required("Password is required"),
 });
 
-export const CreditTransactionSchema = Yup.object({
+export const CreditDepositTransactionSchema = Yup.object({
+  transactionID: Yup.string().required("Transaction ID is required"),
+  amount: Yup.string()
+    .required("Amount is required"),
+  paymentMethod: Yup.string()
+    .oneOf(["UPI", "IMPS"], "Invalid Transaction Type")
+    .required("Payment Method is required"),
+  userName: Yup.string().required("User Name is required"),
+  bankName: Yup.string().required("Bank Name is required"),
+  websiteName: Yup.string().required("Website Name is required"),
+  transactionType: Yup.string()
+    .oneOf(["Deposit", "Withdrawal"], "Invalid Transaction Type")
+    .required("Transaction Type is required"),
+  bonus: Yup.number().min(0, "Bonus must be a positive number"),
+  remarks: Yup.string().required("Remarks are required"),
+});
+
+export const CreditWithDrawTransactionSchema = Yup.object({
   transactionID: Yup.string().required("Transaction ID is required"),
   amount: Yup.number()
     .required("Amount is required")
@@ -22,8 +39,8 @@ export const CreditTransactionSchema = Yup.object({
   bankName: Yup.string().required("Bank Name is required"),
   websiteName: Yup.string().required("Website Name is required"),
   transactionType: Yup.string()
-    .oneOf(["Deposit", "Withdrawal"], "Invalid Transaction Type")
+    .oneOf(["Deposit", "Withdraw"], "Invalid Transaction Type")
     .required("Transaction Type is required"),
-  bonus: Yup.number().min(0, "Bonus must be a positive number"),
+  bankCharges: Yup.number().min(0, "bankCharges must be a positive number"),
   remarks: Yup.string().required("Remarks are required"),
 });

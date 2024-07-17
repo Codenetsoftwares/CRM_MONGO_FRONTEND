@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Button, Col, Row, Container } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
-import { CreditTransactionSchema } from "../../Services/schema";
+import { CreditDepositTransactionSchema } from "../../Services/schema";
 import AccountService from "../../Services/AccountService";
 import { useAuth } from "../../Utils/Auth";
 import DashService from "../../Services/DashService";
 import FullScreenLoader from "../../Component/FullScreenLoader";
+import { debounce } from 'lodash';
 
 const Deposit = () => {
-  // Initial form values
   const initialValues = {
     transactionID: "",
-    amount: 0,
+    amount: "",
     paymentMethod: "UPI",
     userName: "",
     bankName: "",
@@ -22,50 +22,96 @@ const Deposit = () => {
     remarks: "",
   };
 
-  // State for options and loading indicator
   const [websiteOptions, setWebsiteOptions] = useState([]);
+  const [filteredWebsiteOptions, setFilteredWebsiteOptions] = useState([]);
   const [bankOptions, setBankOptions] = useState([]);
-  const [userNameOptions, setUserNameOptions] = useState([]);
+  const [filteredBankOptions, setFilteredBankOptions] = useState([]);
+  const [filteredUserNameOptions, setFilteredUserNameOptions] = useState([]);
+  const [allUserNameOptions, setAllUserNameOptions] = useState([]);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isBankDropdownVisible, setIsBankDropdownVisible] = useState(false);
+  const [isWebsiteDropdownVisible, setIsWebsiteDropdownVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useAuth(); // Authentication hook
+  const auth = useAuth();
 
-  // Fetch options for form fields on component mount
   useEffect(() => {
-    // Fetch active banks
-    AccountService.getActiveBank(auth.user).then((res) =>
-      setBankOptions(res.data)
-    );
-    // Fetch active websites
-    AccountService.getActiveWebsite(auth.user).then((res) =>
-      setWebsiteOptions(res.data)
-    );
-    // Fetch user names
-    AccountService.userId(auth.user).then((res) =>
-      setUserNameOptions(res.data)
-    );
+    AccountService.getActiveBank(auth.user).then((res) => {
+      setBankOptions(res.data);
+      setFilteredBankOptions(res.data);
+    });
+    AccountService.getActiveWebsite(auth.user).then((res) => {
+      setWebsiteOptions(res.data);
+      setFilteredWebsiteOptions(res.data);
+    });
+    AccountService.userId(auth.user).then((res) => {
+      setAllUserNameOptions(res.data);
+      setFilteredUserNameOptions(res.data);
+    });
   }, [auth]);
 
-  // Handle form submission
+  const handleSearchUserName = useCallback(
+    debounce((value) => {
+      if (value) {
+        const filteredItems = allUserNameOptions.filter(item =>
+          item.userName.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredUserNameOptions(filteredItems);
+        setIsDropdownVisible(true);
+      } else {
+        setFilteredUserNameOptions([]);
+        setIsDropdownVisible(false);
+      }
+    }, 1300), [allUserNameOptions]
+  );
+
+  const handleSearchBank = useCallback(
+    debounce((value) => {
+      if (value) {
+        const filteredItems = bankOptions.filter(item =>
+          item.bankName.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredBankOptions(filteredItems);
+        setIsBankDropdownVisible(true);
+      } else {
+        setFilteredBankOptions([]);
+        setIsBankDropdownVisible(false);
+      }
+    }, 1300), [bankOptions]
+  );
+
+  const handleSearchWebsite = useCallback(
+    debounce((value) => {
+      if (value) {
+        const filteredItems = websiteOptions.filter(item =>
+          item.websiteName.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredWebsiteOptions(filteredItems);
+        setIsWebsiteDropdownVisible(true);
+      } else {
+        setFilteredWebsiteOptions([]);
+        setIsWebsiteDropdownVisible(false);
+      }
+    }, 1300), [websiteOptions]
+  );
+
   const handleSubmit = (values) => {
+    // Convert amount from string to number
+    values.amount = parseFloat(values.amount); // Or use parseInt if it should be an integer
     console.log("values", values);
-    // Confirm submission with the user
     const confirmed = window.confirm(
       "Please double-check the form on obhiasb before confirming, as changes or deletions won't be possible afterward."
     );
-    setIsLoading(true); // Show loading indicator
     if (confirmed) {
-      // Submit form data to the backend
+      setIsLoading(true);
       DashService.CreateTransactionDeposit(values, auth.user)
         .then((response) => {
-          // Handle successful response
           console.log(response.data);
           alert("Transaction Created Successfully!!");
-          setIsLoading(false); // Hide loading indicator
-          window.location.reload(); // Reload the page
+          setIsLoading(false);
+          window.location.reload();
         })
         .catch((error) => {
-          // Handle error response
-          setIsLoading(false); // Hide loading indicator
+          setIsLoading(false);
           console.error(error);
           alert(error.response.data.message);
         });
@@ -74,24 +120,22 @@ const Deposit = () => {
 
   return (
     <div>
-      {/* Show loader while form is submitting */}
       <FullScreenLoader show={isLoading} />
       <Container
         className="p-4"
         style={{
           backgroundColor: "#f9fafc",
           borderRadius: "8px",
-          maxWidth: "800px",
+          maxWidth: "1250px",
         }}
       >
         <h3 className="mb-4">Make New Transaction</h3>
-        {/* Formik wrapper for form state management and validation */}
         <Formik
           initialValues={initialValues}
-          validationSchema={CreditTransactionSchema}
+          validationSchema={CreditDepositTransactionSchema}
           onSubmit={handleSubmit}
         >
-          {({ handleChange, handleSubmit }) => (
+          {({ values, setFieldValue, handleChange, handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <Row className="mb-3">
                 <Col md={6}>
@@ -99,34 +143,50 @@ const Deposit = () => {
                     <label htmlFor="userName">
                       <FaSearch /> Search Customer Name
                     </label>
-                    {/* Select field for user name */}
-                    <Field as="select" name="userName" className="form-control">
-                      <option value="">Select User Name</option>
-                      {userNameOptions.map((option) => (
-                        <option key={option._id} value={option.userName}>
-                          {option.userName}
-                        </option>
-                      ))}
-                    </Field>
-                    {/* Error message for user name */}
-                    <ErrorMessage
+                    <Field
+                      id="userName"
                       name="userName"
-                      component="div"
-                      className="text-danger"
+                      type="text"
+                      className="form-control"
+                      autoComplete="off"
+                      onChange={(e) => {
+                        handleChange(e);
+                        handleSearchUserName(e.target.value);
+                      }}
+                      placeholder="Search Customer Name"
                     />
+                    <ErrorMessage name="userName" component="div" className="text-danger" />
+                    {isDropdownVisible && (
+                      <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '200px', overflow: 'auto' }}>
+                        {filteredUserNameOptions.length > 0 ? (
+                          filteredUserNameOptions.map((option, index) => (
+                            <li
+                              key={index}
+                              onClick={() => {
+                                setFieldValue('userName', option.userName);
+                                setIsDropdownVisible(false);
+                              }}
+                              style={{ padding: '8px', cursor: 'pointer' }}
+                            >
+                              {option.userName}
+                            </li>
+                          ))
+                        ) : (
+                          <li style={{ padding: '8px' }}>Not found</li>
+                        )}
+                      </ul>
+                    )}
                   </div>
                 </Col>
                 <Col md={6}>
                   <div className="form-group">
                     <label htmlFor="transactionID">Type Transaction Id</label>
-                    {/* Input field for transaction ID */}
                     <Field
                       type="text"
                       name="transactionID"
                       className="form-control"
                       placeholder="Type Transaction Id"
                     />
-                    {/* Error message for transaction ID */}
                     <ErrorMessage
                       name="transactionID"
                       component="div"
@@ -139,46 +199,85 @@ const Deposit = () => {
               <Row className="mb-3">
                 <Col md={6}>
                   <div className="form-group">
-                    <label htmlFor="bankName">Bank Name</label>
-                    {/* Select field for bank name */}
-                    <Field as="select" name="bankName" className="form-control">
-                      <option value="">Select Bank Name</option>
-                      {bankOptions.map((option) => (
-                        <option key={option._id} value={option.bankName}>
-                          {option.bankName}
-                        </option>
-                      ))}
-                    </Field>
-                    {/* Error message for bank name */}
-                    <ErrorMessage
+                    <label htmlFor="bankName">
+                      <FaSearch /> Search Bank Name
+                    </label>
+                    <Field
+                      id="bankName"
                       name="bankName"
-                      component="div"
-                      className="text-danger"
+                      type="text"
+                      className="form-control"
+                      autoComplete="off"
+                      onChange={(e) => {
+                        handleChange(e);
+                        handleSearchBank(e.target.value);
+                      }}
+                      placeholder="Search Bank Name"
                     />
+                    <ErrorMessage name="bankName" component="div" className="text-danger" />
+                    {isBankDropdownVisible && (
+                      <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '200px', overflow: 'auto' }}>
+                        {filteredBankOptions.length > 0 ? (
+                          filteredBankOptions.map((option, index) => (
+                            <li
+                              key={index}
+                              onClick={() => {
+                                setFieldValue('bankName', option.bankName);
+                                setIsBankDropdownVisible(false);
+                              }}
+                              style={{ padding: '8px', cursor: 'pointer' }}
+                            >
+                              {option.bankName}
+                            </li>
+                          ))
+                        ) : (
+                          <li style={{ padding: '8px' }}>Not found</li>
+                        )}
+                      </ul>
+                    )}
                   </div>
                 </Col>
                 <Col md={6}>
                   <div className="form-group">
                     <label htmlFor="websiteName">Website Name</label>
-                    {/* Select field for website name */}
                     <Field
-                      as="select"
+                      id="websiteName"
                       name="websiteName"
+                      type="text"
                       className="form-control"
-                    >
-                      <option value="">Select Website Name</option>
-                      {websiteOptions.map((option) => (
-                        <option key={option._id} value={option.websiteName}>
-                          {option.websiteName}
-                        </option>
-                      ))}
-                    </Field>
-                    {/* Error message for website name */}
+                      autoComplete="off"
+                      onChange={(e) => {
+                        handleChange(e);
+                        handleSearchWebsite(e.target.value);
+                      }}
+                      placeholder="Search Website Name"
+                    />
+
                     <ErrorMessage
                       name="websiteName"
                       component="div"
                       className="text-danger"
                     />
+                    {isWebsiteDropdownVisible && (
+                      <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '200px', overflow: 'auto' }}>
+                        {filteredWebsiteOptions.length > 0 ? (
+                          filteredWebsiteOptions.map((option, index) => (
+                            <li
+                              key={index}
+                              onClick={() => {
+                                setFieldValue('websiteName', option.websiteName);
+                                setIsWebsiteDropdownVisible(false);
+                              }}
+                              style={{ padding: '8px', cursor: 'pointer' }}
+                            >
+                              {option.websiteName}
+                            </li>
+                          ))
+                        ) : (
+                          <li style={{ padding: '8px' }}>Not found</li>
+                        )}
+                      </ul>
+                    )}
                   </div>
                 </Col>
               </Row>
@@ -187,7 +286,6 @@ const Deposit = () => {
                 <Col md={6}>
                   <div className="form-group">
                     <label htmlFor="paymentMethod">Payment Method</label>
-                    {/* Select field for payment method */}
                     <Field
                       as="select"
                       name="paymentMethod"
@@ -196,7 +294,6 @@ const Deposit = () => {
                       <option value="UPI">UPI</option>
                       <option value="IMPS">IMPS</option>
                     </Field>
-                    {/* Error message for payment method */}
                     <ErrorMessage
                       name="paymentMethod"
                       component="div"
@@ -206,19 +303,15 @@ const Deposit = () => {
                 </Col>
                 <Col md={6}>
                   <div className="form-group">
-                    <label htmlFor="transactionType">Transaction Type</label>
-                    {/* Select field for transaction type */}
+                    <label htmlFor="amount">Amount</label>
                     <Field
-                      as="select"
-                      name="transactionType"
+                      type="text"
+                      name="amount"
                       className="form-control"
-                    >
-                      <option value="Deposit">Deposit</option>
-                      <option value="Withdrawal">Withdrawal</option>
-                    </Field>
-                    {/* Error message for transaction type */}
+                      placeholder="Enter amount"
+                    />
                     <ErrorMessage
-                      name="transactionType"
+                      name="amount"
                       component="div"
                       className="text-danger"
                     />
@@ -227,35 +320,16 @@ const Deposit = () => {
               </Row>
 
               <Row className="mb-3">
-                <Col md={6}>
-                  <div className="form-group">
-                    <label htmlFor="amount">Amount</label>
-                    {/* Input field for amount */}
-                    <Field
-                      type="number"
-                      name="amount"
-                      className="form-control"
-                      placeholder="Enter amount"
-                    />
-                    {/* Error message for amount */}
-                    <ErrorMessage
-                      name="amount"
-                      component="div"
-                      className="text-danger"
-                    />
-                  </div>
-                </Col>
+
                 <Col md={6}>
                   <div className="form-group">
                     <label htmlFor="bonus">Bonus</label>
-                    {/* Input field for bonus */}
                     <Field
                       type="number"
                       name="bonus"
                       className="form-control"
                       placeholder="Enter Bonus"
                     />
-                    {/* Error message for bonus */}
                     <ErrorMessage
                       name="bonus"
                       component="div"
@@ -263,12 +337,9 @@ const Deposit = () => {
                     />
                   </div>
                 </Col>
-              </Row>
-              <Row>
                 <Col md={6}>
                   <div className="form-group">
                     <label htmlFor="remarks">Remarks</label>
-                    {/* Textarea for remarks */}
                     <Field
                       as="textarea"
                       rows={3}
@@ -276,7 +347,6 @@ const Deposit = () => {
                       className="form-control"
                       placeholder="Enter Remarks"
                     />
-                    {/* Error message for remarks */}
                     <ErrorMessage
                       name="remarks"
                       component="div"
@@ -285,9 +355,7 @@ const Deposit = () => {
                   </div>
                 </Col>
               </Row>
-
-              {/* Submit button */}
-              <Button variant="danger" type="submit" className="w-100">
+              <Button variant="success" type="submit" className="w-100">
                 Create
               </Button>
             </Form>
