@@ -12,6 +12,8 @@ import {
   faEye,
   faStar,
   faTimes,
+  faCheckCircle,
+  faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import ModalAdWbl from "../Modal/ModalAdWbl";
 import ModalWbdl from "../Modal/ModalWbdl";
@@ -22,7 +24,7 @@ import ShimmerEffect from "../ShimmerEffect";
 import Pagination from "../Pagination";
 import RenewWebsitePermission from "../Modal/RenewWebsitePermission";
 import GridCard from "../../common/gridCard";
-import './WebsiteDetails.css';
+import "./WebsiteDetails.css";
 
 const WebsiteDetails = () => {
   // const { id } = useParams();
@@ -42,12 +44,10 @@ const WebsiteDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
-  
+
   const [items, setItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [search, setSearch] = useState('');
-  
-
+  const [search, setSearch] = useState("");
 
   const handleCardClick = (id) => {
     setActiveCard(id);
@@ -125,7 +125,6 @@ const WebsiteDetails = () => {
     }
   };
 
-  
   const handelWebsiteEdit = (_id, websiteName) => {
     console.log("=>>", websiteName);
     setWebId(_id);
@@ -559,133 +558,203 @@ const WebsiteDetails = () => {
     <>
       {isLoading ? (
         <div className="bg-white">
-          <div className="card text-center mt-2 mr-5 ml-5"  style={{
-          backgroundColor: "#e6f7ff",
-         }}>
-            <div className="card-header fs-3 text-bold">
-            <input
-          type="text"
-          className="form-control rounded-pill shadow"
-          placeholder="Search Website"
-          value={search}
-         
-        />
-
+          <div
+            className="card text-center mt-2 mr-5 ml-5  "
+            style={{
+              backgroundColor: "#e6f7ff",
+              position: "relative",
+            }}
+          >
+            <div className="card-header fs-3 text-bold d-flex align-items-center">
+              <input
+                type="text"
+                className="form-control rounded-pill shadow search-input me-4"
+                placeholder="Search Website"
+                value={search}
+              />
+ <div className="position-relative flex-grow-1 ">
+              <input
+                type="text"
+                className="form-control rounded-pill shadow add-website-input ps-5 pe-4"
+                placeholder="Add Website"
+                value={search}
+                onChange={handlewebsite}
+              />
+              <div className="input-icon position-absolute top-50 end-0 translate-middle-y d-flex align-items-center justify-content-center rounded-circle" onClick={handleSubmit}>
+            
+                <FontAwesomeIcon icon={faPlus} />
+              </div>
             </div>
+            </div>
+ 
             <div className="card-body">
-              <GridCard columns={3} >
+              <GridCard columns={2}>
                 {getWebsite.map((data) => (
                   <div
                     key={data._id}
-                    className={`col  ${hoveredCard === data._id ? 'card-hover-highlight' : ''}`}
+                    className={`col  ${
+                      hoveredCard === data._id ? "card-hover-highlight" : ""
+                    }`}
                     onClick={() => handleCardClick(data._id)}
                     onMouseEnter={() => setHoveredCard(data._id)}
                     onMouseLeave={() => setHoveredCard(null)}
                   >
-                    <div className="card d-flex justify-content-between" style={{ borderRadius:"20px", height:"200px"}}>
-                      <div className="card-body" >
-                        <p className="font-weight-bold fs-4" >
+                    <div
+                      className="card d-flex justify-content-between"
+                      style={{ borderRadius: "20px", height: "200px" }}
+                    >
+                      <div className="card-body">
+                        <p className="font-weight-bold fs-4">
                           {data.websiteName}
                           <br />
-                          <span className="text-success fs-5">Balance: {data.balance}</span>
+                          <span className="text-success fs-5">
+                            Balance: {data.balance}
+                          </span>
                         </p>
-                        <div className="d-flex justify-content-center gap-4">
-                          <button
-                            type="button"
-                            className="btn btn-danger btn-sm btn-zoom-out "
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalWithdrawBlwebsite"
-                            onClick={() => {
-                              handelId(data._id);
-                            }}
-                            disabled={!data.isWithdraw}
-                            title="Withdraw"
-                          >
-                            <FontAwesomeIcon icon={faMinus} className="add-icon"  />
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-success btn-sm btn-zoom-out"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalAddBlWebsite"
-                            onClick={() => {
-                              handelId(data._id);
-                            }}
-                            disabled={!data.isDeposit}
-                            title="Deposit"
-                          >
-                            <FontAwesomeIcon icon={faPlus} className="add-icon" />
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-info btn-sm btn-zoom-out"
-                            onClick={(e) => {
-                              handelstatement(e, data._id);
-                            }}
-                            title="Statement"
-                          >
-                            <FontAwesomeIcon icon={faFileAlt} className="add-icon" />
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-warning btn-sm btn-zoom-out"
-                            onClick={() => {
-                              handelWebsiteEdit(data._id, data.websiteName);
-                            }}
-                            title="Edit Website"
-                            data-toggle="modal"
-                            data-target="#editwebsite"
-                            disabled={!data.isEdit}
-                          >
-                            <FontAwesomeIcon icon={faEdit} data-toggle="modal" data-target="#exampleModalCenter" />
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-danger btn-sm btn-zoom-out"
-                            onClick={(e) => {
-                              handeldeletewebsite(data._id);
-                            }}
-                            title="Delete"
-                            disabled={!data.isDelete}
-                          >
-                            <FontAwesomeIcon icon={faTrashAlt} className="delete-icon" />
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-primary btn-sm btn-zoom-out"
-                            data-toggle="modal"
-                            data-target="#RenewWebsitePermission"
-                            onClick={() => {
-                              handelSubAdmin(data.subAdmins, data._id);
-                            }}
-                            title="Renew Permission"
-                            disabled={!data.isRenew}
-                          >
-                            <FontAwesomeIcon icon={faEye} className="permission" />
-                          </button>
-                          {data.isActive === false ? (
-                            <button
-                              type="button"
-                              className="btn btn-dark btn-sm btn-zoom-out"
-                              title="Active"
-                              onClick={() => {
-                                handelactive(data._id);
-                              }}
-                            >
-                              <FontAwesomeIcon icon={faStar} className="active-icon" />
-                            </button>
-                          ) : (
-                            <button
-                              type="button"
-                              className="btn btn-dark btn-sm btn-zoom-out"
-                              title="Inactive"
-                              onClick={() => {
-                                handelinactive(data._id);
-                              }}
-                            >
-                              <FontAwesomeIcon icon={faTimes} className="active-icon" />
-                            </button>
-                          )}
+                        <div className="container">
+                          <div className="row g-1 justify-content-center mt-5 ">
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-custom btn-sm  btn-zoom-out "
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalWithdrawBlwebsite"
+                                onClick={() => {
+                                  handelId(data._id);
+                                }}
+                                disabled={!data.isWithdraw}
+                                title="Withdraw"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faMinus}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-custom btn-sm  btn-zoom-out"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalAddBlWebsite"
+                                onClick={() => {
+                                  handelId(data._id);
+                                }}
+                                disabled={!data.isDeposit}
+                                title="Deposit"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPlus}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-custom btn-sm  btn-zoom-out"
+                                onClick={(e) => {
+                                  handelstatement(e, data._id);
+                                }}
+                                title="Statement"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faFileAlt}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
+
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-custom btn-sm  btn-zoom-out"
+                                onClick={() => {
+                                  handelWebsiteEdit(data._id, data.websiteName);
+                                }}
+                                title="Edit Website"
+                                data-toggle="modal"
+                                data-target="#editwebsite"
+                                disabled={!data.isEdit}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faEdit}
+                                  data-toggle="modal"
+                                  data-target="#exampleModalCenter"
+                                />
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-custom btn-sm  btn-zoom-out"
+                                onClick={(e) => {
+                                  handeldeletewebsite(data._id);
+                                }}
+                                title="Delete"
+                                disabled={!data.isDelete}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faTrashAlt}
+                                  className="delete-icon"
+                                />
+                              </button>
+                            </div>
+
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-custom btn-sm btn-zoom-out"
+                                data-toggle="modal"
+                                data-target="#RenewWebsitePermission"
+                                onClick={() => {
+                                  handelSubAdmin(data.subAdmins, data._id);
+                                }}
+                                title="Renew Permission"
+                                disabled={!data.isRenew}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faEye}
+                                  className="permission"
+                                />
+                              </button>
+                            </div>
+                            <div className="card-top-right">
+                              {data.isActive === false ? (
+                                <span
+                                  type="button"
+                                  className="status-pill active-pill btn-zoom-out"
+                                  title="Active"
+                                  onClick={() => {
+                                    handelactive(data._id);
+                                  }}
+                                >
+                                  {" "}
+                                  Active{" "}
+                                  <FontAwesomeIcon
+                                    icon={faCheckCircle}
+                                    className="active-icon"
+                                  />
+                                </span>
+                              ) : (
+                                <span
+                                  type="button"
+                                  className="status-pill inactive-pill btn-zoom-out "
+                                  title="Inactive"
+                                  onClick={() => {
+                                    handelinactive(data._id);
+                                  }}
+                                >
+                                  {" "}
+                                  Inactive{" "}
+                                  <FontAwesomeIcon
+                                    icon={faTimesCircle}
+                                    className="active-icon"
+                                  />
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -693,7 +762,7 @@ const WebsiteDetails = () => {
                 ))}
               </GridCard>
             </div>
-            <div className="card-footer text-muted">
+            {/* <div className="card-footer text-muted">
               <input
                 className="form-control mb-2 text-center"
                 id="inputPassword2"
@@ -704,7 +773,7 @@ const WebsiteDetails = () => {
               <a href="#" className="btn btn-primary" onClick={handleSubmit}>
                 Add Website
               </a>
-            </div>
+            </div> */}
             <ModalWthWbl ID={Id} />
             <ModalAdWbl ID={Id} />
             <ModalWbdl name={name} />
@@ -718,8 +787,6 @@ const WebsiteDetails = () => {
         </div>
       )}
     </>
- 
-
   );
 };
 
