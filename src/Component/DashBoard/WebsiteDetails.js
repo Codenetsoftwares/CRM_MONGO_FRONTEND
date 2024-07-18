@@ -24,7 +24,10 @@ import ShimmerEffect from "../ShimmerEffect";
 import Pagination from "../Pagination";
 import RenewWebsitePermission from "../Modal/RenewWebsitePermission";
 import GridCard from "../../common/gridCard";
+import SingleCard from "../../common/singleCard";
 import "./WebsiteDetails.css";
+import InfiniteScroll from "react-infinite-scroll-component";
+
 
 const WebsiteDetails = () => {
   // const { id } = useParams();
@@ -44,9 +47,6 @@ const WebsiteDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
-
-  const [items, setItems] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState("");
 
   const handleCardClick = (id) => {
@@ -54,11 +54,13 @@ const WebsiteDetails = () => {
     setTimeout(() => setActiveCard(null), 300); // Reset the animation class after animation duration
   };
 
-  // console.log("Auth", auth);
   const handlewebsite = (event) => {
     setWebsite(event.target.value);
   };
-  // console.log(website);
+
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -192,6 +194,17 @@ const WebsiteDetails = () => {
     setSId(ID);
   };
 
+  // for search input field handled from frontend   to be done by serverside
+  const filteredWebsites = getWebsite.filter((website) =>
+    website.websiteName.toLowerCase().includes(search.toLowerCase())
+  );
+
+
+    // Function to fetch more data on scrolling
+    const fetchMoreData = () => {
+      setPage(page + 1);
+    };
+  //PAGINATION WORK 
   let reminder = getWebsite.length % 4;
   let lastPage = Math.ceil(getWebsite.length / 4);
   let lastPageReminder = getWebsite.length % 4 === !0;
@@ -555,68 +568,107 @@ const WebsiteDetails = () => {
     //     </div>
     //   )}
     // </>
-    <>
+    <div >
       {isLoading ? (
         <div className="bg-white">
           <div
-            className="card text-center mt-2 mr-5 ml-5  "
+            className="card text-center mt-2 mr-5 ml-5"
             style={{
               backgroundColor: "#e6f7ff",
               position: "relative",
             }}
           >
-            <div className="card-header fs-3 text-bold d-flex align-items-center">
-              <input
-                type="text"
-                className="form-control rounded-pill shadow search-input me-4"
-                placeholder="Search Website"
-                value={search}
-              />
- <div className="position-relative flex-grow-1 ">
-              <input
-                type="text"
-                className="form-control rounded-pill shadow add-website-input ps-5 pe-4"
-                placeholder="Add Website"
-                value={search}
-                onChange={handlewebsite}
-              />
-              <div className="input-icon position-absolute top-50 end-0 translate-middle-y d-flex align-items-center justify-content-center rounded-circle" onClick={handleSubmit}>
-            
-                <FontAwesomeIcon icon={faPlus} />
+            <SingleCard   style={{
+              backgroundColor: "#e6f7ff",
+              position: "relative",
+            }}>
+            <div className="card-header-pill fs-3 text-bold d-flex align-items-center justify-content-between " >
+              <div className="flex-grow-1 ">
+                <input
+                  type="text"
+                  className="form-control rounded-pill shadow"
+                  placeholder="Search Website"
+                  value={search}
+                  onChange={handleSearch}
+                />
+              </div>
+              <div className="flex-grow-1 d-flex justify-content-end position-relative">
+                <input
+                  type="text"
+                  className="form-control rounded-pill shadow ps-5 ml-5"
+                  placeholder="Add Website"
+                  value={website}
+                  onChange={handlewebsite}
+                />
+                <div
+                  className="input-icon position-absolute top-50 translate-middle-y d-flex align-items-center justify-content-center rounded-circle"
+                  onClick={handleSubmit}
+                  style={{
+                    width: "2.5rem",
+                    height: "2.5rem",
+                    backgroundColor: "#4682b4",
+                    color: "#fff",
+                    cursor: "pointer",
+                    borderRadius: "50%",
+                  }}
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                </div>
               </div>
             </div>
-            </div>
- 
-            <div className="card-body">
+            </SingleCard>
+            <div className="card-body infinite-scroll-container mt-2 mb-3">
+        
+         <SingleCard  className="mb-2" >
+         <InfiniteScroll
+                  dataLength={filteredWebsites.length}
+                  next={fetchMoreData}
+                  hasMore={page < totalPage}
+                  loader={<h4>Loading...</h4>}
+                  endMessage={
+                    <p style={{ textAlign: "center" }}>
+                      <b>No more data to load</b>
+                    </p>
+                  }
+                >
               <GridCard columns={2}>
-                {getWebsite.map((data) => (
+                {filteredWebsites.map((data) => (
                   <div
                     key={data._id}
-                    className={`col  ${
-                      hoveredCard === data._id ? "card-hover-highlight" : ""
-                    }`}
-                    onClick={() => handleCardClick(data._id)}
+                    className="col d-flex justify-content-center align-items-center " 
                     onMouseEnter={() => setHoveredCard(data._id)}
                     onMouseLeave={() => setHoveredCard(null)}
+                   
                   >
                     <div
-                      className="card d-flex justify-content-between"
-                      style={{ borderRadius: "20px", height: "200px" }}
+                      className={`card d-flex justify-content-between ${
+                        hoveredCard === data._id ? "card-hover-highlight" : ""
+                      }`}
+                      style={{
+                        borderRadius: "20px",
+                        height: "200px",
+                        width: "100%",
+                        position: "relative",
+                      }}
+                      onClick={() => handleCardClick(data._id)}
                     >
                       <div className="card-body">
-                        <p className="font-weight-bold fs-4">
+                        <p
+                          className="font-weight-bold fs-4"
+                          style={{ color: "#708090" }}
+                        >
                           {data.websiteName}
                           <br />
-                          <span className="text-success fs-5">
+                          <span className="fs-5" style={{ color: "#A9A9A9" }}>
                             Balance: {data.balance}
                           </span>
                         </p>
                         <div className="container">
-                          <div className="row g-1 justify-content-center mt-5 ">
+                          <div className="row g-1 justify-content-center mt-5">
                             <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                               <button
                                 type="button"
-                                className="btn btn-custom btn-sm  btn-zoom-out "
+                                className="btn btn-custom btn-sm btn-zoom-out"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modalWithdrawBlwebsite"
                                 onClick={() => {
@@ -634,7 +686,7 @@ const WebsiteDetails = () => {
                             <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                               <button
                                 type="button"
-                                className="btn btn-custom btn-sm  btn-zoom-out"
+                                className="btn btn-custom btn-sm btn-zoom-out"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modalAddBlWebsite"
                                 onClick={() => {
@@ -652,7 +704,7 @@ const WebsiteDetails = () => {
                             <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                               <button
                                 type="button"
-                                className="btn btn-custom btn-sm  btn-zoom-out"
+                                className="btn btn-custom btn-sm btn-zoom-out"
                                 onClick={(e) => {
                                   handelstatement(e, data._id);
                                 }}
@@ -668,7 +720,7 @@ const WebsiteDetails = () => {
                             <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                               <button
                                 type="button"
-                                className="btn btn-custom btn-sm  btn-zoom-out"
+                                className="btn btn-custom btn-sm btn-zoom-out"
                                 onClick={() => {
                                   handelWebsiteEdit(data._id, data.websiteName);
                                 }}
@@ -687,7 +739,7 @@ const WebsiteDetails = () => {
                             <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                               <button
                                 type="button"
-                                className="btn btn-custom btn-sm  btn-zoom-out"
+                                className="btn btn-custom btn-sm btn-zoom-out"
                                 onClick={(e) => {
                                   handeldeletewebsite(data._id);
                                 }}
@@ -719,61 +771,55 @@ const WebsiteDetails = () => {
                                 />
                               </button>
                             </div>
-                            <div className="card-top-right">
-                              {data.isActive === false ? (
-                                <span
-                                  type="button"
-                                  className="status-pill active-pill btn-zoom-out"
-                                  title="Active"
-                                  onClick={() => {
-                                    handelactive(data._id);
-                                  }}
-                                >
-                                  {" "}
-                                  Active{" "}
-                                  <FontAwesomeIcon
-                                    icon={faCheckCircle}
-                                    className="active-icon"
-                                  />
-                                </span>
-                              ) : (
-                                <span
-                                  type="button"
-                                  className="status-pill inactive-pill btn-zoom-out "
-                                  title="Inactive"
-                                  onClick={() => {
-                                    handelinactive(data._id);
-                                  }}
-                                >
-                                  {" "}
-                                  Inactive{" "}
-                                  <FontAwesomeIcon
-                                    icon={faTimesCircle}
-                                    className="active-icon"
-                                  />
-                                </span>
-                              )}
-                            </div>
                           </div>
                         </div>
+                      </div>
+                      <div className="card-top-right">
+                        {data.isActive === false ? (
+                          <span
+                            type="button"
+                            className="status-pill active-pill btn-zoom-out position-relative d-inline-block"
+                            title="Active"
+                            onClick={() => {
+                              handelactive(data._id);
+                            }}
+                          >
+                            Active
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              className="active-icon ms-1"
+                            />
+                            <span className="dot dot-green position-absolute top-0 start-100 translate-middle"></span>
+                          </span>
+                        ) : (
+                          <span
+                            type="button"
+                            className="status-pill inactive-pill btn-zoom-out position-relative d-inline-block"
+                            title="Inactive"
+                            onClick={() => {
+                              handelinactive(data._id);
+                            }}
+                          >
+                            Inactive
+                            <FontAwesomeIcon
+                              icon={faTimesCircle}
+                              className="active-icon ms-1"
+                            />
+                            <span className="dot dot-red dot-merged position-absolute top-0 start-100 translate-middle"></span>
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
                 ))}
               </GridCard>
+              </InfiniteScroll>
+              </SingleCard>
+          
+              
             </div>
-            {/* <div className="card-footer text-muted">
-              <input
-                className="form-control mb-2 text-center"
-                id="inputPassword2"
-                placeholder=" Enter your Website Name Here"
-                onChange={handlewebsite}
-                required
-              />
-              <a href="#" className="btn btn-primary" onClick={handleSubmit}>
-                Add Website
-              </a>
-            </div> */}
+
+            
             <ModalWthWbl ID={Id} />
             <ModalAdWbl ID={Id} />
             <ModalWbdl name={name} />
@@ -786,7 +832,7 @@ const WebsiteDetails = () => {
           <ShimmerEffect />
         </div>
       )}
-    </>
+    </div>
   );
 };
 
