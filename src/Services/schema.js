@@ -44,3 +44,22 @@ export const CreditWithDrawTransactionSchema = Yup.object({
   bankCharges: Yup.number().min(0, "bankCharges must be a positive number"),
   remarks: Yup.string().required("Remarks are required"),
 });
+
+
+export const CreateIntroducerSchema = Yup.object().shape({
+  firstname: Yup.string()
+    .min(2, "Username must be at least 2 characters")
+    .max(10, "Username must not exceed 10 characters")
+    .required("Username is required"),
+  userName: Yup.string()
+    .min(2, "Username must be at least 2 characters")
+    .max(25, "Username must not exceed 25 characters")
+    .required("Username is required"),
+  lastname: Yup.string()
+    .min(2, "Username must be at least 2 characters")
+    .max(10, "Username must not exceed 10 characters")
+    .required("Username is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+});
