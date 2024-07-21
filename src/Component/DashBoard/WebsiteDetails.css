@@ -88,6 +88,13 @@
   max-height: 80vh; /* Adjust the height as needed */
   padding: 0 15px; /* Ensure padding does not cause horizontal overflow */
 }
+/* Styles for text truncation */
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 
 /* this css affecting all the body commomnly in all components */
 body {

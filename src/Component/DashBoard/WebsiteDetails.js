@@ -298,13 +298,13 @@ const WebsiteDetails = () => {
                         >
                           <div className="card-body">
                             <p
-                              className="font-weight-bold fs-4"
+                              className="font-weight-bold fs-4 text-truncate"
                               style={{ color: "#708090" }}
                             >
                               {data.websiteName}
                               <br />
                               <span
-                                className="fs-5"
+                                className="fs-5 text-truncate"
                                 style={{ color: "#A9A9A9" }}
                               >
                                 Balance: {data.balance}

@@ -198,9 +198,11 @@ const AdminBank = () => {
   };
 
   // for search input field handled from frontend   to be done by serverside
-  // const filteredBankName = getbankName.filter((website) =>
-  //   website.bankName.toLowerCase().includes(search.toLowerCase())
-  // );
+  const filteredBankName = getbankName.filter(
+    (website) =>
+      website.bankName &&
+      website.bankName.toLowerCase().includes(search.toLowerCase())
+  );
 
   let reminder = getbankName.length % 4;
   let lastPage = Math.ceil(getbankName.length / 4);
@@ -581,7 +583,19 @@ const AdminBank = () => {
                   />
                 </div>
                 <div className="flex-grow-1 d-flex justify-content-end position-relative">
-                  <h5 className="mr-5">Add Bank</h5>
+                  <h5
+                    className="mr-5"
+                    style={{
+                      color: "#B0A295", // Matching the background color of the button
+                      fontSize: "1.5rem", // Adjust the size to fit well within the header
+                      margin: "0", // Remove default margin
+                      lineHeight: "2.5rem", // Align vertically with the button
+                      fontWeight: "bold", // Make the text thicker
+                      fontFamily: "'Abril Fatface', serif ", 
+                    }}
+                  >
+                    ADD BANK
+                  </h5>
                   <div
                     className="input-icon-web-add  position-absolute top-50 translate-middle-y d-flex align-items-center justify-content-center rounded-circle"
                     // onClick={handleSubmit}
@@ -615,7 +629,7 @@ const AdminBank = () => {
                   }
                 > */}
                 <GridCard columns={2}>
-                  {getbankName.map((data) => (
+                  {filteredBankName.map((data) => (
                     <div
                       key={data._id}
                       className="col d-flex justify-content-center align-items-center "
@@ -704,7 +718,7 @@ const AdminBank = () => {
                                   type="button"
                                   className="btn btn-steel-blue btn-sm btn-hover-zoom"
                                   onClick={(e) => {
-                                    handelEditbank( e,data._id);
+                                    handelEditbank(e, data._id);
                                   }}
                                   title="Edit Bank"
                                   data-toggle="modal"
@@ -723,7 +737,7 @@ const AdminBank = () => {
                                   type="button"
                                   className="btn btn-steel-blue btn-sm btn-hover-zoom"
                                   onClick={(e) => {
-                                    handleDeleteBank(e,data._id);
+                                    handleDeleteBank(e, data._id);
                                   }}
                                   title="Delete"
                                   disabled={!data.isDelete}
