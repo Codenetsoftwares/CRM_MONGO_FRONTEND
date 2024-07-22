@@ -8,6 +8,8 @@ import { useAuth } from "../../Utils/Auth";
 import TransactionSercvice from "../../Services/TransactionSercvice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import GridCard from "../../common/gridCard";
+import SingleCard from "../../common/singleCard";
 
 const RenewWebsitePermission = ({ SubAdmins, ID }) => {
   const [toggle, setToggle] = useState(true);
@@ -206,247 +208,162 @@ const RenewWebsitePermission = ({ SubAdmins, ID }) => {
   };
   return (
     <div
-      class="modal fade"
-      id="RenewWebsitePermission"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalCenterTitle"
-      aria-hidden="true"
+    className="modal fade"
+    id="RenewWebsitePermission"
+    tabIndex="-1"
+    role="dialog"
+    aria-labelledby="RenewWebsitePermissionTitle"
+    aria-hidden="true"
     >
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">
-              Previous Permissions
-            </h5>
+    <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div className="modal-content">
+        <div className="modal-header" style={{ backgroundColor: '#3b6e91', color: '#fff' }}>
+          <h5 className="modal-title" id="RenewWebsitePermissionTitle">
+            {toggle ? "Previous Permissions" : "Update Permissions"}
+          </h5>
+          <button
+            type="button"
+            className="btn-close"
+            data-dismiss="modal"
+            aria-label="Close"
+            onClick={funtoggle}
+          ></button>
+        </div>
+    
+        <div className="modal-body">
+          {toggle ? (
+            SubAdmins && SubAdmins.length > 0 ? (
+              <div className="table-responsive">
+                <table className="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">SubAdmin</th>
+                      <th scope="col">Deposit</th>
+                      <th scope="col">Withdraw</th>
+                      <th scope="col">Edit</th>
+                      <th scope="col">Delete</th>
+                      <th scope="col">Renew</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {SubAdmins.map((subAdmin) => (
+                      <tr key={subAdmin._id}>
+                        <td>{subAdmin.subAdminId}</td>
+                        <td>{subAdmin.isDeposit ? "Yes" : "No"}</td>
+                        <td>{subAdmin.isWithdraw ? "Yes" : "No"}</td>
+                        <td>{subAdmin.isEdit ? "Yes" : "No"}</td>
+                        <td>{subAdmin.isDelete ? "Yes" : "No"}</td>
+                        <td>{subAdmin.isRenew ? "Yes" : "No"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p>No permissions found</p>
+            )
+          ) : (
+            <SingleCard style={{ overflowY: 'auto', maxHeight: '600px' }}> 
+            <GridCard columns={1} style={{ margin: "1rem" }}>
+              {subAdmin.map((admin, index) => (
+                <SingleCard key={index} className="p-4 mb-4 shadow-sm border border-light" style={{ marginBottom: '1rem' }}>
+                  <div className="d-flex align-items-start mb-3">
+                    <input
+                      type="checkbox"
+                      className="form-check-input me-2"
+                      id={`checkbox${index}`}
+                      checked={checkboxStates[index]}
+                      onChange={() => handleCheckboxChange(index)}
+                      value={admin.userName}
+                      style={{ accentColor: '#3b6e91', position: 'relative', zIndex: 1 }}
+                    />
+                    <label
+                      className="form-check-label  fw-bold"
+                      htmlFor={`checkbox${index}`}
+                      style={{ color: '#3b6e91', marginRight: '1rem' }} 
+                    >
+                      {admin.userName}
+                    </label>
+                    <div className="ms-auto">
+                      <FontAwesomeIcon
+                        icon={faTimes}
+                        title="Revoke All Permission"
+                        className="text-danger"
+                        style={{ cursor: "pointer", fontSize: '1.25rem' }}
+                        onClick={() => handelRevokePermision(admin.userName)}
+                      />
+                    </div>
+                  </div>
+                  <div className="d-flex flex-column gap-2"> {/* Align labels in a straight column */}
+                    {[
+                      { label: "Deposit", state: checkboxIsDeposit, handler: handleCheckboxIsDepositChange },
+                      { label: "Withdraw", state: checkboxIsWithdraw, handler: handleCheckboxIsWithdrawChange },
+                      { label: "Edit", state: checkboxIsEdit, handler: handleCheckboxIsEditChange },
+                      { label: "Delete", state: checkboxIsDelete, handler: handleCheckboxIsDeleteChange },
+                      { label: "Renew", state: checkboxIsRenew, handler: handleCheckboxIsRenewChange },
+                    ].map(({ label, state, handler }, idx) => (
+                      <div key={idx} className="form-check d-flex align-items-center">
+                        <input
+                          type="checkbox"
+                          className="form-check-input me-2 "
+                          id={`${label}${index}`}
+                          checked={state[index]}
+                          onChange={() => handler(index)}
+                          style={{ accentColor: '#3b6e91' }} 
+                        />
+                        <label className="form-check-label" htmlFor={`${label}${index}`}>
+                          {label}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </SingleCard>
+              ))}
+            </GridCard>
+          </SingleCard>
+          )}
+        </div>
+    
+        <div className="modal-footer">
+          {toggle ? (
             <button
               type="button"
-              class="close"
+              className="btn btn-secondary"
               data-dismiss="modal"
-              aria-label="Close"
               onClick={funtoggle}
             >
-              <span aria-hidden="true">&times;</span>
+              Close
             </button>
-          </div>
-
-          <div className="modal-body">
-            {toggle ? (
-              <>
-                {SubAdmins && SubAdmins.length > 0 ? (
-                  <table className="table table-striped table-sm">
-                    <thead>
-                      <tr>
-                        <th scope="col">SubAdmin</th>
-                        <th scope="col">Deposit</th>
-                        <th scope="col">Withdraw</th>
-                        <th scope="col">Edit</th>
-                        <th scope="col">Delete</th>
-                        <th scope="col">Renew</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {SubAdmins.map((subAdmin, index) => (
-                        <tr key={subAdmin._id}>
-                          <td>{subAdmin.subAdminId}</td>
-                          <td>{subAdmin.isDeposit ? "Yes" : "No"}</td>
-                          <td>{subAdmin.isWithdraw ? "Yes" : "No"}</td>
-                          <td>{subAdmin.isEdit ? "Yes" : "No"}</td>
-                          <td>{subAdmin.isDelete ? "Yes" : "No"}</td>
-                          <td>{subAdmin.isRenew ? "Yes" : "No"}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p>No permissions found</p>
-                )}
-              </>
-            ) : (
-              <>
-                {subAdmin.map((subAdmin, index) => (
-                  // console.log("=>>>>>>.",subAdmin.isDeposit)
-                  <div
-                    key={index}
-                    className="form-check"
-                    style={{ margin: "5px" }}
-                  >
-                    <div className="container">
-                      <div class="row row-cols-auto align-items-center">
-                        <div class="col-sm-8">
-                          <input
-                            type="checkbox"
-                            className="form-check-input "
-                            id={`checkbox${index}`}
-                            // style={{ marginRight: "5px" }}
-                            checked={checkboxStates[index]}
-                            onChange={() => handleCheckboxChange(index)}
-                            value={subAdmin.userName}
-                          />
-                          <label
-                            className="form-check-label text-info"
-                            htmlFor={`checkbox${index}`}
-                            style={{ fontWeight: "bold" }}
-                          >
-                            {subAdmin.userName}&nbsp;&nbsp;&nbsp;&nbsp;
-                          </label>
-                          <FontAwesomeIcon
-                            icon={faTimes}
-                            title="Revoke All Permision"
-                            className="bg-danger"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              handelRevokePermision(subAdmin.userName);
-                            }}
-                          />
-                        </div>
-
-                        <div class="col-sm-8">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id={`checkbox${index}`}
-                            // style={{ marginRight: "5px" }}
-                            checked={checkboxIsDeposit[index]}
-                            onChange={() =>
-                              handleCheckboxIsDepositChange(index)
-                            }
-                            // value={subAdmin.userName}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={`checkbox${index}`}
-                          >
-                            Deposit
-                          </label>
-                        </div>
-                        <div class="col-sm-8">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id={`checkbox${index}`}
-                            // style={{ marginRight: "5px" }}
-                            checked={checkboxIsWithdraw[index]}
-                            onChange={() =>
-                              handleCheckboxIsWithdrawChange(index)
-                            }
-                            // value={subAdmin.userName}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={`checkbox${index}`}
-                          >
-                            Withdraw
-                          </label>
-                        </div>
-                        <div class="col-sm-8">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id={`checkbox${index}`}
-                            // style={{ marginRight: "5px" }}
-                            checked={checkboxIsEdit[index]}
-                            onChange={() => handleCheckboxIsEditChange(index)}
-                            // value={subAdmin.userName}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={`checkbox${index}`}
-                          >
-                            Edit
-                          </label>
-                        </div>
-                        <div class="col-sm-8">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id={`checkbox${index}`}
-                            // style={{ marginRight: "5px" }}
-                            checked={checkboxIsDelete[index]}
-                            onChange={() => handleCheckboxIsDeleteChange(index)}
-                            // value={subAdmin.userName}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={`checkbox${index}`}
-                          >
-                            Delete
-                          </label>
-                        </div>
-                        <div class="col-sm-8">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id={`checkbox${index}`}
-                            checked={checkboxIsRenew[index]}
-                            onChange={() => handleCheckboxIsRenewChange(index)}
-                            // value={subAdmin.userName}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={`checkbox${index}`}
-                          >
-                            Renew
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    {index < subAdminlist.length - 1 && (
-                      <hr style={{ margin: "5px 0", borderColor: "black" }} />
-                    )}
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
-
-          <div class="modal-footer">
-            {toggle ? (
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-dismiss="modal"
-                onClick={funtoggle}
-              >
-                Close
-              </button>
-            ) : (
-              <button
-                type="button"
-                class="btn btn-success"
-                // data-toggle="modal"
-                // data-target="#exampleModal"
-                onClick={handelsave}
-              >
-                Save
-              </button>
-            )}
-
-            {toggle ? (
-              <button
-                type="button"
-                class="btn btn-primary"
-                // data-toggle="modal"
-                // data-target="#exampleModal"
-                onClick={handeltoggle}
-              >
-                Renew
-              </button>
-            ) : (
-              <button
-                type="button"
-                class="btn btn-primary"
-                // data-toggle="modal"
-                // data-target="#exampleModal"
-                onClick={handeltoggle}
-              >
-                Back
-              </button>
-            )}
-          </div>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-success"
+              onClick={handelsave}
+            >
+              Save
+            </button>
+          )}
+    
+          {toggle ? (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handeltoggle}
+            >
+              Renew
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handeltoggle}
+            >
+              Back
+            </button>
+          )}
         </div>
       </div>
-      {/* <SubAdminBank ID={ID} /> */}
+    </div>
     </div>
   );
 };
