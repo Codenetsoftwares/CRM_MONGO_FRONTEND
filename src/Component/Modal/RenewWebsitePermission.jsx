@@ -208,162 +208,232 @@ const RenewWebsitePermission = ({ SubAdmins, ID }) => {
   };
   return (
     <div
-    className="modal fade"
-    id="RenewWebsitePermission"
-    tabIndex="-1"
-    role="dialog"
-    aria-labelledby="RenewWebsitePermissionTitle"
-    aria-hidden="true"
+      className="modal fade"
+      id="RenewWebsitePermission"
+      tabIndex="-1"
+      role="dialog"
+      aria-labelledby="RenewWebsitePermissionTitle"
+      aria-hidden="true"
     >
-    <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
-      <div className="modal-content">
-        <div className="modal-header" style={{ backgroundColor: '#3b6e91', color: '#fff' }}>
-          <h5 className="modal-title" id="RenewWebsitePermissionTitle">
-            {toggle ? "Previous Permissions" : "Update Permissions"}
-          </h5>
-          <button
-            type="button"
-            className="btn-close"
-            data-dismiss="modal"
-            aria-label="Close"
-            onClick={funtoggle}
-          ></button>
-        </div>
-    
-        <div className="modal-body">
-          {toggle ? (
-            SubAdmins && SubAdmins.length > 0 ? (
-              <div className="table-responsive">
-                <table className="table table-striped table-bordered">
-                  <thead>
-                    <tr>
-                      <th scope="col">SubAdmin</th>
-                      <th scope="col">Deposit</th>
-                      <th scope="col">Withdraw</th>
-                      <th scope="col">Edit</th>
-                      <th scope="col">Delete</th>
-                      <th scope="col">Renew</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {SubAdmins.map((subAdmin) => (
-                      <tr key={subAdmin._id}>
-                        <td>{subAdmin.subAdminId}</td>
-                        <td>{subAdmin.isDeposit ? "Yes" : "No"}</td>
-                        <td>{subAdmin.isWithdraw ? "Yes" : "No"}</td>
-                        <td>{subAdmin.isEdit ? "Yes" : "No"}</td>
-                        <td>{subAdmin.isDelete ? "Yes" : "No"}</td>
-                        <td>{subAdmin.isRenew ? "Yes" : "No"}</td>
+      <div
+        className="modal-dialog modal-dialog-centered modal-lg"
+        role="document"
+      >
+        <div className="modal-content">
+          <div
+            className="modal-header"
+            style={{ backgroundColor: "#3b6e91", color: "#fff" }}
+          >
+            <h5 className="modal-title" id="RenewWebsitePermissionTitle">
+              {toggle ? "Previous Permissions" : "Update Permissions"}
+            </h5>
+            <button
+              type="button"
+              className="btn-close"
+              data-dismiss="modal"
+              aria-label="Close"
+              onClick={funtoggle}
+            ></button>
+          </div>
+
+          <div className="modal-body">
+            {toggle ? (
+              SubAdmins && SubAdmins.length > 0 ? (
+                <div className="table-responsive">
+                  <table className="table table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th scope="col">SubAdmin</th>
+                        <th scope="col">Deposit</th>
+                        <th scope="col">Withdraw</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                        <th scope="col">Renew</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {SubAdmins.map((subAdmin) => (
+                        <tr key={subAdmin._id}>
+                          <td>{subAdmin.subAdminId}</td>
+                          <td>{subAdmin.isDeposit ? "Yes" : "No"}</td>
+                          <td>{subAdmin.isWithdraw ? "Yes" : "No"}</td>
+                          <td>{subAdmin.isEdit ? "Yes" : "No"}</td>
+                          <td>{subAdmin.isDelete ? "Yes" : "No"}</td>
+                          <td>{subAdmin.isRenew ? "Yes" : "No"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p>No permissions found</p>
+              )
             ) : (
-              <p>No permissions found</p>
-            )
-          ) : (
-            <SingleCard style={{ overflowY: 'auto', maxHeight: '600px' }}> 
-            <GridCard columns={1} style={{ margin: "1rem" }}>
-              {subAdmin.map((admin, index) => (
-                <SingleCard key={index} className="p-4 mb-4 shadow-sm border border-light" style={{ marginBottom: '1rem' }}>
-                  <div className="d-flex align-items-start mb-3">
-                    <input
-                      type="checkbox"
-                      className="form-check-input me-2"
-                      id={`checkbox${index}`}
-                      checked={checkboxStates[index]}
-                      onChange={() => handleCheckboxChange(index)}
-                      value={admin.userName}
-                      style={{ accentColor: '#3b6e91', position: 'relative', zIndex: 1 }}
-                    />
-                    <label
-                      className="form-check-label  fw-bold"
-                      htmlFor={`checkbox${index}`}
-                      style={{ color: '#3b6e91', marginRight: '1rem' }} 
+              <SingleCard
+                style={{
+                  overflowY: "auto",
+                  maxHeight: "600px",
+                  border: "1px solid #e0e0e0",
+                  borderRadius: "8px",
+                }}
+              >
+                <GridCard
+                  columns={1}
+                  style={{ margin: "1rem", borderRadius: "8px" }}
+                >
+                  {subAdmin.map((admin, index) => (
+                    <SingleCard
+                      key={index}
+                      className="p-4 mb-4 shadow-sm  "
+                      style={{
+                        marginBottom: "1rem",
+                        borderRadius: "8px",
+                        border: "1px solid #3b6e91",
+                        position: "relative",
+                      }}
                     >
-                      {admin.userName}
-                    </label>
-                    <div className="ms-auto">
-                      <FontAwesomeIcon
-                        icon={faTimes}
-                        title="Revoke All Permission"
-                        className="text-danger"
-                        style={{ cursor: "pointer", fontSize: '1.25rem' }}
-                        onClick={() => handelRevokePermision(admin.userName)}
-                      />
-                    </div>
-                  </div>
-                  <div className="d-flex flex-column gap-2"> {/* Align labels in a straight column */}
-                    {[
-                      { label: "Deposit", state: checkboxIsDeposit, handler: handleCheckboxIsDepositChange },
-                      { label: "Withdraw", state: checkboxIsWithdraw, handler: handleCheckboxIsWithdrawChange },
-                      { label: "Edit", state: checkboxIsEdit, handler: handleCheckboxIsEditChange },
-                      { label: "Delete", state: checkboxIsDelete, handler: handleCheckboxIsDeleteChange },
-                      { label: "Renew", state: checkboxIsRenew, handler: handleCheckboxIsRenewChange },
-                    ].map(({ label, state, handler }, idx) => (
-                      <div key={idx} className="form-check d-flex align-items-center">
+                      <div className="d-flex align-items-start mb-3">
                         <input
                           type="checkbox"
-                          className="form-check-input me-2 "
-                          id={`${label}${index}`}
-                          checked={state[index]}
-                          onChange={() => handler(index)}
-                          style={{ accentColor: '#3b6e91' }} 
+                          className="form-check-input me-2"
+                          id={`checkbox${index}`}
+                          checked={checkboxStates[index]}
+                          onChange={() => handleCheckboxChange(index)}
+                          value={admin.userName}
+                          style={{
+                            border: "2px solid #3b6e91",
+                            position: "relative",
+                            zIndex: 1,
+                          }}
                         />
-                        <label className="form-check-label" htmlFor={`${label}${index}`}>
-                          {label}
+                        <label
+                          className="form-check-label  fw-bold"
+                          htmlFor={`checkbox${index}`}
+                          style={{ color: "#3b6e91", marginRight: "1rem" }}
+                        >
+                          {admin.userName}
                         </label>
+                        <div className="ms-auto">
+                          <FontAwesomeIcon
+                            icon={faTimes}
+                            title="Revoke All Permission"
+                            className="text-danger"
+                            style={{ cursor: "pointer", fontSize: "1.25rem" }}
+                            onClick={() =>
+                              handelRevokePermision(admin.userName)
+                            }
+                          />
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </SingleCard>
-              ))}
-            </GridCard>
-          </SingleCard>
-          )}
-        </div>
-    
-        <div className="modal-footer">
-          {toggle ? (
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-dismiss="modal"
-              onClick={funtoggle}
-            >
-              Close
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn btn-success"
-              onClick={handelsave}
-            >
-              Save
-            </button>
-          )}
-    
-          {toggle ? (
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handeltoggle}
-            >
-              Renew
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handeltoggle}
-            >
-              Back
-            </button>
-          )}
+                      <hr
+                        style={{
+                          border: "1px solid black",
+                          margin: "0 -1rem 1rem -1rem",
+                        }}
+                      />
+                      <div className="d-flex flex-column gap-2">
+                        {" "}
+                        {/* Align labels in a straight column */}
+                        {[
+                          {
+                            label: "Deposit",
+                            state: checkboxIsDeposit,
+                            handler: handleCheckboxIsDepositChange,
+                          },
+                          {
+                            label: "Withdraw",
+                            state: checkboxIsWithdraw,
+                            handler: handleCheckboxIsWithdrawChange,
+                          },
+                          {
+                            label: "Edit",
+                            state: checkboxIsEdit,
+                            handler: handleCheckboxIsEditChange,
+                          },
+                          {
+                            label: "Delete",
+                            state: checkboxIsDelete,
+                            handler: handleCheckboxIsDeleteChange,
+                          },
+                          {
+                            label: "Renew",
+                            state: checkboxIsRenew,
+                            handler: handleCheckboxIsRenewChange,
+                          },
+                        ].map(({ label, state, handler }, idx) => (
+                          <div
+                            key={idx}
+                            className="form-check d-flex align-items-center"
+                          >
+                            <input
+                              type="checkbox"
+                              className="form-check-input me-2 "
+                              id={`${label}${index}`}
+                              checked={state[index]}
+                              onChange={() => handler(index)}
+                              style={{ border: "1px solid #708090" }}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor={`${label}${index}`}
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
+                            >
+                              {label}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </SingleCard>
+                  ))}
+                </GridCard>
+              </SingleCard>
+            )}
+          </div>
+
+          <div className="modal-footer">
+            {toggle ? (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+                onClick={funtoggle}
+              >
+                Close
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={handelsave}
+              >
+                Save
+              </button>
+            )}
+
+            {toggle ? (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handeltoggle}
+              >
+                Renew
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handeltoggle}
+              >
+                Back
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };
