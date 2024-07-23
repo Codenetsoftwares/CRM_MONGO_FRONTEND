@@ -1,520 +1,448 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../Utils/Auth";
-import {
-  FaUser,
-  FaEnvelope,
-  FaLock,
-  FaMobile,
-  FaKey,
-  FaIdCard,
-  FaPercent,
-} from "react-icons/fa";
-import PasswordCU from "./PasswordCU";
+import { FaUser, FaEnvelope, FaLock, FaMobile, FaKey, FaIdCard, FaPercent } from "react-icons/fa";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AccountService from "../../Services/AccountService";
 import SingleCard from "../../common/singleCard";
+import { CreateUserSchema } from "../../Services/schema";
+import AccountService from "../../Services/AccountService";
+import { debounce } from 'lodash';
 
 const CreateActualUser = () => {
+  // Get authentication context
   const auth = useAuth();
-  const [formData, setFormData] = useState({
-    yourFirstName: "",
-    yourLastname: "",
-    yourUserName: "",
-    yourEnterPassword: "",
-    yourConfirmPassword: "",
-    yourIntroducerPercentage1: "",
-    yourIntroducerName1: "",
-    yourIntroducerPercentage2: "",
-    yourIntroducerName2: "",
-    yourIntroducerPercentage3: "",
-    yourIntroducerName3: "",
-    yourContact: "",
-    // yourUserId: "",
-  });
-  const [checkedItems, setCheckedItems] = useState([]);
-  const [IntroducerId, setIntroducerId] = useState([]);
-  const [searchTerm1, setSearchTerm1] = useState("");
-  const [searchTerm2, setSearchTerm2] = useState("");
-  const [searchTerm3, setSearchTerm3] = useState("");
-  const [filteredOptions1, setFilteredOptions1] = useState([]);
-  const [filteredOptions2, setFilteredOptions2] = useState([]);
-  const [filteredOptions3, setFilteredOptions3] = useState([]);
 
-  const [selectedOption, setSelectedOption] = useState(null);
-
-  console.log("This is FromData=>>>", formData);
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  // Initial form values
+  const initialValues = {
+    firstname: "",
+    userName: "",
+    lastname: "",
+    password: "",
+    contactNumber: "",
+    introducersUserName: "",
+    introducersUserName1: "",
+    introducersUserName2: "",
+    introducerPercentage: "",
+    introducerPercentage1: "",
+    introducerPercentage2: "",
   };
 
-  
+  // State hooks for storing introducer options and filtered results
+  const [introducerOption, setIntroducerOption] = useState([]);
+  const [introducerOption1, setIntroducerOption1] = useState([]);
+  const [introducerOption2, setIntroducerOption2] = useState([]);
+  const [filteredIntroducerOption, setFilteredIntroducerOption] = useState([]);
+  const [filteredIntroducerOption1, setFilteredIntroducerOption1] = useState([]);
+  const [filteredIntroducerOption2, setFilteredIntroducerOption2] = useState([]);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isDropdownVisible1, setIsDropdownVisible1] = useState(false);
+  const [isDropdownVisible2, setIsDropdownVisible2] = useState(false);
 
-  const handleCheckboxChange = (event) => {
-    const value = event.target.value;
-    if (event.target.checked) {
-      setCheckedItems((prevCheckedItems) => [...prevCheckedItems, value]);
-    } else {
-      setCheckedItems((prevCheckedItems) =>
-        prevCheckedItems.filter((item) => item !== value)
-      );
-    }
-  };
+  // Debounced search handler for introducer user name
+  const handleSearchIntroducerUserName = useCallback(
+    debounce((value) => {
+      if (value) {
+        // Filter introducer options based on user input
+        const filteredItems = introducerOption.filter(item =>
+          item.userName.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredIntroducerOption(filteredItems);
+        setIsDropdownVisible(true); // Show dropdown if there are results
+      } else {
+        setFilteredIntroducerOption([]);
+        setIsDropdownVisible(false); // Hide dropdown if input is empty
+      }
+    }, 1300), [introducerOption]
+  );
 
+  // Debounced search handler for introducer user name 1
+  const handleSearchIntroducerUserName1 = useCallback(
+    debounce((value) => {
+      if (value) {
+        // Filter introducer options based on user input
+        const filteredItems = introducerOption1.filter(item =>
+          item.userName.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredIntroducerOption1(filteredItems);
+        setIsDropdownVisible1(true); // Show dropdown if there are results
+      } else {
+        setFilteredIntroducerOption1([]);
+        setIsDropdownVisible1(false); // Hide dropdown if input is empty
+      }
+    }, 1300), [introducerOption1]
+  );
+
+  // Debounced search handler for introducer user name 2
+  const handleSearchIntroducerUserName2 = useCallback(
+    debounce((value) => {
+      if (value) {
+        // Filter introducer options based on user input
+        const filteredItems = introducerOption2.filter(item =>
+          item.userName.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredIntroducerOption2(filteredItems);
+        setIsDropdownVisible2(true); // Show dropdown if there are results
+      } else {
+        setFilteredIntroducerOption2([]);
+        setIsDropdownVisible2(false); // Hide dropdown if input is empty
+      }
+    }, 1300), [introducerOption2]
+  );
+
+  // Fetch introducer options on component mount
   useEffect(() => {
-    AccountService.IntroducerUserId(auth.user).then((res) =>
-      setIntroducerId(res.data)
-    );
+    AccountService.IntroducerUserId(auth.user).then((res) => {
+      setIntroducerOption(res.data);
+      setIntroducerOption1(res.data);
+      setIntroducerOption2(res.data);
+      setFilteredIntroducerOption(res.data);
+      setFilteredIntroducerOption1(res.data);
+      setFilteredIntroducerOption2(res.data);
+    });
   }, [auth]);
 
-  // console.log("Introducer Id", IntroducerId);
+  // Handle form submission
+  const handleSubmit = (values) => {
+    // Convert percentage fields to numbers
+    values.introducerPercentage = parseFloat(values.introducerPercentage);
+    values.introducerPercentage1 = parseFloat(values.introducerPercentage1);
+    values.introducerPercentage2 = parseFloat(values.introducerPercentage2);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // console.log(checkedItems);
-    const totalpercentage =
-      Number(formData.yourIntroducerPercentage1) +
-      Number(formData.yourIntroducerPercentage2) +
-      Number(formData.yourIntroducerPercentage3)
-    
-    if (
-     totalpercentage > 100 ||
-     totalpercentage < 0   
-    ) {
-      toast.error(
-        "The sum of introducer percentages must be between 0 and 100"
-      );
-      return;
-    }
-    const data = {
-      firstname: formData.yourFirstName,
-      lastname: formData.yourLastname,
-      userName: formData.yourUserName,
-      password: formData.yourEnterPassword,
-      contactNumber: formData.yourContact,
-      introducersUserName: searchTerm1,
-      introducerPercentage: formData.yourIntroducerPercentage1,
-      introducersUserName1: searchTerm2,
-      introducerPercentage1: formData.yourIntroducerPercentage2,
-      introducersUserName2: searchTerm3,
-      introducerPercentage2: formData.yourIntroducerPercentage3,
-      // userId: formData.yourUserId,
-    };
-    console.log("Im here in line 83=>>",data);
-    if (formData.yourEnterPassword === formData.yourConfirmPassword) {
-      AccountService.createActualuser(data, auth.user)
+    // Check if passwords match before submitting
+    if (values.password === values.confirmPassword) {
+      AccountService.createActualuser(values, auth.user)
         .then((res) => {
           console.log("res", res);
           alert(res.data.message);
-          window.location.reload();
+          window.location.reload(); // Reload page after successful submission
         })
         .catch((err) => {
           console.log("error", err.response.data.message);
-          toast.error(err.response.data.message);
+          toast.error(err.response.data.message); // Display error message
           return;
         });
     }
   };
 
-  const styles = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    overflow: "hidden",
-  };
-  // console.log("====>>>>", formData.yourIntroducerId);
-
-  const handleIntroducerChange1 = (e) => {
-    const value = e.target.value;
-    setSearchTerm1(value);
-
-    // Filter the options based on the input value
-
-    const filtered = value
-      ? IntroducerId.filter((data) =>
-          data.userName.toLowerCase().includes(value.toLowerCase())
-        )
-      : [];
-
-    setFilteredOptions1(filtered);
-  };
-    const handleIntroducerChange2 = (e) => {
-      const value = e.target.value;
-      setSearchTerm2(value);
-
-      // Filter the options based on the input value
-
-      const filtered = value
-        ? IntroducerId.filter((data) =>
-            data.userName.toLowerCase().includes(value.toLowerCase())
-          )
-        : [];
-
-      setFilteredOptions2(filtered);
-  };
-    const handleIntroducerChange3 = (e) => {
-      const value = e.target.value;
-      setSearchTerm3(value);
-
-      // Filter the options based on the input value
-
-      const filtered = value
-        ? IntroducerId.filter((data) =>
-            data.userName.toLowerCase().includes(value.toLowerCase())
-          )
-        : [];
-
-      setFilteredOptions3(filtered);
-    };
-  const handleOptionSelect1 = (option) => {
-    // setSelectedOption(option);
-    setSearchTerm1(option.userName);
-    setFilteredOptions1([]); // Clear the filtered options when an option is selected
-  };
-    const handleOptionSelect2 = (option) => {
-      // setSelectedOption(option);
-      setSearchTerm2(option.userName);
-      setFilteredOptions2([]); // Clear the filtered options when an option is selected
-  };
-    const handleOptionSelect3 = (option) => {
-      // setSelectedOption(option);
-      setSearchTerm3(option.userName);
-      setFilteredOptions3([]); // Clear the filtered options when an option is selected
-    };
-
   return (
- 
     <>
-        <div className="row justify-content-center " >
-          <div className="col-lg-9">
-            <div className="row justify-content-center">
-              <SingleCard className="mt-2"style={{
-          backgroundColor: "#e6f7ff",
-        }}>
-              <SingleCard className="card shadow-lg p-3 mb-5 bg-white rounded" style={{
-    boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.1)',
-    borderRadius: '10px',
-    padding: '20px',
-    backgroundColor: '#f8f9fa',
-  }}  >
+      <div className="row justify-content-center">
+        <div className="col-lg-9">
+          <div className="row justify-content-center">
+            <SingleCard className="mt-2" style={{ backgroundColor: "#e6f7ff" }}>
+              <SingleCard
+                className="card shadow-lg p-3 mb-5 bg-white rounded"
+                style={{
+                  boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.1)',
+                  borderRadius: '10px',
+                  padding: '20px',
+                  backgroundColor: '#f8f9fa',
+                }}
+              >
                 <div className="card-body">
-                  <form>
-                    <div className="row g-3">
-                      <div className=" col-md-4">
-                        <label htmlFor="Your-email" className="form-label">
-                          <FaEnvelope /> User Name
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="your-UserName"
-                          name="yourUserName"
-                          value={formData.yourUserName}
-                          onChange={handleChange}
-                          placeholder="Enter User Name"
-                          required
-                        />
-                      </div>
-                      <div className=" col-md-4">
-                        <label htmlFor="your-surname" className="form-label">
-                          <FaMobile /> Enter Contact No.
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="contact-number"
-                          name="yourContact"
-                          value={formData.yourContact}
-                          onChange={handleChange}
-                          placeholder=" Contact Number"
-                        />
-                      </div>
-                      <div className=" col-md-4">
-                        <label htmlFor="" className="form-label">
-                          <FaUser /> First Name
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="text"
-                          name="yourFirstName"
-                          value={formData.yourFirstName}
-                          onChange={handleChange}
-                          placeholder="Enter First Name"
-                          required
-                        />
-                      </div>
-                      <div className=" col-md-4">
-                        <label htmlFor="" className="form-label">
-                          <FaUser /> Last Name
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="text"
-                          name="yourLastname"
-                          value={formData.yourLastname}
-                          onChange={handleChange}
-                          placeholder="Enter Last Name"
-                          required
-                        />
-                      </div>
-
-                      {/* Introducer 1 start */}
-                      <div className=" col-md-4">
-                        <label htmlFor="" className="form-label">
-                          <FaIdCard /> Lvl 1 Intro Name
-                          <span className="text-danger">*</span>
-                        </label>
-                        <div>
-                          <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                              <span className="input-group-text">
-                                <i className="fa fa-user id"></i>
-                              </span>
-                            </div>
-                            <input
+                  <Formik
+                    initialValues={initialValues} // Initial form values
+                    validationSchema={CreateUserSchema} // Validation schema
+                    onSubmit={handleSubmit} // Submit handler
+                  >
+                    {({ errors, touched, setFieldValue, handleChange, handleSubmit }) => (
+                      <Form>
+                        <div className="row g-3">
+                          {/* User Name Field */}
+                          <div className="col-md-4">
+                            <label htmlFor="userName" className="form-label">
+                              <FaEnvelope /> User Name
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field
                               type="text"
-                              className="form-control"
-                              placeholder="Search by Introducer Name"
-                              value={searchTerm1}
-                              onChange={handleIntroducerChange1}
+                              className={`form-control`}
+                              id="userName"
+                              name="userName"
+                              placeholder="Enter User Name"
                             />
+                            <ErrorMessage name="userName" component="div" className="text-danger" />
                           </div>
-                          {filteredOptions1.length > 0 && (
-                            <div className="list-group">
-                              {filteredOptions1.map((option, index) => (
-                                <button
-                                  key={index}
-                                  className="list-group-item list-group-item-action"
-                                  onClick={() => handleOptionSelect1(option)}
-                                >
-                                  {option.userName}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
 
-                      <div className=" col-md-4">
-                        <label htmlFor="" className="form-label">
-                          <FaPercent />
-                          &nbsp;Lvl 1 Intro Percentage
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="text"
-                          name="yourIntroducerPercentage1"
-                          value={formData.yourIntroducerPercentage1}
-                          onChange={handleChange}
-                          placeholder="Enter Introducer Percentage"
-                          required
-                          max={100}
-                        />
-                      </div>
-                      {/* Introducer 1 end */}
-
-                      {/* Introducer 2 start */}
-                      <div className=" col-md-4 ">
-                        <label htmlFor="" className="form-label">
-                          <FaIdCard /> &nbsp;Lvl 2 Intro Name
-                          <span className="text-danger">*</span>
-                        </label>
-                        <div>
-                          <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                              <span className="input-group-text">
-                                <i className="fa fa-user id"></i>
-                              </span>
-                            </div>
-                            <input
+                          {/* Contact Number Field */}
+                          <div className="col-md-4">
+                            <label htmlFor="contactNumber" className="form-label">
+                              <FaMobile /> Enter Contact No.
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field
                               type="text"
-                              className="form-control"
-                              placeholder="Search by Introducer Name"
-                              value={searchTerm2}
-                              onChange={handleIntroducerChange2}
+                              className={`form-control`}
+                              id="contactNumber"
+                              name="contactNumber"
+                              placeholder="Contact Number"
                             />
+                            <ErrorMessage name="contactNumber" component="div" className="text-danger" />
                           </div>
-                          {filteredOptions2.length > 0 && (
-                            <div className="list-group">
-                              {filteredOptions2.map((option, index) => (
-                                <button
-                                  key={index}
-                                  className="list-group-item list-group-item-action"
-                                  onClick={() => handleOptionSelect2(option)}
-                                >
-                                  {option.userName}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
 
-                      <div className=" col-md-4">
-                        <label htmlFor="" className="form-label">
-                          <FaPercent />
-                          &nbsp;Lvl 2 Intro Percentage
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="text"
-                          name="yourIntroducerPercentage2"
-                          value={formData.yourIntroducerPercentage2}
-                          onChange={handleChange}
-                          placeholder="Enter Introducer Percentage"
-                          required
-                          max={100}
-                        />
-                      </div>
-                      {/* Introducer 2 end */}
-
-                      {/* Introducer 3 start */}
-                      <div className=" col-md-4">
-                        <label htmlFor="" className="form-label">
-                          <FaIdCard /> &nbsp;Lvl 3 Intro Name
-                          <span className="text-danger">*</span>
-                        </label>
-                        <div>
-                          <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                              <span className="input-group-text">
-                                <i className="fa fa-user id"></i>
-                              </span>
-                            </div>
-                            <input
+                          {/* First Name Field */}
+                          <div className="col-md-4">
+                            <label htmlFor="firstname" className="form-label">
+                              <FaUser /> First Name
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field
                               type="text"
-                              className="form-control"
-                              placeholder="Search by Introducer Name"
-                              value={searchTerm3}
-                              onChange={handleIntroducerChange3}
+                              className={`form-control`}
+                              id="firstname"
+                              name="firstname"
+                              placeholder="Enter First Name"
                             />
+                            <ErrorMessage name="firstname" component="div" className="text-danger" />
                           </div>
-                          {filteredOptions3.length > 0 && (
-                            <div className="list-group">
-                              {filteredOptions3.map((option, index) => (
-                                <button
-                                  key={index}
-                                  className="list-group-item list-group-item-action"
-                                  onClick={() => handleOptionSelect3(option)}
-                                >
-                                  {option.userName}
-                                </button>
-                              ))}
+
+                          {/* Last Name Field */}
+                          <div className="col-md-4">
+                            <label htmlFor="lastname" className="form-label">
+                              <FaUser /> Last Name
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              type="text"
+                              className={`form-control`}
+                              id="lastname"
+                              name="lastname"
+                              placeholder="Enter Last Name"
+                            />
+                            <ErrorMessage name="lastname" component="div" className="text-danger" />
+                          </div>
+
+                          {/* Password Field */}
+                          <div className="col-md-4">
+                            <label htmlFor="password" className="form-label">
+                              <FaLock /> Password
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              type="password"
+                              className={`form-control`}
+                              id="password"
+                              name="password"
+                              placeholder="Enter Password"
+                            />
+                            <ErrorMessage name="password" component="div" className="text-danger" />
+                          </div>
+
+                          {/* Confirm Password Field */}
+                          <div className="col-md-4">
+                            <label htmlFor="confirmPassword" className="form-label">
+                              <FaKey /> Confirm Password
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              type="text"
+                              className={`form-control `}
+                              id="confirmPassword"
+                              name="confirmPassword"
+                              placeholder="Confirm Password"
+                            />
+                            <ErrorMessage name="confirmPassword" component="div" className="text-danger" />
+                          </div>
+
+                          {/* Introducer User Name Field */}
+                          <div className="col-md-4">
+                            <div className="form-group">
+                              <label htmlFor="introducersUserName">
+                                <FaIdCard /> Introducer's User Name
+                                <span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                id="introducersUserName"
+                                name="introducersUserName"
+                                type="text"
+                                className="form-control"
+                                autoComplete="off"
+                                onChange={(e) => {
+                                  handleChange(e);
+                                  handleSearchIntroducerUserName(e.target.value); // Trigger search on change
+                                }}
+                                placeholder="Search Introducer Name"
+                              />
+                              <ErrorMessage name="introducersUserName" component="div" className="text-danger" />
+                              {/* Dropdown for search results */}
+                              {isDropdownVisible && (
+                                <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '120px', overflow: 'auto' }}>
+                                  {filteredIntroducerOption.length > 0 ? (
+                                    filteredIntroducerOption.map((option, index) => (
+                                      <li
+                                        key={index}
+                                        onClick={() => {
+                                          setFieldValue('introducersUserName', option.userName); // Set selected value
+                                          setIsDropdownVisible(false); // Hide dropdown
+                                        }}
+                                        style={{ padding: '8px', cursor: 'pointer' }}
+                                      >
+                                        {option.userName}
+                                      </li>
+                                    ))
+                                  ) : (
+                                    <li style={{ padding: '8px' }}>Not found</li>
+                                  )}
+                                </ul>
+                              )}
                             </div>
-                          )}
+                          </div>
+
+                          {/* Introducer User Name 1 Field */}
+                          <div className="col-md-4">
+                            <div className="form-group">
+                              <label htmlFor="introducersUserName1">
+                                <FaIdCard /> Introducer's User Name 1
+                              </label>
+                              <Field
+                                id="introducersUserName1"
+                                name="introducersUserName1"
+                                type="text"
+                                className="form-control"
+                                autoComplete="off"
+                                onChange={(e) => {
+                                  handleChange(e);
+                                  handleSearchIntroducerUserName1(e.target.value); // Trigger search on change
+                                }}
+                                placeholder="Search Introducer Name 1"
+                              />
+                              <ErrorMessage name="introducersUserName1" component="div" className="text-danger" />
+                              {/* Dropdown for search results */}
+                              {isDropdownVisible1 && (
+                                <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '120px', overflow: 'auto' }}>
+                                  {filteredIntroducerOption1.length > 0 ? (
+                                    filteredIntroducerOption1.map((option, index) => (
+                                      <li
+                                        key={index}
+                                        onClick={() => {
+                                          setFieldValue('introducersUserName1', option.userName); // Set selected value
+                                          setIsDropdownVisible1(false); // Hide dropdown
+                                        }}
+                                        style={{ padding: '8px', cursor: 'pointer' }}
+                                      >
+                                        {option.userName}
+                                      </li>
+                                    ))
+                                  ) : (
+                                    <li style={{ padding: '8px' }}>Not found</li>
+                                  )}
+                                </ul>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Introducer User Name 2 Field */}
+                          <div className="col-md-4">
+                            <div className="form-group">
+                              <label htmlFor="introducersUserName2">
+                                <FaIdCard /> Introducer's User Name 2
+                              </label>
+                              <Field
+                                id="introducersUserName2"
+                                name="introducersUserName2"
+                                type="text"
+                                className="form-control"
+                                autoComplete="off"
+                                onChange={(e) => {
+                                  handleChange(e);
+                                  handleSearchIntroducerUserName2(e.target.value); // Trigger search on change
+                                }}
+                                placeholder="Search Introducer Name 2"
+                              />
+                              <ErrorMessage name="introducersUserName2" component="div" className="text-danger" />
+                              {/* Dropdown for search results */}
+                              {isDropdownVisible2 && (
+                                <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '120px', overflow: 'auto' }}>
+                                  {filteredIntroducerOption2.length > 0 ? (
+                                    filteredIntroducerOption2.map((option, index) => (
+                                      <li
+                                        key={index}
+                                        onClick={() => {
+                                          setFieldValue('introducersUserName2', option.userName); // Set selected value
+                                          setIsDropdownVisible2(false); // Hide dropdown
+                                        }}
+                                        style={{ padding: '8px', cursor: 'pointer' }}
+                                      >
+                                        {option.userName}
+                                      </li>
+                                    ))
+                                  ) : (
+                                    <li style={{ padding: '8px' }}>Not found</li>
+                                  )}
+                                </ul>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Introducer Percentage Fields */}
+                          <div className="col-md-4">
+                            <label htmlFor="introducerPercentage" className="form-label">
+                               Introducer's Percentage
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              type="text"
+                              className={`form-control`}
+                              id="introducerPercentage"
+                              name="introducerPercentage"
+                              placeholder="Introducer's Percentage"
+                            />
+                            <ErrorMessage name="introducerPercentage" component="div" className="text-danger" />
+                          </div>
+
+                          <div className="col-md-4">
+                            <label htmlFor="introducerPercentage1" className="form-label">
+                               Introducer's Percentage 1
+                              {/* <span className="text-danger">*</span> */}
+                            </label>
+                            <Field
+                              type="text"
+                              className={`form-control`}
+                              id="introducerPercentage1"
+                              name="introducerPercentage1"
+                              placeholder="Introducer's Percentage 1"
+                            />
+                            <ErrorMessage name="introducerPercentage1" component="div" className="text-danger" />
+                          </div>
+
+                          <div className="col-md-4">
+                            <label htmlFor="introducerPercentage2" className="form-label">
+                              Introducer's Percentage 2
+                              {/* <span className="text-danger">*</span> */}
+                            </label>
+                            <Field
+                              type="text"
+                              className={`form-control`}
+                              id="introducerPercentage2"
+                              name="introducerPercentage2"
+                              placeholder="Introducer's Percentage 2"
+                            />
+                            <ErrorMessage name="introducerPercentage2" component="div" className="text-danger" />
+                          </div>
+
                         </div>
-                      </div>
-
-                      <div className=" col-md-4">
-                        <label htmlFor="" className="form-label">
-                          <FaPercent />
-                          &nbsp;Lvl 3 Intro Percentage
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="text"
-                          name="yourIntroducerPercentage3"
-                          value={formData.yourIntroducerPercentage3}
-                          onChange={handleChange}
-                          placeholder="Enter Introducer Percentage"
-                          required
-                          max={100}
-                        />
-                      </div>
-                      {/* Introducer 3 end */}
-
-                      <div className=" col-md-4">
-                        <label htmlFor="" className="form-label">
-                          <FaLock /> Password
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="password"
-                          className="form-control"
-                          id="text"
-                          name="yourEnterPassword"
-                          value={formData.yourEnterPassword}
-                          onChange={handleChange}
-                          placeholder="Enter Password"
-                          required
-                        />
-                      </div>
-
-                      <div className=" col-md-4">
-                        <label htmlFor="" className="form-label">
-                          <FaKey /> Confirm Password
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="text"
-                          name="yourConfirmPassword"
-                          value={formData.yourConfirmPassword}
-                          onChange={handleChange}
-                          placeholder="Confirm Password"
-                          required
-                        />
-                      </div>
-
-                      {/* <div className="col">
-                        <label
-                          htmlFor=""
-                          className="form-label d-flex justify-content-center"
-                        >
-                          <FaKey /> User Id
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          // id="yourUserId"
-                          name="yourUserId"
-                          value={formData.yourUserId}
-                          onChange={handleChange}
-                          placeholder="User Id"
-                          required
-                        />
-                      </div> */}
-                    </div>
-                    <div className="col-12">
-                      <div className="row justify-content-center mt-4">
-                        <div className="col-md-6  submit-button">
-                          <button
-                            onClick={handleSubmit}
-                            className="btn btn-dark w-100 fw-bold"
-                          >
-                            {" "}
-                            Create User
-                          </button>
+                        {/* Submit Button */}
+                        <div className="col-12">
+                          <div className="row justify-content-center mt-4">
+                            <div className="col-md-6 submit-button">
+                              <button type="submit" className="btn btn-dark w-100 fw-bold">
+                                Create User
+                              </button>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </form>
+                      </Form>
+                    )}
+                  </Formik>
                 </div>
               </SingleCard>
-              </SingleCard>
-            </div>
+            </SingleCard>
           </div>
         </div>
-</>
-      
-  
+      </div>
+    </>
   );
 };
 
