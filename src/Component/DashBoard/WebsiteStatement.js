@@ -1028,7 +1028,7 @@ const WebsiteStatement = () => {
             <SingleCard className="container-fluid w-90">
               <div
                 className="table-responsive"
-                style={{ maxHeight: "300px", overflowY: "auto" }}
+                style={{ maxHeight: "400px", overflowY: "auto" }}
               >
                 {/* Normal View */}
                 <table className="table table-striped table-bordered table-hover">
