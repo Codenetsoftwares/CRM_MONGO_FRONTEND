@@ -5,6 +5,7 @@ import { FaUser, FaEnvelope } from "react-icons/fa";
 import PasswordCU from "./PasswordCU";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SingleCard from "../../common/singleCard";
 
 const CreateUser = () => {
   const auth = useAuth();
@@ -59,125 +60,108 @@ const CreateUser = () => {
     console.log(data);
   };
 
-  const styles = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    overflow: "hidden",
-  };
-
   return (
-    <div
-      style={{
-        ...styles,
-        background:
-          "linear-gradient(90deg, rgba(23,183,184,1) 0%, rgba(23,184,155,0.9668242296918768) 100%)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-      className="d-flex align-items-center justify-content-center"
-    >
-      <div className="container pt-5">
+    <div className="row justify-content-center ">
+      <div className="col-lg-9">
         <div className="row justify-content-center">
-          <div className="col-lg-9">
-            <h1
-              className="text-center mb-4"
+          <SingleCard
+            className="mt-2"
+            style={{
+              backgroundColor: "#e6f7ff",
+            }}
+          >
+            <SingleCard
+              className="card shadow-lg p-3 mb-5 bg-white rounded"
               style={{
-                fontFamily: "Montserrat, sans-serif",
-                fontWeight: "bold",
-                fontStyle: "italic",
-                color: "black",
+                boxShadow:
+                  "0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.1)",
+                borderRadius: "10px",
+                padding: "20px",
+                backgroundColor: "#f8f9fa",
               }}
             >
-              Welcome Administrator!
-            </h1>
-            <div className="row justify-content-center">
-              <div className="card">
-                <div className="card-body">
-                  <form>
-                    <div className="row g-3">
-                      <div className="col-md-6">
-                        <label htmlFor="your-name" className="form-label">
-                          <FaUser /> First name
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="your-name"
-                          name="yourName"
-                          value={formData.yourName}
-                          onChange={handleChange}
-                          placeholder="First name"
-                          required
-                        />
-                      </div>
-                      <div className="col-md-6">
-                        <label htmlFor="your-surname" className="form-label">
-                          <FaUser /> Last name
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="your-surname"
-                          name="yourSurname"
-                          value={formData.yourSurname}
-                          onChange={handleChange}
-                          placeholder="Last name"
-                          required
-                        />
-                      </div>
-                      <div className="col-md-6">
-                        <label htmlFor="" className="form-label">
-                          <FaEnvelope /> User Name
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="email"
-                          className="form-control"
-                          id="your-email"
-                          name="yourEmail"
-                          value={formData.yourEmail}
-                          onChange={handleChange}
-                          placeholder="Enter UserName"
-                          required
-                        />
-                      </div>
+              <div className="card-body">
+                <form>
+                  <div className="row g-3">
+                    <div className="col-md-6">
+                      <label htmlFor="your-name" className="form-label">
+                        <FaUser /> First name
+                        <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="your-name"
+                        name="yourName"
+                        value={formData.yourName}
+                        onChange={handleChange}
+                        placeholder="First name"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label htmlFor="your-surname" className="form-label">
+                        <FaUser /> Last name
+                        <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="your-surname"
+                        name="yourSurname"
+                        value={formData.yourSurname}
+                        onChange={handleChange}
+                        placeholder="Last name"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label htmlFor="" className="form-label">
+                        <FaEnvelope /> User Name
+                        <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        className="form-control"
+                        id="your-email"
+                        name="yourEmail"
+                        value={formData.yourEmail}
+                        onChange={handleChange}
+                        placeholder="Enter UserName"
+                        required
+                      />
+                    </div>
 
-                      <div className="col-md-6">
-                        <PasswordCU
-                          setFormData={setFormData}
-                          value={formData.yourPassword}
-                          name={"yourPassword"}
-                        />
-                      </div>
+                    <div className="col-md-6">
+                      <PasswordCU
+                        setFormData={setFormData}
+                        value={formData.yourPassword}
+                        name={"yourPassword"}
+                      />
+                    </div>
 
-                      <form htmlFor="your-password" className="form-label">
-                        <h5>
-                          <p
-                            className=" d-flex justify-content-center"
-                            disabled
-                          >
-                            <div
-                              className="badge badge-secondary"
-                              style={{
-                                WebkitUserSelect: "none" /* Safari */,
-                                msUserSelect: "none" /* IE 10 and IE 11 */,
-                                userSelect: "none" /* Standard syntax */,
-                              }}
-                            >
-                              Give Access Of :
-                            </div>
-                          </p>
+                    <SingleCard
+                      style={{
+                        backgroundColor: "#e6f7ff",
+                      }}
+                    >
+                      <div className="text-center">
+                        <h5
+                          style={{
+                            fontWeight: "bold",
+                          }}
+                        >
+                          <div className="badge-pill badge-secondary ">
+                            GRANTIFY
+                          </div>
                         </h5>
-                      </form>
+                      </div>
 
-                      <div className="row  w-75 m-auto">
-                        <div className="col-md-6">
+                      <div className="row  m-auto justify-content-between ">
+                        <div
+                          className="col-md-4 col-sm-12 mb-0 text-nowrap d-flex g-1"
+                          style={{ flexDirection: "column" }}
+                        >
                           <div className="form-check form-switch">
                             <input
                               className="form-check-input"
@@ -188,7 +172,12 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Dashboard View
                             </label>
@@ -203,7 +192,12 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Report-All Transaction
                             </label>
@@ -218,7 +212,12 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Report-My Transaction
                             </label>
@@ -235,7 +234,12 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Create Transaction
                             </label>
@@ -250,7 +254,12 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Bank View
                             </label>
@@ -265,11 +274,22 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Create User
                             </label>
                           </div>
+                        </div>
+
+                        <div
+                          className="col-md-4 col-sm-12 mb-0 text-nowrap d-flex g-1 "
+                          style={{ flexDirection: "column" }}
+                        >
                           <div className="form-check form-switch">
                             <input
                               className="form-check-input"
@@ -280,7 +300,12 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Website View
                             </label>
@@ -297,12 +322,16 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Introducer Profile View
                             </label>
                           </div>
-
                           <div className="form-check form-switch">
                             <input
                               className="form-check-input"
@@ -313,7 +342,12 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Request
                             </label>
@@ -323,20 +357,21 @@ const CreateUser = () => {
                               className="form-check-input"
                               type="checkbox"
                               value="RecycleBin-View"
-                              checked={checkedItems.includes(
-                                "RecycleBin-View"
-                              )}
+                              checked={checkedItems.includes("RecycleBin-View")}
                               onChange={handleCheckboxChange}
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               RecycleBin View
                             </label>
                           </div>
-                        </div>
-                        <div className="col-md-6 align-items-end">
                           <div className="form-check form-switch">
                             <input
                               className="form-check-input"
@@ -349,7 +384,12 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Transaction Edit Request
                             </label>
@@ -366,14 +406,25 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Transaction Delete Request
                             </label>
                           </div>
+                        </div>
+
+                        <div
+                          className="col-md-4 col-sm-12 mb-0 text-nowrap d-flex g-1 "
+                          style={{ flexDirection: "column" }}
+                        >
                           <div className="form-check form-switch">
                             <input
-                              className="form-check-input"
+                              className="form-check-input "
                               type="checkbox"
                               value="User-Profile-View"
                               checked={checkedItems.includes(
@@ -383,7 +434,12 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               User Profile View
                             </label>
@@ -398,7 +454,12 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Profile View
                             </label>
@@ -415,7 +476,12 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Create Withdraw Transaction
                             </label>
@@ -432,7 +498,12 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Create Deposit Transaction
                             </label>
@@ -449,33 +520,38 @@ const CreateUser = () => {
                             />
                             <label
                               className="form-check-label"
-                              for="flexSwitchCheckDefault"
+                              htmlFor="flexSwitchCheckDefault"
+                              style={{
+                                fontFamily: "'Abril Fatface', serif ",
+                                fontWeight: "bold",
+                                color: "#708090",
+                              }}
                             >
                               Create Introducer
                             </label>
                           </div>
-
                         </div>
                       </div>
-                      <div className="col-12">
-                        <div className="row justify-content-center mt-4">
-                          <div className="col-md-6  submit-button">
-                            <button
-                              onClick={handleSubmit}
-                              className="btn btn-dark w-100 fw-bold"
-                            >
-                              {" "}
-                              Create Sub-Admin
-                            </button>
-                          </div>
+                    </SingleCard>
+
+                    <div className="">
+                      <div className="row justify-content-center mt-2">
+                        <div className="col-md-6  submit-button">
+                          <button
+                            onClick={handleSubmit}
+                            className="btn btn-dark w-100 fw-bold"
+                          >
+                            {" "}
+                            Create Sub-Admin
+                          </button>
                         </div>
                       </div>
                     </div>
-                  </form>
-                </div>
+                  </div>
+                </form>
               </div>
-            </div>
-          </div>
+            </SingleCard>
+          </SingleCard>
         </div>
       </div>
     </div>
