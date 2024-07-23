@@ -114,10 +114,10 @@ class AccountService {
       },
     });
   }
-  website(user, page) {
+  website(user, page, search) {
     return axios({
       method: "get",
-      url: `${API_HOST}/api/get-website-name?page=${page}&itemsPerPage=4`,
+      url: `${API_HOST}/api/get-website-name?page=${page}&pageSize=10&search=${search}`,
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
