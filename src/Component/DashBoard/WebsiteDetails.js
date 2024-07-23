@@ -47,6 +47,7 @@ const WebsiteDetails = () => {
   const [activeCard, setActiveCard] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [search, setSearch] = useState(""); // usestate for search state
+  const [hasMore, setHasMore] = useState(true);
 
   const handleCardClick = (id) => {
     setActiveCard(id);
@@ -86,9 +87,6 @@ const WebsiteDetails = () => {
     // window.location.reload();
   };
 
-  const handlePage = (page) => {
-    setPage(page);
-  };
 
   const handelName = (id) => {
     setName(id);
@@ -132,24 +130,54 @@ const WebsiteDetails = () => {
     setWebName(websiteName);
     console.log("Line 116=>>", WebName);
   };
-
   // get api  fetch
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await AccountService.website(auth.user, page);
-        setGetWebsite(res.data);
-        setTotalData(res.data.allIntroDataLength);
-        setTotalPage(res.data.pageNumber);
-        setIsLoading(true);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(true);
-      }
-    };
     fetchData();
-  }, [auth, page]);
-  console.log("Website", getWebsite);
+  }, [page,]);
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await AccountService.website(auth.user, page, search);
+      setGetWebsite(prev => [...prev, ...res.data.data]);
+      setHasMore(page < res.data.pagination.totalPages);
+      setTotalPage(res.data.pagination.totalPages);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchMoreData = () => {
+    if (hasMore) {
+      setPage(prevPage => prevPage + 1); // Increment page number
+    }
+  };
+
+  useEffect(() => {
+    if (page > 1) {
+      fetchData(); // Fetch more data when page changes
+    }
+  }, [page]);
+
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await AccountService.website(auth.user, page,search);
+  //       setGetWebsite(res.data.data);
+  //       setTotalData(res.data.pagination.totalItems);
+  //       setTotalPage(res.data.pagination.totalPages);
+  //       setIsLoading(true);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //       setIsLoading(true);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [auth, page]);
+  // console.log("Website", getWebsite);
 
   const handelstatement = (e, websitename) => {
     console.log("Website=>>>133", websitename);
@@ -194,293 +222,281 @@ const WebsiteDetails = () => {
   };
 
   // for search input field handled from frontend   to be done by serverside
-  const filteredWebsites = getWebsite.filter((website) =>
-    website.websiteName.toLowerCase().includes(search.toLowerCase())
-  );
+  // const filteredWebsites = getWebsite.filter((website) =>
+  //   website.websiteName.toLowerCase().includes(search.toLowerCase())
+  // );
 
   // Function to fetch more data on scrolling
-  const fetchMoreData = () => {
-    setPage(page + 1);
-  };
-  //PAGINATION WORK
-  let reminder = getWebsite.length % 4;
-  let lastPage = Math.ceil(getWebsite.length / 4);
-  let lastPageReminder = getWebsite.length % 4 === !0;
-  console.log(lastPage);
-  console.log(page);
+
+
+
 
   return (
-    <div>
-      {isLoading ? (
-        <div className="bg-white">
-          <div
-            className="card text-center mt-2 mr-5 ml-5"
-            style={{
-              backgroundColor: "#e6f7ff",
-              position: "relative",
-            }}
-          >
-            <SingleCard
-              style={{
-                backgroundColor: "#e6f7ff",
-                position: "relative",
-              }}
-            >
-              <div className="card-header-pill  text-bold d-flex ">
-                <div className="flex-grow-1 ">
-                  <input
-                    type="text"
-                    className="form-control rounded-pill shadow"
-                    placeholder="Search Website"
-                    value={search}
-                    onChange={handleSearch}
-                  />
-                </div>
-                <div className="flex-grow-1 d-flex justify-content-end position-relative">
-                  <input
-                    type="text"
-                    className="form-control rounded-pill shadow ps-5 ml-5"
-                    placeholder="Add Website"
-                    value={website}
-                    onChange={handlewebsite}
-                  />
-                  <div
-                    className="input-icon position-absolute top-50 translate-middle-y d-flex align-items-center justify-content-center rounded-circle"
-                    onClick={handleSubmit}
-                    style={{
-                      width: "2.5rem",
-                      height: "2.5rem",
-                      backgroundColor: "#4682b4",
-                      color: "#fff",
-                      cursor: "pointer",
-                      borderRadius: "50%",
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faPlus} />
-                  </div>
-                </div>
+    <div className="bg-white">
+      <div
+        className="card text-center mt-2 mr-5 ml-5"
+        style={{
+          backgroundColor: "#e6f7ff",
+          position: "relative",
+        }}
+      >
+        <SingleCard
+          style={{
+            backgroundColor: "#e6f7ff",
+            position: "relative",
+          }}
+        >
+          <div className="card-header-pill  text-bold d-flex ">
+            <div className="flex-grow-1 ">
+              <input
+                type="text"
+                className="form-control rounded-pill shadow"
+                placeholder="Search Website"
+                value={search}
+                onChange={handleSearch}
+              />
+            </div>
+            <div className="flex-grow-1 d-flex justify-content-end position-relative">
+              <input
+                type="text"
+                className="form-control rounded-pill shadow ps-5 ml-5"
+                placeholder="Add Website"
+                value={website}
+                onChange={handlewebsite}
+              />
+              <div
+                className="input-icon position-absolute top-50 translate-middle-y d-flex align-items-center justify-content-center rounded-circle"
+                onClick={handleSubmit}
+                style={{
+                  width: "2.5rem",
+                  height: "2.5rem",
+                  backgroundColor: "#4682b4",
+                  color: "#fff",
+                  cursor: "pointer",
+                  borderRadius: "50%",
+                }}
+              >
+                <FontAwesomeIcon icon={faPlus} />
               </div>
-            </SingleCard>
-            <div className="card-body infinite-scroll-container mt-2 mb-3">
-              <SingleCard className="mb-2 p-4">
-                {/* <InfiniteScroll
-                  dataLength={filteredWebsites.length}
-                  next={fetchMoreData}
-                  hasMore={page < totalPage}
-                  loader={<h4>Loading...</h4>}
-                  endMessage={
-                    <p style={{ textAlign: "center" }}>
-                      <b>No more data to load</b>
-                    </p>
-                  }
-                > */}
-                  <GridCard columns={2}>
-                    {filteredWebsites.map((data) => (
-                      <div
-                        key={data._id}
-                        className="col d-flex justify-content-center align-items-center "
-                        onMouseEnter={() => setHoveredCard(data._id)}
-                        onMouseLeave={() => setHoveredCard(null)}
-                      >
-                        <div
-                          className={`card d-flex justify-content-between ${
-                            hoveredCard === data._id
-                              ? "card-hover-highlight"
-                              : ""
-                          }`}
-                          style={{
-                            borderRadius: "20px",
-                            height: "200px",
-                            width: "100%",
-                            position: "relative",
-                          }}
-                          onClick={() => handleCardClick(data._id)}
+            </div>
+          </div>
+        </SingleCard>
+        <div className="card-body mt-2 mb-3 padding">
+          <SingleCard className="mb-2 p-4">
+            <InfiniteScroll
+              dataLength={getWebsite.length}
+              next={fetchMoreData}
+              hasMore={hasMore}
+              loader={<h4>Loading...</h4>}
+              height={650}
+              endMessage={
+                <p style={{ textAlign: "center" }}>
+                  <b>No more data to load</b>
+                </p>
+              }
+            >
+              <br />
+              <GridCard columns={2}>
+                {getWebsite.map((data) => (
+                  <div
+                    key={data._id}
+                    className="col d-flex justify-content-center align-items-center"
+                    onMouseEnter={() => setHoveredCard(data._id)}
+                    onMouseLeave={() => setHoveredCard(null)}
+                  >
+                    <div
+                      className={`card d-flex justify-content-between ${hoveredCard === data._id
+                        ? "card-hover-highlight"
+                        : ""
+                        }`}
+                      style={{
+                        borderRadius: "20px",
+                        height: "200px",
+                        width: "100%",
+                        position: "relative",
+                      }}
+                      onClick={() => handleCardClick(data._id)}
+                    >
+                      <div className="card-body">
+                        <p
+                          className="font-weight-bold fs-4 text-truncate"
+                          style={{ color: "#708090" }}
                         >
-                          <div className="card-body">
-                            <p
-                              className="font-weight-bold fs-4 text-truncate"
-                              style={{ color: "#708090" }}
-                            >
-                              {data.websiteName}
-                              <br />
-                              <span
-                                className="fs-5 text-truncate"
-                                style={{ color: "#A9A9A9" }}
+                          {data.websiteName}
+                          <br />
+                          <span
+                            className="fs-5 text-truncate"
+                            style={{ color: "#A9A9A9" }}
+                          >
+                            Balance: {data.balance}
+                          </span>
+                        </p>
+                        <div className="container">
+                          <div className="row g-1 justify-content-center mt-5">
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-custom btn-sm btn-zoom-out"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalWithdrawBlwebsite"
+                                onClick={() => {
+                                  handelId(data._id);
+                                }}
+                                disabled={!data.isWithdraw}
+                                title="Withdraw"
                               >
-                                Balance: {data.balance}
-                              </span>
-                            </p>
-                            <div className="container">
-                              <div className="row g-1 justify-content-center mt-5">
-                                <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                                  <button
-                                    type="button"
-                                    className="btn btn-custom btn-sm btn-zoom-out"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modalWithdrawBlwebsite"
-                                    onClick={() => {
-                                      handelId(data._id);
-                                    }}
-                                    disabled={!data.isWithdraw}
-                                    title="Withdraw"
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faMinus}
-                                      className="add-icon"
-                                    />
-                                  </button>
-                                </div>
-                                <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                                  <button
-                                    type="button"
-                                    className="btn btn-custom btn-sm btn-zoom-out"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modalAddBlWebsite"
-                                    onClick={() => {
-                                      handelId(data._id);
-                                    }}
-                                    disabled={!data.isDeposit}
-                                    title="Deposit"
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faPlus}
-                                      className="add-icon"
-                                    />
-                                  </button>
-                                </div>
-                                <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                                  <button
-                                    type="button"
-                                    className="btn btn-custom btn-sm btn-zoom-out"
-                                    onClick={(e) => {
-                                      handelstatement(e, data._id);
-                                    }}
-                                    title="Statement"
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faFileAlt}
-                                      className="add-icon"
-                                    />
-                                  </button>
-                                </div>
-
-                                <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                                  <button
-                                    type="button"
-                                    className="btn btn-custom btn-sm btn-zoom-out"
-                                    onClick={() => {
-                                      handelWebsiteEdit(
-                                        data._id,
-                                        data.websiteName
-                                      );
-                                    }}
-                                    title="Edit Website"
-                                    data-toggle="modal"
-                                    data-target="#editwebsite"
-                                    disabled={!data.isEdit}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faEdit}
-                                      data-toggle="modal"
-                                      data-target="#exampleModalCenter"
-                                    />
-                                  </button>
-                                </div>
-                                <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                                  <button
-                                    type="button"
-                                    className="btn btn-custom btn-sm btn-zoom-out"
-                                    onClick={(e) => {
-                                      handeldeletewebsite(data._id);
-                                    }}
-                                    title="Delete"
-                                    disabled={!data.isDelete}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faTrashAlt}
-                                      className="delete-icon"
-                                    />
-                                  </button>
-                                </div>
-
-                                <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                                  <button
-                                    type="button"
-                                    className="btn btn-custom btn-sm btn-zoom-out"
-                                    data-toggle="modal"
-                                    data-target="#RenewWebsitePermission"
-                                    onClick={() => {
-                                      handelSubAdmin(data.subAdmins, data._id);
-                                    }}
-                                    title="Renew Permission"
-                                    disabled={!data.isRenew}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faEye}
-                                      className="permission"
-                                    />
-                                  </button>
-                                </div>
-                              </div>
+                                <FontAwesomeIcon
+                                  icon={faMinus}
+                                  className="add-icon"
+                                />
+                              </button>
                             </div>
-                          </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-custom btn-sm btn-zoom-out"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalAddBlWebsite"
+                                onClick={() => {
+                                  handelId(data._id);
+                                }}
+                                disabled={!data.isDeposit}
+                                title="Deposit"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPlus}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-custom btn-sm btn-zoom-out"
+                                onClick={(e) => {
+                                  handelstatement(e, data._id);
+                                }}
+                                title="Statement"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faFileAlt}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
 
-                          <div className="card-top-right">
-                            {data.isActive === false ? (
-                              <span
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
                                 type="button"
-                                className="badge-pill badge-success   btn-zoom-out-custom   "
-                                title="Active"
+                                className="btn btn-custom btn-sm btn-zoom-out"
                                 onClick={() => {
-                                  handelactive(data._id);
+                                  handelWebsiteEdit(
+                                    data._id,
+                                    data.websiteName
+                                  );
                                 }}
+                                title="Edit Website"
+                                data-toggle="modal"
+                                data-target="#editwebsite"
+                                disabled={!data.isEdit}
                               >
-                                Active
                                 <FontAwesomeIcon
-                                  icon={faCheckCircle}
-                                  className="active-icon ms-1 "
+                                  icon={faEdit}
+                                  data-toggle="modal"
+                                  data-target="#exampleModalCenter"
                                 />
-                                <span className="dot dot-green position-absolute top-0 start-100 translate-middle"></span>
-                              </span>
-                            ) : (
-                              // <span class="badge badge-pill badge-success">Success</span>
-                              <span
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
                                 type="button"
-                                className="badge-pill badge-secondary  btn-zoom-out-custom "
-                                title="Inactive"
-                                onClick={() => {
-                                  handelinactive(data._id);
+                                className="btn btn-custom btn-sm btn-zoom-out"
+                                onClick={(e) => {
+                                  handeldeletewebsite(data._id);
                                 }}
+                                title="Delete"
+                                disabled={!data.isDelete}
                               >
-                                Inactive
                                 <FontAwesomeIcon
-                                  icon={faTimesCircle}
-                                  className="active-icon ms-1"
+                                  icon={faTrashAlt}
+                                  className="delete-icon"
                                 />
-                                <span className="dot dot-red dot-merged position-absolute top-0 start-100 translate-middle"></span>
-                              </span>
-                            )}
+                              </button>
+                            </div>
+
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-custom btn-sm btn-zoom-out"
+                                data-toggle="modal"
+                                data-target="#RenewWebsitePermission"
+                                onClick={() => {
+                                  handelSubAdmin(data.subAdmins, data._id);
+                                }}
+                                title="Renew Permission"
+                                disabled={!data.isRenew}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faEye}
+                                  className="permission"
+                                />
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    ))}
-                  </GridCard>
-                {/* </InfiniteScroll> */}
-              </SingleCard>
-            </div>
 
-            <ModalWthWbl ID={Id} />
-            <ModalAdWbl ID={Id} />
-            <ModalWbdl name={name} />
-            <EditWebsite ID={WebId} webName={WebName} />
-            <RenewWebsitePermission SubAdmins={SubAdmins} ID={SId} />
-          </div>
+                      <div className="card-top-right">
+                        {data.isActive === false ? (
+                          <span
+                            type="button"
+                            className="badge-pill badge-success   btn-zoom-out-custom   "
+                            title="Active"
+                            onClick={() => {
+                              handelactive(data._id);
+                            }}
+                          >
+                            Active
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              className="active-icon ms-1 "
+                            />
+                            <span className="dot dot-green position-absolute top-0 start-100 translate-middle"></span>
+                          </span>
+                        ) : (
+                          // <span class="badge badge-pill badge-success">Success</span>
+                          <span
+                            type="button"
+                            className="badge-pill badge-secondary  btn-zoom-out-custom "
+                            title="Inactive"
+                            onClick={() => {
+                              handelinactive(data._id);
+                            }}
+                          >
+                            Inactive
+                            <FontAwesomeIcon
+                              icon={faTimesCircle}
+                              className="active-icon ms-1"
+                            />
+                            <span className="dot dot-red dot-merged position-absolute top-0 start-100 translate-middle"></span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </GridCard>
+
+            </InfiniteScroll>
+          </SingleCard>
         </div>
-      ) : (
-        <div className="container">
-          <ShimmerEffect />
-        </div>
-      )}
+
+        <ModalWthWbl ID={Id} />
+        <ModalAdWbl ID={Id} />
+        <ModalWbdl name={name} />
+        <EditWebsite ID={WebId} webName={WebName} />
+        <RenewWebsitePermission SubAdmins={SubAdmins} ID={SId} />
+      </div>
     </div>
   );
 };
