@@ -30,37 +30,63 @@ const NavSide = ({ onSelect }) => {
   }, [auth]);
 
   console.log(userrole);
+
+  const resetToggles = () => {
+    setIsToggle(true);
+    setIsToggleCreate(true);
+    setIsToggleDash(true);
+    setIsToggleTransaction(true);
+    setIsToggleRequest(true);
+    setIsToggleBank(true);
+    setIsToggleWebsite(true);
+    setIsToggleRecycleBin(true);
+  };
+
   const handleToggle = () => {
+    resetToggles();
     setIsToggle(!isToggle);
   };
+
   const handleToggleDash = () => {
+    resetToggles();
     setIsToggleDash(!isToggleDash);
   };
+
   const handleToggleCreate = () => {
+    resetToggles();
     setIsToggleCreate(!isToggleCreate);
   };
+
   const handleToggleTransaction = () => {
+    resetToggles();
     setIsToggleTransaction(!IsToggleTransaction);
   };
+
   const handleToggleRequest = () => {
+    resetToggles();
     setIsToggleRequest(!IsToggleRequest);
   };
+
   const handleToggleBank = () => {
+    resetToggles();
     setIsToggleBank(!IsToggleBank);
   };
+
   const handleToggleWebsite = () => {
+    resetToggles();
     setIsToggleWebsite(!IsToggleWebsite);
   };
 
   const handleToggleRecycleBin = () => {
+    resetToggles();
     setIsToggleRecycleBin(!isToggleRecycleBin);
   };
 
-
   const handleMenuClick = (menuItem) => {
-    console.log('=====>>>> menuItem',menuItem)
+    console.log("=====>>>> menuItem", menuItem);
     onSelect(menuItem); // Call onSelect callback with selected menu item
   };
+
   return (
     <div>
       {/* {isTogglenav ? ( */}

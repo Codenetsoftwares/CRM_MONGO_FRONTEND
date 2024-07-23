@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Button, Col, Row, Container } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
-import { CreditWithDrawTransactionSchema } from "../../Services/schema";
+import { CreateWithDrawTransactionSchema } from "../../Services/schema";
 import AccountService from "../../Services/AccountService";
 import { useAuth } from "../../Utils/Auth";
 import DashService from "../../Services/DashService";
@@ -32,6 +32,8 @@ const Withdraw = () => {
   const [isBankDropdownVisible, setIsBankDropdownVisible] = useState(false);
   const [isWebsiteDropdownVisible, setIsWebsiteDropdownVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+
   const auth = useAuth();
 
   useEffect(() => {
@@ -94,6 +96,24 @@ const Withdraw = () => {
     }, 1300), [websiteOptions]
   );
 
+  const handleKeyDown = (e, setFieldValue) => {
+    if (e.key === 'ArrowDown') {
+      setActiveIndex((prevIndex) => (prevIndex + 1) % filteredUserNameOptions.length);
+    } else if (e.key === 'ArrowUp') {
+      setActiveIndex((prevIndex) => (prevIndex - 1 + filteredUserNameOptions.length) % filteredUserNameOptions.length);
+    } else if (e.key === 'Enter' || "Tab" && activeIndex >= 0) {
+      setFieldValue('userName', filteredUserNameOptions[activeIndex].userName);
+      setIsDropdownVisible(false);
+      setActiveIndex(-1);
+    }
+  };
+
+  const handleOptionClick = (option, setFieldValue) => {
+    setFieldValue('userName', option.userName);
+    setIsDropdownVisible(false);
+    setActiveIndex(-1);
+  };
+
   const handleSubmit = (values) => {
     console.log("values", values);
     const confirmed = window.confirm(
@@ -129,7 +149,7 @@ const Withdraw = () => {
       <h3 className="mb-4">Make New Transaction</h3>
       <Formik
         initialValues={initialValues}
-        validationSchema={CreditWithDrawTransactionSchema}
+        validationSchema={CreateWithDrawTransactionSchema}
         onSubmit={handleSubmit}
       >
         {({ values, setFieldValue, handleChange, handleSubmit }) => (
@@ -149,7 +169,10 @@ const Withdraw = () => {
                     onChange={(e) => {
                       handleChange(e);
                       handleSearchUserName(e.target.value);
+                      setIsDropdownVisible(true);
+                      setActiveIndex(-1);
                     }}
+                    onKeyDown={(e) => handleKeyDown(e, setFieldValue)}
                     placeholder="Search Customer Name"
                   />
                   <ErrorMessage name="userName" component="div" className="text-danger" />
@@ -159,11 +182,12 @@ const Withdraw = () => {
                         filteredUserNameOptions.map((option, index) => (
                           <li
                             key={index}
-                            onClick={() => {
-                              setFieldValue('userName', option.userName);
-                              setIsDropdownVisible(false);
+                            onClick={() => handleOptionClick(option, setFieldValue)}
+                            style={{
+                              padding: '8px',
+                              cursor: 'pointer',
+                              backgroundColor: activeIndex === index ? '#f0f0f0' : 'white'
                             }}
-                            style={{ padding: '8px', cursor: 'pointer' }}
                           >
                             {option.userName}
                           </li>

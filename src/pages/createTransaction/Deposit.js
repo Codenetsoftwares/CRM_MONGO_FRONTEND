@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Button, Col, Row, Container } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
-import { CreditDepositTransactionSchema } from "../../Services/schema";
+import { CreateDepositTransactionSchema } from "../../Services/schema";
 import AccountService from "../../Services/AccountService";
 import { useAuth } from "../../Utils/Auth";
 import DashService from "../../Services/DashService";
@@ -151,7 +151,7 @@ const Deposit = () => {
         <h3 className="mb-4">Make New Transaction</h3>
         <Formik
           initialValues={initialValues}
-          validationSchema={CreditDepositTransactionSchema}
+          validationSchema={CreateDepositTransactionSchema}
           onSubmit={handleSubmit}
         >
           {({ values, setFieldValue, handleChange, handleSubmit }) => (
