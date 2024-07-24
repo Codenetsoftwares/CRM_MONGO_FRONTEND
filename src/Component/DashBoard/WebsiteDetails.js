@@ -447,7 +447,7 @@ const WebsiteDetails = () => {
                       </div>
 
                       <div className="card-top-right">
-                        {data.isActive === false ? (
+                        {data.isActive === true ? (
                           <span
                             type="button"
                             className="badge-pill badge-success   btn-zoom-out-custom   "
