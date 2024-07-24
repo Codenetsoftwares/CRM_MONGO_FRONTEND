@@ -133,13 +133,13 @@ const WebsiteDetails = () => {
   // get api  fetch
   useEffect(() => {
     fetchData();
-  }, [page,]);
+  }, [page, search]);
 
   const fetchData = async () => {
     try {
       setIsLoading(true);
       const res = await AccountService.website(auth.user, page, search);
-      setGetWebsite(prev => [...prev, ...res.data.data]);
+      setGetWebsite(search.length > 0 ? res.data.data : prev => [...prev, ...res.data.data]);
       setHasMore(page < res.data.pagination.totalPages);
       setTotalPage(res.data.pagination.totalPages);
     } catch (error) {

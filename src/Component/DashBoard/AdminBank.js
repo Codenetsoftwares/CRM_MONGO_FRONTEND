@@ -136,7 +136,7 @@ const AdminBank = () => {
     try {
       setIsLoading(true);
       const res = await AccountService.getbank(auth.user, page, search);
-      setGetBankName(prev => [...prev, ...res.data.data]);
+      setGetBankName(search.length > 0 ? res.data.data : prev => [...prev, ...res.data.data]);
       setHasMore(page < res.data.pagination.totalPages);
       setTotalPage(res.data.pagination.totalPages);
     } catch (error) {
