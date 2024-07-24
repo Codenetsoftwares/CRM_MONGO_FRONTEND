@@ -19,7 +19,7 @@ const EditTransaction = ({ id }) => {
   useEffect(() => {
     TransactionSercvice.getAccountSummary(auth.user).then(
       (res) => {
-        const userWithId = res.data.find((user) => user._id === id);
+        const userWithId = res.data.data.find((user) => user._id === id);
         setData(userWithId);
       }
     );

@@ -115,7 +115,7 @@ const WebsiteStatement = () => {
         const res = await AccountService.GetWebsiteStateMent(auth.user, id);
 
         setDocumentView(res.data);
-        setAccountData(res.data);
+        setAccountData(res.data.data);
         // setPageNumber(res.data.pageNumber);
         // setTotalData(res.data.ArrayLength);
       } catch (err) {
@@ -141,7 +141,7 @@ const WebsiteStatement = () => {
   useEffect(() => {
     if (auth.user) {
       TransactionSercvice.bankList(auth.user).then((res) => {
-        setBankList(res.data);
+        setBankList(res.data.data);
       });
     }
   }, [auth]);
@@ -295,12 +295,12 @@ const WebsiteStatement = () => {
     setDataId(id);
   };
 
-  let reminder = documentView.length % 10;
-  let lastPage = Math.ceil(documentView.length / 10);
+  // let reminder = documentView.length % 10;
+  // let lastPage = Math.ceil(documentView.length / 10);
   let filterReminder = documentFilter.length % 10;
   let filterLastPage = Math.ceil(documentFilter.length / 10);
   let lastFilterPageReminder = documentView.length % 10 === !0;
-  let lastPageReminder = documentFilter.length % 10 === !0;
+  // let lastPageReminder = documentFilter.length % 10 === !0;
 
   return (
     <>

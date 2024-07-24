@@ -76,11 +76,11 @@ const MyTxn = () => {
   useEffect(() => {
     TransactionSercvice.subadminWiseTxn(auth.user.userName, auth.user).then(
       (res) => {
-        console.log("res=>>>>", res.data);
+        console.log("res=>>>>", res.data.data);
 
         const filteredData = [];
 
-        res.data.forEach((item) => {
+        res.data.data.forEach((item) => {
           if (item !== null) {
             filteredData.push(item);
           }
