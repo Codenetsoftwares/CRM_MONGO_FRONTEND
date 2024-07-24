@@ -161,22 +161,6 @@ const AdminBank = () => {
   // };
 
   const handelactive = (ID) => {
-    const flag = true;
-    const data = {
-      isActive: flag,
-    };
-    AccountService.activeInactiveBank(ID, data, auth.user)
-      .then((response) => {
-        alert("Bank Activated");
-        window.location.reload();
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const handelinactive = (ID) => {
     const flag = false;
     const data = {
       isActive: flag,
@@ -184,6 +168,23 @@ const AdminBank = () => {
     AccountService.activeInactiveBank(ID, data, auth.user)
       .then((response) => {
         alert("Bank Inactivated");
+        window.location.reload();
+        console.log('======>>>> response',response.data.message);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handelinactive = (ID) => {
+    const flag = true;
+    const data = {
+      isActive: flag,
+    };
+    AccountService.activeInactiveBank(ID, data, auth.user)
+      .then((response) => {
+        console.log(response.data.message)
+        alert("Bank Activated");
         window.location.reload();
         console.log(response.data);
       })

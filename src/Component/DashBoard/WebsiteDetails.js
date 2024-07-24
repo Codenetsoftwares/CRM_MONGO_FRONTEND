@@ -185,13 +185,13 @@ const WebsiteDetails = () => {
   };
 
   const handelactive = (ID) => {
-    const flag = true;
+    const flag = false;
     const data = {
       isActive: flag,
     };
     AccountService.activeInactiveWebsite(ID, data, auth.user)
       .then((response) => {
-        alert("Website Activated");
+        alert("Website Inactivated");
         window.location.reload();
         console.log(response.data);
       })
@@ -201,13 +201,13 @@ const WebsiteDetails = () => {
   };
 
   const handelinactive = (ID) => {
-    const flag = false;
+    const flag = true;
     const data = {
       isActive: flag,
     };
     AccountService.activeInactiveWebsite(ID, data, auth.user)
       .then((response) => {
-        alert("Website Inactivated");
+        alert("Website Activated");
         window.location.reload();
         console.log(response.data);
       })
