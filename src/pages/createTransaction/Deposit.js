@@ -7,7 +7,7 @@ import AccountService from "../../Services/AccountService";
 import { useAuth } from "../../Utils/Auth";
 import DashService from "../../Services/DashService";
 import FullScreenLoader from "../../Component/FullScreenLoader";
-import { debounce } from 'lodash';
+import { debounce } from "lodash";
 
 const Deposit = () => {
   const initialValues = {
@@ -33,8 +33,11 @@ const Deposit = () => {
   const [isWebsiteDropdownVisible, setIsWebsiteDropdownVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [activeBankIndex, setActiveBankIndex] = useState(-1);
+  const [activeWebsiteIndex, setActiveWebsiteIndex] = useState(-1);
   const auth = useAuth();
 
+  // Fetch options from the server
   useEffect(() => {
     AccountService.getActiveBank(auth.user).then((res) => {
       setBankOptions(res.data);
@@ -50,10 +53,11 @@ const Deposit = () => {
     });
   }, [auth]);
 
+  // Debounce function to search user names
   const handleSearchUserName = useCallback(
     debounce((value) => {
       if (value) {
-        const filteredItems = allUserNameOptions.filter(item =>
+        const filteredItems = allUserNameOptions.filter((item) =>
           item.userName.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredUserNameOptions(filteredItems);
@@ -62,13 +66,15 @@ const Deposit = () => {
         setFilteredUserNameOptions([]);
         setIsDropdownVisible(false);
       }
-    }, 1300), [allUserNameOptions]
+    }, 300),
+    [allUserNameOptions]
   );
 
+  // Debounce function to search bank names
   const handleSearchBank = useCallback(
     debounce((value) => {
       if (value) {
-        const filteredItems = bankOptions.filter(item =>
+        const filteredItems = bankOptions.filter((item) =>
           item.bankName.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredBankOptions(filteredItems);
@@ -77,13 +83,15 @@ const Deposit = () => {
         setFilteredBankOptions([]);
         setIsBankDropdownVisible(false);
       }
-    }, 1300), [bankOptions]
+    }, 300),
+    [bankOptions]
   );
 
+  // Debounce function to search website names
   const handleSearchWebsite = useCallback(
     debounce((value) => {
       if (value) {
-        const filteredItems = websiteOptions.filter(item =>
+        const filteredItems = websiteOptions.filter((item) =>
           item.websiteName.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredWebsiteOptions(filteredItems);
@@ -92,33 +100,79 @@ const Deposit = () => {
         setFilteredWebsiteOptions([]);
         setIsWebsiteDropdownVisible(false);
       }
-    }, 1300), [websiteOptions]
+    }, 300),
+    [websiteOptions]
   );
 
+  // Handle keyboard navigation and selection for user names
   const handleKeyDown = (e, setFieldValue) => {
-    if (e.key === 'ArrowDown') {
+    if (e.key === "ArrowDown") {
       setActiveIndex((prevIndex) => (prevIndex + 1) % filteredUserNameOptions.length);
-    } else if (e.key === 'ArrowUp') {
+    } else if (e.key === "ArrowUp") {
       setActiveIndex((prevIndex) => (prevIndex - 1 + filteredUserNameOptions.length) % filteredUserNameOptions.length);
-    } else if (e.key === 'Enter'||"Tab" && activeIndex >= 0) {
-      setFieldValue('userName', filteredUserNameOptions[activeIndex].userName);
+    } else if ((e.key === "Enter" || e.key === "Tab") && activeIndex >= 0) {
+      setFieldValue("userName", filteredUserNameOptions[activeIndex].userName);
       setIsDropdownVisible(false);
       setActiveIndex(-1);
     }
   };
 
+  // Handle keyboard navigation and selection for bank names
+  const handleBankKeyDown = (e, setFieldValue) => {
+    if (e.key === "ArrowDown") {
+      setActiveBankIndex((prevIndex) => (prevIndex + 1) % filteredBankOptions.length);
+    } else if (e.key === "ArrowUp") {
+      setActiveBankIndex((prevIndex) => (prevIndex - 1 + filteredBankOptions.length) % filteredBankOptions.length);
+    } else if ((e.key === "Enter" || e.key === "Tab") && activeBankIndex >= 0) {
+      setFieldValue("bankName", filteredBankOptions[activeBankIndex].bankName);
+      setIsBankDropdownVisible(false);
+      setActiveBankIndex(-1);
+    }
+  };
+
+  // Handle keyboard navigation and selection for website names
+  const handleWebsiteKeyDown = (e, setFieldValue) => {
+    if (e.key === "ArrowDown") {
+      setActiveWebsiteIndex((prevIndex) => (prevIndex + 1) % filteredWebsiteOptions.length);
+    } else if (e.key === "ArrowUp") {
+      setActiveWebsiteIndex((prevIndex) => (prevIndex - 1 + filteredWebsiteOptions.length) % filteredWebsiteOptions.length);
+    } else if ((e.key === "Enter" || e.key === "Tab") && activeWebsiteIndex >= 0) {
+      setFieldValue("websiteName", filteredWebsiteOptions[activeWebsiteIndex].websiteName);
+      setIsWebsiteDropdownVisible(false);
+      setActiveWebsiteIndex(-1);
+    }
+  };
+
+  // Handle option click for user names
   const handleOptionClick = (option, setFieldValue) => {
-    setFieldValue('userName', option.userName);
+    setFieldValue("userName", option.userName);
     setIsDropdownVisible(false);
     setActiveIndex(-1);
   };
 
+  // Handle option click for bank names
+  const handleBankOptionClick = (option, setFieldValue) => {
+    console.log("Bank option clicked:", option);
+    setFieldValue("bankName", option.bankName);
+    setIsBankDropdownVisible(false);
+    setActiveBankIndex(-1);
+  };
+
+  // Handle option click for website names
+  const handleWebsiteOptionClick = (option, setFieldValue) => {
+    console.log("Website option clicked:", option);
+    setFieldValue("websiteName", option.websiteName);
+    setIsWebsiteDropdownVisible(false);
+    setActiveWebsiteIndex(-1);
+  };
+
+  // Handle form submission
   const handleSubmit = (values) => {
     // Convert amount from string to number
     values.amount = parseFloat(values.amount); // Or use parseInt if it should be an integer
     console.log("values", values);
     const confirmed = window.confirm(
-      "Please double-check the form on obhiasb before confirming, as changes or deletions won't be possible afterward."
+      "Please double-check the form before confirming, as changes or deletions won't be possible afterward."
     );
     if (confirmed) {
       setIsLoading(true);
@@ -177,38 +231,37 @@ const Deposit = () => {
                       onKeyDown={(e) => handleKeyDown(e, setFieldValue)}
                       placeholder="Search Customer Name"
                     />
-                    <ErrorMessage name="userName" component="div" className="text-danger" />
                     {isDropdownVisible && (
-                      <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '200px', overflow: 'auto' }}>
-                        {filteredUserNameOptions.length > 0 ? (
-                          filteredUserNameOptions.map((option, index) => (
-                            <li
-                              key={index}
-                              onClick={() => handleOptionClick(option, setFieldValue)}
-                              style={{
-                                padding: '8px',
-                                cursor: 'pointer',
-                                backgroundColor: activeIndex === index ? '#f0f0f0' : 'white'
-                              }}
-                            >
-                              {option.userName}
-                            </li>
-                          ))
-                        ) : (
-                          <li style={{ padding: '8px' }}>Not found</li>
-                        )}
-                      </ul>
+                      <div className="dropdown-menu show w-100">
+                        {filteredUserNameOptions.map((option, index) => (
+                          <div
+                            key={option.userName}
+                            className={`dropdown-item ${
+                              index === activeIndex ? "active" : ""
+                            }`}
+                            onClick={() => handleOptionClick(option, setFieldValue)}
+                          >
+                            {option.userName}
+                          </div>
+                        ))}
+                      </div>
                     )}
+                    <ErrorMessage
+                      name="userName"
+                      component="div"
+                      className="text-danger"
+                    />
                   </div>
                 </Col>
                 <Col md={6}>
                   <div className="form-group">
-                    <label htmlFor="transactionID">Type Transaction Id</label>
+                    <label htmlFor="transactionID">Transaction ID</label>
                     <Field
-                      type="text"
+                      id="transactionID"
                       name="transactionID"
+                      type="text"
                       className="form-control"
-                      placeholder="Type Transaction Id"
+                      placeholder="Enter Transaction ID"
                     />
                     <ErrorMessage
                       name="transactionID"
@@ -217,8 +270,8 @@ const Deposit = () => {
                     />
                   </div>
                 </Col>
+              
               </Row>
-
               <Row className="mb-3">
                 <Col md={6}>
                   <div className="form-group">
@@ -234,35 +287,63 @@ const Deposit = () => {
                       onChange={(e) => {
                         handleChange(e);
                         handleSearchBank(e.target.value);
+                        setIsBankDropdownVisible(true);
+                        setActiveBankIndex(-1);
                       }}
+                      onKeyDown={(e) => handleBankKeyDown(e, setFieldValue)}
                       placeholder="Search Bank Name"
                     />
-                    <ErrorMessage name="bankName" component="div" className="text-danger" />
                     {isBankDropdownVisible && (
-                      <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '200px', overflow: 'auto' }}>
+                      <ul
+                        style={{
+                          border: "1px solid #ccc",
+                          listStyle: "none",
+                          padding: 0,
+                          margin: 0,
+                          position: "absolute",
+                          zIndex: 1,
+                          background: "white",
+                          width: "93%",
+                          maxHeight: "200px",
+                          overflow: "auto",
+                        }}
+                      >
                         {filteredBankOptions.length > 0 ? (
                           filteredBankOptions.map((option, index) => (
                             <li
                               key={index}
-                              onClick={() => {
-                                setFieldValue('bankName', option.bankName);
-                                setIsBankDropdownVisible(false);
+                              onClick={() =>
+                                handleBankOptionClick(option, setFieldValue)
+                              }
+                              style={{
+                                padding: "8px",
+                                cursor: "pointer",
+                                backgroundColor:
+                                  activeBankIndex === index
+                                    ? "#f0f0f0"
+                                    : "white",
                               }}
-                              style={{ padding: '8px', cursor: 'pointer' }}
                             >
                               {option.bankName}
                             </li>
                           ))
                         ) : (
-                          <li style={{ padding: '8px' }}>Not found</li>
+                          <li style={{ padding: "8px" }}>Not found</li>
                         )}
                       </ul>
                     )}
+                    <ErrorMessage
+                      name="bankName"
+                      component="div"
+                      className="text-danger"
+                    />
                   </div>
                 </Col>
                 <Col md={6}>
                   <div className="form-group">
-                    <label htmlFor="websiteName">Website Name</label>
+                    <label htmlFor="websiteName">
+                      <FaSearch /> Search Website Name
+                    </label>
                     <Field
                       id="websiteName"
                       name="websiteName"
@@ -272,92 +353,138 @@ const Deposit = () => {
                       onChange={(e) => {
                         handleChange(e);
                         handleSearchWebsite(e.target.value);
+                        setIsWebsiteDropdownVisible(true);
+                        setActiveWebsiteIndex(-1);
                       }}
+                      onKeyDown={(e) => handleWebsiteKeyDown(e, setFieldValue)}
                       placeholder="Search Website Name"
                     />
-                    <ErrorMessage name="websiteName" component="div" className="text-danger" />
                     {isWebsiteDropdownVisible && (
-                      <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '200px', overflow: 'auto' }}>
+                      <ul
+                        style={{
+                          border: "1px solid #ccc",
+                          listStyle: "none",
+                          padding: 0,
+                          margin: 0,
+                          position: "absolute",
+                          zIndex: 1,
+                          background: "white",
+                          width: "93%",
+                          maxHeight: "200px",
+                          overflow: "auto",
+                        }}
+                      >
                         {filteredWebsiteOptions.length > 0 ? (
                           filteredWebsiteOptions.map((option, index) => (
                             <li
                               key={index}
-                              onClick={() => {
-                                setFieldValue('websiteName', option.websiteName);
-                                setIsWebsiteDropdownVisible(false);
+                              onClick={() =>
+                                handleWebsiteOptionClick(option, setFieldValue)
+                              }
+                              style={{
+                                padding: "8px",
+                                cursor: "pointer",
+                                backgroundColor:
+                                  activeWebsiteIndex === index
+                                    ? "#f0f0f0"
+                                    : "white",
                               }}
-                              style={{ padding: '8px', cursor: 'pointer' }}
                             >
                               {option.websiteName}
                             </li>
                           ))
                         ) : (
-                          <li style={{ padding: '8px' }}>Not found</li>
+                          <li style={{ padding: "8px" }}>Not found</li>
                         )}
                       </ul>
                     )}
+                    <ErrorMessage
+                      name="websiteName"
+                      component="div"
+                      className="text-danger"
+                    />
+                  </div>
+                </Col>
+               
+              </Row>
+              <Row className="mb-3">
+                <Col md={6}>
+                  <div className="form-group">
+                    <label htmlFor="amount">Amount</label>
+                    <Field
+                      id="amount"
+                      name="amount"
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter Amount"
+                    />
+                    <ErrorMessage
+                      name="amount"
+                      component="div"
+                      className="text-danger"
+                    />
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <div className="form-group">
+                    <label htmlFor="bonus">Bonus</label>
+                    <Field
+                      id="bonus"
+                      name="bonus"
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter Bonus"
+                    />
+                    <ErrorMessage
+                      name="bonus"
+                      component="div"
+                      className="text-danger"
+                    />
                   </div>
                 </Col>
               </Row>
-
               <Row className="mb-3">
                 <Col md={6}>
                   <div className="form-group">
                     <label htmlFor="paymentMethod">Payment Method</label>
                     <Field
                       as="select"
+                      id="paymentMethod"
                       name="paymentMethod"
                       className="form-control"
                     >
                       <option value="UPI">UPI</option>
                       <option value="IMPS">IMPS</option>
+                      <option value="RTGS">RTGS</option>
+                      <option value="NEFT">NEFT</option>
                     </Field>
-                    <ErrorMessage name="paymentMethod" component="div" className="text-danger" />
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <div className="form-group">
-                    <label htmlFor="amount">Amount</label>
-                    <Field
-                      type="text"
-                      name="amount"
-                      className="form-control"
-                      placeholder="Enter amount"
+                    <ErrorMessage
+                      name="paymentMethod"
+                      component="div"
+                      className="text-danger"
                     />
-                    <ErrorMessage name="amount" component="div" className="text-danger" />
-                  </div>
-                </Col>
-              </Row>
-
-              <Row className="mb-3">
-                <Col md={6}>
-                  <div className="form-group">
-                    <label htmlFor="bonus">Bonus</label>
-                    <Field
-                      type="number"
-                      name="bonus"
-                      className="form-control"
-                      placeholder="Enter Bonus"
-                    />
-                    <ErrorMessage name="bonus" component="div" className="text-danger" />
                   </div>
                 </Col>
                 <Col md={6}>
                   <div className="form-group">
                     <label htmlFor="remarks">Remarks</label>
                     <Field
-                      as="textarea"
-                      rows={3}
+                      id="remarks"
                       name="remarks"
+                      as="textarea"
                       className="form-control"
                       placeholder="Enter Remarks"
                     />
-                    <ErrorMessage name="remarks" component="div" className="text-danger" />
+                    <ErrorMessage
+                      name="remarks"
+                      component="div"
+                      className="text-danger"
+                    />
                   </div>
                 </Col>
               </Row>
-              <Button variant="success" type="submit" className="w-100">
-                Create
+              <Button type="submit" variant="primary">
+                Submit
               </Button>
             </Form>
           )}
