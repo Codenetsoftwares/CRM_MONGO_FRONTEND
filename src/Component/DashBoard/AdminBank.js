@@ -426,7 +426,7 @@ const AdminBank = () => {
                       </div>
 
                       <div className="card-position-top-right">
-                        {data.isActive === false ? (
+                        {data.isActive === true ? (
                           <span
                             type="button"
                             className="badge-pill badge-success   btn-hover-scale   "
