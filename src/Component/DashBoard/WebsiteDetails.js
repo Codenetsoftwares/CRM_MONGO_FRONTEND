@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../Utils/Auth";
 import AccountService from "../../Services/AccountService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,6 +27,7 @@ import GridCard from "../../common/gridCard";
 import SingleCard from "../../common/singleCard";
 import "./WebsiteDetails.css";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { debounce } from "lodash";
 
 const WebsiteDetails = () => {
   // const { id } = useParams();
@@ -60,6 +61,9 @@ const WebsiteDetails = () => {
 
   const handleSearch = (event) => {
     setSearch(event.target.value);
+    if (!event.target.value) {
+      setGetWebsite([])
+    }
   };
 
   const handleSubmit = (e) => {
@@ -130,24 +134,40 @@ const WebsiteDetails = () => {
     setWebName(websiteName);
     console.log("Line 116=>>", WebName);
   };
-  // get api  fetch
-  useEffect(() => {
-    fetchData();
-  }, [page, search]);
-
-  const fetchData = async () => {
+ 
+  const fetchData = async (searchTerm = search) => {
     try {
       setIsLoading(true);
-      const res = await AccountService.website(auth.user, page, search);
-      setGetWebsite(search.length > 0 ? res.data.data : prev => [...prev, ...res.data.data]);
+      const res = await AccountService.website(auth.user, page, searchTerm);
+      setGetWebsite(
+        searchTerm.length > 0 ? res.data.data : (prev) => [...prev, ...res.data.data]
+      );
       setHasMore(page < res.data.pagination.totalPages);
       setTotalPage(res.data.pagination.totalPages);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Debounced search handler using lodash
+  const debouncedSearchHandler = useCallback(
+    debounce((searchTerm) => {
+      fetchData(searchTerm);
+    }, 1300),
+    [] // Empty dependency array ensures stable function
+  );
+
+  useEffect(() => {
+    debouncedSearchHandler(search);
+
+    // Cleanup function to cancel debounce on unmount or change
+    return () => {
+      debouncedSearchHandler.cancel();
+    };
+  }, [search, debouncedSearchHandler]);
+
 
   const fetchMoreData = () => {
     if (hasMore) {

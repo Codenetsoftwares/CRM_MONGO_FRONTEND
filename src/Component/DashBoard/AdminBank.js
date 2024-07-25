@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import AccountService from "../../Services/AccountService";
 import { useAuth } from "../../Utils/Auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,12 +29,13 @@ import GridCard from "../../common/gridCard";
 import SingleCard from "../../common/singleCard";
 import "./AdminBank.css";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { debounce } from "lodash";
 // import { useParams } from "react-router";
 const AdminBank = () => {
   const navigate = useNavigate();
   const auth = useAuth();
   const [bankName, setBankName] = useState("");
-  const [getbankName, setGetBankName] = useState([{}]);
+  const [getbankName, setGetBankName] = useState([]);
   const [Id, setId] = useState();
   const [SId, setSId] = useState();
   const [IdWithdraw, setIdWithdraw] = useState();
@@ -90,6 +91,9 @@ const AdminBank = () => {
 
   const handleSearch = (event) => {
     setSearch(event.target.value);
+    if (!event.target.value) {
+      setGetBankName([])
+    }
   };
   const handlebankname = (event) => {
     setBankName(event.target.value);
@@ -132,19 +136,47 @@ const AdminBank = () => {
   };
 
 
-  const fetchData = async () => {
+  const fetchData = async (searchTerm = search) => {
     try {
       setIsLoading(true);
-      const res = await AccountService.getbank(auth.user, page, search);
-      setGetBankName(search.length > 0 ? res.data.data : prev => [...prev, ...res.data.data]);
+      const res = await AccountService.getbank(auth.user, page, searchTerm);
+      setGetBankName((prev) =>
+        searchTerm.length > 0 ? res.data.data : [...prev, ...res.data.data]
+      );
+      console.log(
+        "first",
+        searchTerm.length > 0 ? res.data.data : (prev) => [
+          ...prev,
+          ...res.data.data,
+        ]
+      );
       setHasMore(page < res.data.pagination.totalPages);
       setTotalPage(res.data.pagination.totalPages);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false);
     }
   };
+
+
+  // Debounced search handler using lodash
+  // Debounced search handler using lodash
+  const debouncedSearchHandler = useCallback(
+    debounce((searchTerm) => {
+      fetchData(searchTerm);
+    }, 1300),
+    []
+  );
+
+  useEffect(() => {
+    debouncedSearchHandler(search);
+
+    // Cleanup function to cancel debounce on unmount or change
+    return () => {
+      debouncedSearchHandler.cancel();
+    };
+  }, [search, debouncedSearchHandler]);
 
 
   const handelId = (id) => {
@@ -192,9 +224,9 @@ const AdminBank = () => {
       });
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [page]);
+  // useEffect(() => {
+  //   fetchData();
+  // }, [search]);
 
   // for search input field handled from frontend   to be done by serverside
   const fetchMoreData = () => {

@@ -66,7 +66,7 @@ const Deposit = () => {
         setFilteredUserNameOptions([]);
         setIsDropdownVisible(false);
       }
-    }, 300),
+    }, 1300),
     [allUserNameOptions]
   );
 
@@ -83,7 +83,7 @@ const Deposit = () => {
         setFilteredBankOptions([]);
         setIsBankDropdownVisible(false);
       }
-    }, 300),
+    }, 1300),
     [bankOptions]
   );
 
@@ -100,7 +100,7 @@ const Deposit = () => {
         setFilteredWebsiteOptions([]);
         setIsWebsiteDropdownVisible(false);
       }
-    }, 300),
+    }, 1300),
     [websiteOptions]
   );
 
