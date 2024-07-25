@@ -240,7 +240,7 @@ const AdminBank = () => {
     if (page > 1) {
       fetchData(); // Fetch more data when page changes
     }
-  }, [page,search]);
+  }, [page]);
   return (
 
     <div className="bg-white">
