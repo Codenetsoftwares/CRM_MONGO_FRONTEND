@@ -48,17 +48,17 @@ export const CreateWithDrawTransactionSchema = Yup.object({
 
 export const CreateIntroducerSchema = Yup.object().shape({
   firstname: Yup.string()
-    .min(2, "Username must be at least 2 characters")
-    .max(10, "Username must not exceed 10 characters")
-    .required("Username is required"),
+    .min(2, "Firstname must be at least 2 characters")
+    .max(10, "Firstname must not exceed 10 characters")
+    .required("Firstname is required"),
   userName: Yup.string()
     .min(2, "Username must be at least 2 characters")
     .max(25, "Username must not exceed 25 characters")
     .required("Username is required"),
   lastname: Yup.string()
-    .min(2, "Username must be at least 2 characters")
-    .max(10, "Username must not exceed 10 characters")
-    .required("Username is required"),
+    .min(2, "Lastname must be at least 2 characters")
+    .max(10, "Lastname must not exceed 10 characters")
+    .required("Lastname is required"),
   password: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),

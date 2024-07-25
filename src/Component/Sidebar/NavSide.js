@@ -68,12 +68,10 @@ const NavSide = ({ onSelect }) => {
   };
 
   const handleToggleBank = () => {
-    // resetToggles();
     setIsToggleBank(!IsToggleBank);
   };
 
   const handleToggleWebsite = () => {
-    // resetToggles();
     setIsToggleWebsite(!IsToggleWebsite);
   };
 
