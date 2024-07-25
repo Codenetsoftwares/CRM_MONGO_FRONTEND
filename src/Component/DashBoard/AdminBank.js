@@ -193,22 +193,6 @@ const AdminBank = () => {
   // };
 
   const handelactive = (ID) => {
-    const flag = true;
-    const data = {
-      isActive: flag,
-    };
-    AccountService.activeInactiveBank(ID, data, auth.user)
-      .then((response) => {
-        alert("Bank Activated");
-        window.location.reload();
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const handelinactive = (ID) => {
     const flag = false;
     const data = {
       isActive: flag,
@@ -216,6 +200,23 @@ const AdminBank = () => {
     AccountService.activeInactiveBank(ID, data, auth.user)
       .then((response) => {
         alert("Bank Inactivated");
+        window.location.reload();
+        console.log('======>>>> response',response.data.message);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handelinactive = (ID) => {
+    const flag = true;
+    const data = {
+      isActive: flag,
+    };
+    AccountService.activeInactiveBank(ID, data, auth.user)
+      .then((response) => {
+        console.log(response.data.message)
+        alert("Bank Activated");
         window.location.reload();
         console.log(response.data);
       })
@@ -239,7 +240,7 @@ const AdminBank = () => {
     if (page > 1) {
       fetchData(); // Fetch more data when page changes
     }
-  }, [page]);
+  }, [page,search]);
   return (
 
     <div className="bg-white">
@@ -315,8 +316,10 @@ const AdminBank = () => {
             >
               <br></br>
               <GridCard columns={2}>
-                {getbankName.map((data) => (
-                  <div
+                {getbankName.map((data) => 
+                 {
+                  console.log('====>>> data',data)
+                  return <div
                     key={data._id}
                     className="col d-flex justify-content-center align-items-center "
                     onMouseEnter={() => setHoveredCard(data._id)}
@@ -341,7 +344,8 @@ const AdminBank = () => {
                           {data.bankName}
                           <br />
                           <span className="fs-5" style={{ color: "#A9A9A9" }}>
-                            Balance: {data.balance}
+                            Balance: 
+                            {data.balance}
                           </span>
                         </p>
                         <div className="container">
@@ -457,7 +461,7 @@ const AdminBank = () => {
                       </div>
 
                       <div className="card-position-top-right">
-                        {data.isActive === false ? (
+                        {data.isActive === true ? (
                           <span
                             type="button"
                             className="badge-pill badge-success   btn-hover-scale   "
@@ -471,7 +475,7 @@ const AdminBank = () => {
                               icon={faCheckCircle}
                               className="active-icon ms-1"
                             />
-                            <span className="status-dot status-dot-green position-absolute top-0 start-100 translate-middle"></span>
+                            {/* <span className="status-dot status-dot-green position-absolute top-0 start-100 translate-middle"></span> */}
                           </span>
                         ) : (
                           <span
@@ -487,13 +491,13 @@ const AdminBank = () => {
                               icon={faTimesCircle}
                               className="active-icon ms-1"
                             />
-                            <span className="status-dot status-dot-red dot-merged position-absolute top-0 start-100 translate-middle"></span>
+                            {/* <span className="status-dot status-dot-red dot-merged position-absolute top-0 start-100 translate-middle"></span> */}
                           </span>
                         )}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  </div>}
+                )}
               </GridCard>
             </InfiniteScroll>
           </SingleCard>

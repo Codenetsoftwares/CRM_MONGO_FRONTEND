@@ -63,22 +63,20 @@ const NavSide = ({ onSelect }) => {
   };
 
   const handleToggleRequest = () => {
-    resetToggles();
+    // resetToggles();
     setIsToggleRequest(!IsToggleRequest);
   };
 
   const handleToggleBank = () => {
-   
     setIsToggleBank(!IsToggleBank);
   };
 
   const handleToggleWebsite = () => {
-  
     setIsToggleWebsite(!IsToggleWebsite);
   };
 
   const handleToggleRecycleBin = () => {
-    resetToggles();
+    // resetToggles();
     setIsToggleRecycleBin(!isToggleRecycleBin);
   };
 
