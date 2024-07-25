@@ -471,7 +471,7 @@ const WebsiteStatement = () => {
         <SingleCard>
           <SingleCard style={{ border: "1px solid #4682b4 " }}>
             <div
-              className="card card-body rounded-4"
+              className="card card-body rounded-4 "
               style={{
                 backgroundColor: "#4682b4",
                 boxShadow:
@@ -480,10 +480,11 @@ const WebsiteStatement = () => {
                 padding: "20px",
                 transformStyle: "preserve-3d",
                 margin: "20px",
+                zIndex:"1000"
               }}
             >
               <div className="row g-2">
-                {/* Transaction */}
+                
                 <div className="col-12 col-md-3">
                   <h6 className="fw-bold text-light">Transaction</h6>
                   <select
@@ -515,7 +516,7 @@ const WebsiteStatement = () => {
                   </select>
                 </div>
 
-                {/* SubAdminlist */}
+            
                 <div className="col-12 col-md-3">
                   <h6 className="fw-bold text-light">SubAdminlist</h6>
                   <select
@@ -539,7 +540,7 @@ const WebsiteStatement = () => {
                   </select>
                 </div>
 
-                {/* Range Of Amount */}
+                
                 <div className="col-12 col-md-3">
                   <h6 className="fw-bold text-light">Range Of Amount</h6>
                   <div className="d-flex align-items-center">
@@ -577,7 +578,6 @@ const WebsiteStatement = () => {
                   </div>
                 </div>
 
-                {/* Date Range */}
                 <div className="col-12 col-md-3">
                   <h6 className="fw-bold text-light">Date Range</h6>
                   <div className="d-flex align-items-center">
@@ -605,6 +605,7 @@ const WebsiteStatement = () => {
                           border: "0.5px solid black",
                           borderRadius: "6px",
                           boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                          right:"50px"
                         },
                       }}
                     />
@@ -612,7 +613,7 @@ const WebsiteStatement = () => {
                 </div>
               </div>
 
-              {/* Buttons */}
+             
               <div className="row g-2 mt-3">
                 <div className="col-12 d-flex justify-content-center flex-wrap">
                   <button
@@ -648,7 +649,7 @@ const WebsiteStatement = () => {
                   )}
                 </div>
               </div>
-            </div>
+            </div> 
           </SingleCard>
         </SingleCard>
 

@@ -281,8 +281,8 @@ const WebsiteDetails = () => {
             </div>
           </div>
         </SingleCard>
-        <div className="card-body mt-2 mb-3 padding">
-          <SingleCard className="mb-2 p-4">
+        {/* <div className="card-body mt-2 mb-3"> */}
+          {/* <SingleCard className="mb-2 p-4"> */}
             <InfiniteScroll
               dataLength={getWebsite.length}
               next={fetchMoreData}
@@ -296,7 +296,7 @@ const WebsiteDetails = () => {
               }
             >
               <br />
-              <GridCard columns={2}>
+              <GridCard >
                 {getWebsite.map((data) => (
                   <div
                     key={data._id}
@@ -311,8 +311,8 @@ const WebsiteDetails = () => {
                         }`}
                       style={{
                         borderRadius: "20px",
-                        height: "200px",
-                        width: "100%",
+                        // height: "200px",
+                        // width: "100%",
                         position: "relative",
                       }}
                       onClick={() => handleCardClick(data._id)}
@@ -331,8 +331,8 @@ const WebsiteDetails = () => {
                             Balance: {data.balance}
                           </span>
                         </p>
-                        <div className="container">
-                          <div className="row g-1 justify-content-center mt-5">
+                        {/* <div className="container"> */}
+                          <div className="row  justify-content-center mt-5">
                             <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                               <button
                                 type="button"
@@ -443,7 +443,7 @@ const WebsiteDetails = () => {
                               </button>
                             </div>
                           </div>
-                        </div>
+                        {/* </div> */}
                       </div>
 
                       <div className="card-top-right">
@@ -488,8 +488,8 @@ const WebsiteDetails = () => {
               </GridCard>
 
             </InfiniteScroll>
-          </SingleCard>
-        </div>
+          {/* </SingleCard> */}
+        {/* </div> */}
 
         <ModalWthWbl ID={Id} />
         <ModalAdWbl ID={Id} />

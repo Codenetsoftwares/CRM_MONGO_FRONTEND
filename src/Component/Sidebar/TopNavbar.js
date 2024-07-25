@@ -74,11 +74,11 @@ const TopNavbar = ({ selectedMenuItem }) => {
   return (
     <>
       <nav
-        className="main-header navbar navbar-expand navbar-white navbar-light "
+        className="main-header navbar navbar-expand navbar-white navbar-light  "
         style={{
           position: "sticky",
           top: 0,
-          zIndex: 1,
+          zIndex: 1001,
           backgroundColor: "#B1A5FA",
         }}
       >

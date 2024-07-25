@@ -34,7 +34,7 @@ const AdminBank = () => {
   const navigate = useNavigate();
   const auth = useAuth();
   const [bankName, setBankName] = useState("");
-  const [getbankName, setGetBankName] = useState([{}]);
+  const [getbankName, setGetBankName] = useState([]);
   console.log('======>>>>> getbankname',getbankName)
   const [Id, setId] = useState();
   const [SId, setSId] = useState();
@@ -285,8 +285,10 @@ const AdminBank = () => {
             >
               <br></br>
               <GridCard columns={2}>
-                {getbankName.map((data) => (
-                  <div
+                {getbankName.map((data) => 
+                 {
+                  console.log('====>>> data',data)
+                  return <div
                     key={data._id}
                     className="col d-flex justify-content-center align-items-center "
                     onMouseEnter={() => setHoveredCard(data._id)}
@@ -463,8 +465,8 @@ const AdminBank = () => {
                         )}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  </div>}
+                )}
               </GridCard>
             </InfiniteScroll>
           </SingleCard>
