@@ -15,6 +15,13 @@ const UserProfile = () => {
 
   const navigate = useNavigate();
 
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+    if (!event.target.value) {
+      setUsers([])
+    }
+  };
+
   const fetchData = async (searchTerm = search, newPage = page) => {
     try {
       setIsLoading(true);
@@ -57,6 +64,12 @@ const UserProfile = () => {
     }
   };
 
+  useEffect(() => {
+    if (page > 1) {
+      fetchData(); // Fetch more data when page changes
+    }
+  }, [page, search]);
+
   const handleInnerProfile = (id) => {
     navigate(`/innerprofile`, { state: { page: page, id: id, q: search } });
   };
@@ -77,7 +90,7 @@ const UserProfile = () => {
           className="form-control search-input"
           placeholder="Search User by Name"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={handleSearch}
           aria-label="Sizing example input"
           aria-describedby="inputGroup-sizing-sm"
         />
