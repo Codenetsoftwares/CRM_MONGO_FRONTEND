@@ -34,7 +34,8 @@ const AdminBank = () => {
   const navigate = useNavigate();
   const auth = useAuth();
   const [bankName, setBankName] = useState("");
-  const [getbankName, setGetBankName] = useState([{}]);
+  const [getbankName, setGetBankName] = useState([]);
+  console.log('======>>>>> getbankname',getbankName)
   const [Id, setId] = useState();
   const [SId, setSId] = useState();
   const [IdWithdraw, setIdWithdraw] = useState();
@@ -208,7 +209,7 @@ const AdminBank = () => {
     if (page > 1) {
       fetchData(); // Fetch more data when page changes
     }
-  }, [page]);
+  }, [page,search]);
   return (
 
     <div className="bg-white">
@@ -284,8 +285,10 @@ const AdminBank = () => {
             >
               <br></br>
               <GridCard columns={2}>
-                {getbankName.map((data) => (
-                  <div
+                {getbankName.map((data) => 
+                 {
+                  console.log('====>>> data',data)
+                  return <div
                     key={data._id}
                     className="col d-flex justify-content-center align-items-center "
                     onMouseEnter={() => setHoveredCard(data._id)}
@@ -310,7 +313,8 @@ const AdminBank = () => {
                           {data.bankName}
                           <br />
                           <span className="fs-5" style={{ color: "#A9A9A9" }}>
-                            Balance: {data.balance}
+                            Balance: 
+                            {data.balance}
                           </span>
                         </p>
                         <div className="container">
@@ -440,7 +444,7 @@ const AdminBank = () => {
                               icon={faCheckCircle}
                               className="active-icon ms-1"
                             />
-                            <span className="status-dot status-dot-green position-absolute top-0 start-100 translate-middle"></span>
+                            {/* <span className="status-dot status-dot-green position-absolute top-0 start-100 translate-middle"></span> */}
                           </span>
                         ) : (
                           <span
@@ -456,13 +460,13 @@ const AdminBank = () => {
                               icon={faTimesCircle}
                               className="active-icon ms-1"
                             />
-                            <span className="status-dot status-dot-red dot-merged position-absolute top-0 start-100 translate-middle"></span>
+                            {/* <span className="status-dot status-dot-red dot-merged position-absolute top-0 start-100 translate-middle"></span> */}
                           </span>
                         )}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  </div>}
+                )}
               </GridCard>
             </InfiniteScroll>
           </SingleCard>

@@ -24,7 +24,7 @@ const FilterMainTransaction = ({
   const [bank, setBank] = useState("");
   const [introducerList, setIntroducerList] = useState([]);
   const [introducer, setIntroducer] = useState("");
-  const [websiteList, setWebsiteList] = useState([]);
+  const [websList, setWebsList] = useState([]);
   const [website, setWebsite] = useState("");
   const [select, setSelect] = useState("");
   const [startDatevalue, SetStartDatesetValue] = useState(
@@ -92,13 +92,19 @@ const FilterMainTransaction = ({
       TransactionSercvice.bankList(auth.user).then((res) => {
         setBankList(res.data);
       });
-      AccountService.website(auth.user).then((res) => setWebsiteList(res.data));
+      TransactionSercvice.websiteList(auth.user).then((response)  =>  
+      {setWebsList(response.data)
+
+      } 
+      
+      );
       AccountService.introducerId(auth.user).then((res) =>
         setIntroducerList(res.data)
       );
     }
   }, [auth]);
-  console.log(websiteList);
+  console.log('=========>>>>>>> data ',websList);
+  console.log("banklist",bankList)
   const handleStartDatevalue = (e) => {
     SetStartDatesetValue(moment(e));
   };
@@ -248,7 +254,7 @@ const FilterMainTransaction = ({
               required
             >
               <option value="">Select Website</option>
-              {websiteList.map((data) => (
+              {websList.map((data) => (
                 <option key={data._id} value={data.websiteName}>
                   {data.websiteName}
                 </option>
