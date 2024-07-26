@@ -31,86 +31,89 @@ const TableMainTransaction = ({
   const handleDelete = (e, id, transactionType) => {
     e.preventDefault();
     console.log(transactionType);
-    switch (transactionType) {
-      case "Deposit":
-        AccountService.SaveTransaction({ requestId: id }, auth.user)
+    let confirm = window.confirm("Are You Sure You Want to Active This Bank");
+    if (confirm) {
+      switch (transactionType) {
+        case "Deposit":
+          AccountService.SaveTransaction({ requestId: id }, auth.user)
 
-          .then((res) => {
-            console.log(res.data);
-            toast.success("Transaction delete request sent to Super Admin");
-          })
-          .catch((err) => {
-            toast.error(err.response.data?.message);
-          });
-        break;
+            .then((res) => {
+              console.log(res.data);
+              toast.success("Transaction delete request sent to Super Admin");
+            })
+            .catch((err) => {
+              toast.error(err.response.data?.message);
+            });
+          break;
 
-      case "Withdraw":
-        AccountService.SaveTransaction({ requestId: id }, auth.user)
+        case "Withdraw":
+          AccountService.SaveTransaction({ requestId: id }, auth.user)
 
-          .then((res) => {
-            console.log(res.data);
-            toast.success("Transaction delete request sent to Super Admin");
-          })
-          .catch((err) => {
-            toast.error(err.response.data?.message);
-          });
-        break;
+            .then((res) => {
+              console.log(res.data);
+              toast.success("Transaction delete request sent to Super Admin");
+            })
+            .catch((err) => {
+              toast.error(err.response.data?.message);
+            });
+          break;
 
-      case "Manual-Bank-Deposit":
-        AccountService.SaveBankTransaction({ requestId: id }, auth.user)
+        case "Manual-Bank-Deposit":
+          AccountService.SaveBankTransaction({ requestId: id }, auth.user)
 
-          .then((res) => {
-            console.log(res.data);
-            toast.success(
-              "Bank Transaction delete request sent to Super Admin"
-            );
-          })
-          .catch((err) => {
-            toast.error(err.response.data?.message);
-          });
-        break;
+            .then((res) => {
+              console.log(res.data);
+              toast.success(
+                "Bank Transaction delete request sent to Super Admin"
+              );
+            })
+            .catch((err) => {
+              toast.error(err.response.data?.message);
+            });
+          break;
 
-      case "Manual-Bank-Withdraw":
-        AccountService.SaveBankTransaction({ requestId: id }, auth.user)
+        case "Manual-Bank-Withdraw":
+          AccountService.SaveBankTransaction({ requestId: id }, auth.user)
 
-          .then((res) => {
-            console.log(res.data);
-            toast.success(
-              "Bank Transaction delete request sent to Super Admin"
-            );
-          })
-          .catch((err) => {
-            toast.error(err.response.data?.message);
-          });
-        break;
+            .then((res) => {
+              console.log(res.data);
+              toast.success(
+                "Bank Transaction delete request sent to Super Admin"
+              );
+            })
+            .catch((err) => {
+              toast.error(err.response.data?.message);
+            });
+          break;
 
-      case "Manual-Website-Deposit":
-        AccountService.SaveWebsiteTransaction({ requestId: id }, auth.user)
-          .then((res) => {
-            console.log(res.data);
-            toast.success(
-              "Website Transaction delete request sent to Super Admin"
-            );
-          })
-          .catch((err) => {
-            toast.error(err.response.data?.message);
-          });
-        break;
+        case "Manual-Website-Deposit":
+          AccountService.SaveWebsiteTransaction({ requestId: id }, auth.user)
+            .then((res) => {
+              console.log(res.data);
+              toast.success(
+                "Website Transaction delete request sent to Super Admin"
+              );
+            })
+            .catch((err) => {
+              toast.error(err.response.data?.message);
+            });
+          break;
 
-      case "Manual-Website-Withdraw":
-        AccountService.SaveWebsiteTransaction({ requestId: id }, auth.user)
-          .then((res) => {
-            console.log(res.data);
-            toast.success(
-              "Website Transaction delete request sent to Super Admin"
-            );
-          })
-          .catch((err) => {
-            toast.error(err.response.data?.message);
-          });
-        break;
+        case "Manual-Website-Withdraw":
+          AccountService.SaveWebsiteTransaction({ requestId: id }, auth.user)
+            .then((res) => {
+              console.log(res.data);
+              toast.success(
+                "Website Transaction delete request sent to Super Admin"
+              );
+            })
+            .catch((err) => {
+              toast.error(err.response.data?.message);
+            });
+          break;
 
-      default:
+        default:
+      }
     }
   };
   console.log(FilterData);
@@ -406,15 +409,13 @@ const TableMainTransaction = ({
         </div>
       </SingleCard>
       {FilterData?.length > 0 ? (
-       
-          <Pagination
-            handlePage={handlePage}
-            page={page}
-            totalPage={totalPage}
-            totalData={totalData}
-            perPagePagination={10}
-          />
-      
+        <Pagination
+          handlePage={handlePage}
+          page={page}
+          totalPage={totalPage}
+          totalData={totalData}
+          perPagePagination={10}
+        />
       ) : null}
       <EditTransaction id={id} />
     </SingleCard>

@@ -356,7 +356,7 @@ const NavSide = ({ onSelect }) => {
                         ) && (
                             <Link to="userprofile" className="nav-link text-white" onClick={() => handleMenuClick('userProfile')}>
                               <i className="far fa-circle nav-icon" />
-                              <p>User Profile</p>
+                              <p>User </p>
                             </Link>
                           )}
                         {userrole.some(
