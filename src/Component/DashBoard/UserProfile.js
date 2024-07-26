@@ -4,6 +4,8 @@ import AccountService from "../../Services/AccountService";
 import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { debounce } from "lodash";
+import SingleCard from "../../common/singleCard";
+import GridCard from "../../common/gridCard";
 
 const UserProfile = () => {
   const auth = useAuth();
@@ -75,72 +77,79 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="m-3">
-      <h1 className="d-flex justify-content-center fs-3 text-bold">
-        USER PROFILE
-      </h1>
-      <div className="input-group input-group-sm ">
-        <button type="button" className="btn btn-primary">
-          <i className="fas fa-search"></i>
-        </button>
-        <input
-          type="search"
-          name="search-form"
-          id="search-form"
-          className="form-control search-input"
-          placeholder="Search User by Name"
-          value={search}
-          onChange={handleSearch}
-          aria-label="Sizing example input"
-          aria-describedby="inputGroup-sizing-sm"
-        />
-      </div>
-
-      <InfiniteScroll
-        dataLength={users.length}
-        next={fetchMoreData}
-        hasMore={hasMore}
-        loader={<h4>Loading...</h4>}
-        height={750}
-        endMessage={
-          <p style={{ textAlign: "center" }}>
-            <b>No more data to load</b>
-          </p>
-        }
-      >
-        {users.map((user, index) => (
-          <div
-            className="card container-fluid w-75 mt-2 border-dark"
-            key={index}
-          >
-            <div className="card-body">
-              <p
-                onClick={() => {
-                  handleInnerProfile(user._id);
-                }}
-                style={{ color: "blue", cursor: "pointer" }}
-              >
-                <span
-                  className="d-flex justify-content-center"
-                  title="Click here to know User details "
-                >
-                  <b>{user.userName}</b>
-                </span>
-                <span
-                  className="d-flex justify-content-center text-warning "
-                  style={{ fontSize: "25px" }}
-                >
-                  &#8679;
-                </span>
-                <span className="d-flex justify-content-center text-success blinking-text">
-                  Click UserName to know User details
-                </span>
-              </p>
-            </div>
+    <SingleCard>
+      <div className="m-3">
+        {/* <h1 className="d-flex justify-content-center fs-3 text-bold">
+          USER PROFILE
+        </h1> */}
+        <SingleCard>
+          <div className="input-group input-group-sm">
+            <button type="button" className="btn btn-primary">
+              <i className="fas fa-search"></i>
+            </button>
+            <input
+              type="search"
+              name="search-form"
+              id="search-form"
+              className="form-control search-input"
+              placeholder="Search User by Name"
+              value={search}
+              onChange={handleSearch}
+              aria-label="Sizing example input"
+              aria-describedby="inputGroup-sizing-sm"
+            />
           </div>
-        ))}
-      </InfiniteScroll>
-    </div>
+        </SingleCard>
+
+        <InfiniteScroll
+          dataLength={users.length}
+          next={fetchMoreData}
+          hasMore={hasMore}
+          loader={<h4>Loading...</h4>}
+          height={750}
+          endMessage={
+            <p style={{ textAlign: 'center' }}>
+              <b>No more data to load</b>
+            </p>
+          }
+        >
+          <SingleCard className="mt-3">
+            <GridCard columns={3}>
+              {users.map((user, index) => (
+                <div className="col" key={index}>
+                  <div className="card container-fluid w-75 mt-2 border-dark">
+                    <div className="card-body">
+                      <p
+                        onClick={() => {
+                          handleInnerProfile(user._id);
+                        }}
+                        style={{ color: 'blue', cursor: 'pointer' }}
+                      >
+                        <span
+                          className="d-flex justify-content-center"
+                          title="Click here to know User details"
+                        >
+                          <b>{user.userName}</b>
+                        </span>
+                        <span
+                          className="d-flex justify-content-center text-warning"
+                          style={{ fontSize: '25px' }}
+                        >
+                          &#8679;
+                        </span>
+                        <span className="d-flex justify-content-center text-success blinking-text">
+                          Click UserName to know User details
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </GridCard>
+          </SingleCard>
+        </InfiniteScroll>
+      </div>
+    </SingleCard>
   );
 };
 

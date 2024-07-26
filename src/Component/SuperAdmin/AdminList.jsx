@@ -5,6 +5,8 @@ import { useAuth } from "../../Utils/Auth";
 import Pagination from "../Pagination";
 import { debounce } from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
+import SingleCard from "../../common/singleCard";
+import GridCard from "../../common/gridCard";
 
 
 const AdminList = () => {
@@ -111,26 +113,28 @@ const handleSearch = (event) => {
   // console.log(auth.user);
 
   return (
+    <SingleCard>
     <div className="card container">
       <div className="card-header border-transparent">
-        <h3 className=" d-flex justify-content-center fs-3 text-bold">
+        {/* <h3 className="d-flex justify-content-center fs-3 text-bold">
           LIST OF SUB-ADMIN
-        </h3>
+        </h3> */}
       </div>
-      <div className="input-group input-group-sm mb-3 p-3">
-        <input
-          type="search"
-          name="search-form"
-          id="search-form"
-          className="search-input"
-          placeholder="Search User by Name"
-          value={search}
-          onChange={handleSearch}
-          class="form-control"
-          aria-label="Sizing example input"
-          aria-describedby="inputGroup-sizing-sm"
-        />
-      </div>
+      <SingleCard>
+        <div className="input-group input-group-sm mb-3 p-3">
+          <input
+            type="search"
+            name="search-form"
+            id="search-form"
+            className="search-input form-control"
+            placeholder="Search User by Name"
+            value={search}
+            onChange={handleSearch}
+            aria-label="Sizing example input"
+            aria-describedby="inputGroup-sizing-sm"
+          />
+        </div>
+      </SingleCard>
       <InfiniteScroll
         dataLength={adminList.length}
         next={fetchMoreData}
@@ -138,48 +142,39 @@ const handleSearch = (event) => {
         loader={<h4>Loading...</h4>}
         height={750}
         endMessage={
-          <p style={{ textAlign: "center" }}>
+          <p style={{ textAlign: 'center' }}>
             <b>No more data to load</b>
           </p>
         }
       >
-        {adminList.map((data, i) => {
-          return (
-            <div className="card container" key={data?._id}>
-              <div className="card-body ">
-                <div className="d-flex justify-content-between">
-                  <div className=" text-left ">
-                    <h5 className="fs-6 ">{i + 1}.</h5>
-                  </div>
-                  <div className="">
-                    <h5 className="fs-5 text-nowrap">{data?.userName} </h5>
-                  </div>
-                  <div className="">
-                    <button
-                      className=""
-                      style={{
-                        height: "30px",
-                        backgroundColor: "#0275d8",
-                        border: "none",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      <p>
-                        <Link to={`/subadminedit/${data?._id}`}>
-                          <button type="button" class="btn btn-info">
-                            Details
-                          </button>
-                        </Link>
-                      </p>
-                    </button>
+        <GridCard columns={3}>
+          {adminList.map((data, i) => (
+            <div className="col" key={data?._id}>
+              <div className="card container mt-2">
+                <div className="card-body">
+                  <div className="d-flex justify-content-between">
+                    <div className="text-left">
+                      <h5 className="fs-6">{i + 1}.</h5>
+                    </div>
+                    <div>
+                      <h5 className="fs-5 text-nowrap">{data?.userName}</h5>
+                    </div>
+                    <div>
+                      <Link to={`/subadminedit/${data?._id}`}>
+                        <button type="button" className="btn btn-info">
+                          Details
+                        </button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          );
-        })}
+          ))}
+        </GridCard>
       </InfiniteScroll>
     </div>
+  </SingleCard>
   );
 };
 export default AdminList;

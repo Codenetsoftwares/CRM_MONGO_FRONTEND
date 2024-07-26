@@ -17,6 +17,8 @@ import TransactionSercvice from "../../Services/TransactionSercvice";
 import IntroducerTransaction from "../Modal/IntroducerTransaction";
 import IntroducerPayment from "./IntroducerPayment";
 import Pagination from "../Pagination";
+import SingleCard from "../../common/singleCard";
+import GridCard from "../../common/gridCard";
 
 const IntroducerProfile = () => {
   const auth = useAuth();
@@ -54,135 +56,79 @@ const IntroducerProfile = () => {
   console.log("Live Bl", ID);
 
   return (
+    <SingleCard>
     <div className="m-3">
       <ToastContainer />
-      <h1 className="d-flex justify-content-center fs-3 text-bold">INTRODUCER PROFILE</h1>
-      <div class="input-group input-group-sm ">
-        <input
-          type="search"
-          name="search-form"
-          id="search-form"
-          className="search-input "
-          placeholder="Search User by Name"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          class="form-control"
-          aria-label="Sizing example input"
-          aria-describedby="inputGroup-sizing-sm"
-        />
-      </div>
-      {users.length > 0 ? (<><ul>
-        {users.map((users) => (
-          <div className="card container-fluid w-75">
-            <div className="card-body">
-              <p className="text-bold">{users.userName}</p>
-              <IntroducerPayment
-                IntroducerName={users.userName}
-                balance={users.balance.balance}
-                duebalance={users.balance.currentDue}
-                id={users._id}
-              />
-              <Link
-                to={`/innerintroducer/${users._id}`}
-                style={{ cursor: "pointer" }}
-              >
-                <button type="button" class="btn btn-primary">
-                  NetWork &nbsp;
-                  <FontAwesomeIcon icon={faNetworkWired} />
-                </button>
-              </Link>
-              <br />
-              <Link
-                to={`/singleintroducer/${users._id}`}
-                style={{ cursor: "pointer" }}
-              >
-                <button type="button" class="btn btn-info mt-2">
-                  Edit Profile &nbsp;
-                  <FontAwesomeIcon icon={faEdit} />
-                </button>
-              </Link>
-              <br />
-              {/* Deposit and Withdraw Part Start */}
-              {/* <div>
-                <button
-                  type="button"
-                  class="btn btn-success mt-2"
-                  data-toggle="modal"
-                  data-target="#IntroTx"
-                  onClick={(e) => {
-                    handleIntroducerTx(e, users.userName, "Deposit");
-                  }}
-                >
-                  Deposit
-                </button>
-                &nbsp;&nbsp;
-                <button
-                  type="button"
-                  class="btn btn-danger mt-2"
-                  data-toggle="modal"
-                  data-target="#IntroTx"
-                  onClick={(e) => {
-                    handleIntroducerTx(e, users.userName, "Withdraw");
-                  }}
-                >
-                  Withdraw
-                </button>
-              </div> */}
-              {/* Deposit and Withdraw Part End */}
-
-              <button
-                type="button"
-                class="btn btn-warning mt-2"
-                data-toggle="modal"
-                data-target="#LiveBalance"
-                onClick={(e) => {
-                  handleLiveBl(e, users._id);
-                }}
-              >
-                Total Profit Lifetime &nbsp;
-                <FontAwesomeIcon icon={faBalanceScale} />
-              </button>
-            </div>
-          </div>
-        ))}
-      </ul>
-        <Pagination handlePage={handlePage} page={page} totalPage={pageNumber} totalData={totalData} perPagePagination={10} />
-      </>) : (
-        <h1 className="text-center mt-4">No Introducer Founds</h1>
+      {/* <h1 className="d-flex justify-content-center fs-3 text-bold">INTRODUCER PROFILE</h1> */}
+      <SingleCard>
+        <div className="input-group input-group-sm">
+          <input
+            type="search"
+            name="search-form"
+            id="search-form"
+            className="search-input form-control"
+            placeholder="Search User by Name"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            aria-label="Sizing example input"
+            aria-describedby="inputGroup-sizing-sm"
+          />
+        </div>
+      </SingleCard>
+      {users.length > 0 ? (
+        <>
+          <GridCard columns={3} style={{ marginTop: '20px' }}>
+            {users.map((user, index) => (
+              <div className="col" key={index}>
+                <div className="card container-fluid mt-2 border-dark">
+                  <div className="card-body">
+                    <p className="text-bold">{user.userName}</p>
+                    <IntroducerPayment
+                      IntroducerName={user.userName}
+                      balance={user.balance.balance}
+                      duebalance={user.balance.currentDue}
+                      id={user._id}
+                    />
+                    <Link to={`/innerintroducer/${user._id}`} style={{ cursor: 'pointer' }}>
+                      <button type="button" className="btn btn-primary">
+                        NetWork &nbsp;
+                        <FontAwesomeIcon icon={faNetworkWired} />
+                      </button>
+                    </Link>
+                    <br />
+                    <Link to={`/singleintroducer/${user._id}`} style={{ cursor: 'pointer' }}>
+                      <button type="button" className="btn btn-info mt-2">
+                        Edit Profile &nbsp;
+                        <FontAwesomeIcon icon={faEdit} />
+                      </button>
+                    </Link>
+                    <br />
+                    <button
+                      type="button"
+                      className="btn btn-warning mt-2"
+                      data-toggle="modal"
+                      data-target="#LiveBalance"
+                      onClick={(e) => {
+                        handleLiveBl(e, user._id);
+                      }}
+                    >
+                      Total Profit Lifetime &nbsp;
+                      <FontAwesomeIcon icon={faBalanceScale} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </GridCard>
+          <Pagination handlePage={handlePage} page={page} totalPage={pageNumber} totalData={totalData} perPagePagination={10} />
+        </>
+      ) : (
+        <h1 className="text-center mt-4">No Introducer Found</h1>
       )}
-
       {ID !== undefined && <LiveBalanceIntroducer ID={ID} />}
-
       <IntroducerTransaction TxType={txType} IntroducerName={introducerName} />
-
-      {/* <div className="text-center">
-        <span className={`m-3 `}>
-          <button
-            className={`btn btn-primary rounded-pill ${page === 1 ? "disabled" : ""
-              }`}
-            onClick={() => {
-              page > 1 && handlePage(page - 1);
-            }}
-          >
-            Pre
-          </button>
-        </span>
-        <span className="fs-4">{page}</span>
-        <span className={`m-3 `}>
-          <button
-            className={`btn btn-primary rounded-pill ${page === pageNumber ? "disabled" : ""
-              }`}
-            onClick={() => {
-              handlePage(page + 1);
-            }}
-          >
-            Next
-          </button>
-        </span>
-      </div> */}
-
-
     </div>
+  </SingleCard>
   );
 };
 
