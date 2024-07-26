@@ -66,7 +66,7 @@ const CreateIntroducer = () => {
 
   return (
     <div
-      className="d-flex justify-content-center align-items-center min-vh-100"
+      className="d-flex justify-content-center "
       style={{ overflow: "hidden" }}
     >
       <div className="container pt-5">

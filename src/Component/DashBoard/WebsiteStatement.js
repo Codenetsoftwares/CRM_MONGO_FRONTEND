@@ -474,7 +474,7 @@ const WebsiteStatement = () => {
         </div>
         </SingleCard> */}
         <SingleCard>
-          <SingleCard style={{ border: "1px solid #4682b4 " }}>
+          <SingleCard style={{ border: "1px solid #4682b4" }}>
             <div
               className="card card-body rounded-4 "
               style={{

@@ -338,7 +338,7 @@ const AdminBank = () => {
                         style={{
                           borderRadius: "20px",
                           height: "200px",
-                          width: "100%",
+                          width: "95%",
                           position: "relative",
                         }}
                         onClick={() => handleCardClick(data._id)}

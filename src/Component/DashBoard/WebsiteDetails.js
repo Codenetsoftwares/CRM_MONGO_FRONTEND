@@ -301,8 +301,8 @@ const WebsiteDetails = () => {
             </div>
           </div>
         </SingleCard>
-        {/* <div className="card-body mt-2 mb-3"> */}
-          {/* <SingleCard className="mb-2 p-4"> */}
+        <div className="card-body mt-2 mb-3">
+          <SingleCard className="mb-2 p-4">
             <InfiniteScroll
               dataLength={getWebsite.length}
               next={fetchMoreData}
@@ -331,8 +331,8 @@ const WebsiteDetails = () => {
                         }`}
                       style={{
                         borderRadius: "20px",
-                        // height: "200px",
-                        // width: "100%",
+                        height: "200px",
+                        width: "95%",
                         position: "relative",
                       }}
                       onClick={() => handleCardClick(data._id)}
@@ -481,7 +481,7 @@ const WebsiteDetails = () => {
                               icon={faCheckCircle}
                               className="active-icon ms-1 "
                             />
-                            <span className="dot dot-green position-absolute top-0 start-100 translate-middle"></span>
+                            {/* <span className="dot dot-green position-absolute top-0 start-100 translate-middle"></span> */}
                           </span>
                         ) : (
                           // <span class="badge badge-pill badge-success">Success</span>
@@ -498,7 +498,7 @@ const WebsiteDetails = () => {
                               icon={faTimesCircle}
                               className="active-icon ms-1"
                             />
-                            <span className="dot dot-red dot-merged position-absolute top-0 start-100 translate-middle"></span>
+                            {/* <span className="dot dot-red dot-merged position-absolute top-0 start-100 translate-middle"></span> */}
                           </span>
                         )}
                       </div>
@@ -508,8 +508,8 @@ const WebsiteDetails = () => {
               </GridCard>
 
             </InfiniteScroll>
-          {/* </SingleCard> */}
-        {/* </div> */}
+          </SingleCard>
+        </div>
 
         <ModalWthWbl ID={Id} />
         <ModalAdWbl ID={Id} />
