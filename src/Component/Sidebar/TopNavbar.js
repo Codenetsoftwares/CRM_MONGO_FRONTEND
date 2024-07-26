@@ -23,7 +23,7 @@ const TopNavbar = ({ selectedMenuItem }) => {
     nav("/resetpassword");
   };
 
-  let heading = "";
+  let heading = "Dashboard";
 
   // Set heading based on selectedMenuItem
   if (selectedMenuItem === "dashboard") {
