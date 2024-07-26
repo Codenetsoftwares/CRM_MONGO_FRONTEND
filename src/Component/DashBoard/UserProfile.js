@@ -106,7 +106,7 @@ const UserProfile = () => {
           next={fetchMoreData}
           hasMore={hasMore}
           loader={<h4>Loading...</h4>}
-          height={750}
+          height={800}
           endMessage={
             <p style={{ textAlign: 'center' }}>
               <b>No more data to load</b>

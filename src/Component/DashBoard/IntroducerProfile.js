@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../Utils/Auth";
 import AccountService from "../../Services/AccountService";
 import { useNavigate, Link } from "react-router-dom";
@@ -19,6 +19,8 @@ import IntroducerPayment from "./IntroducerPayment";
 import Pagination from "../Pagination";
 import SingleCard from "../../common/singleCard";
 import GridCard from "../../common/gridCard";
+import { debounce } from "lodash";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const IntroducerProfile = () => {
   const auth = useAuth();
@@ -28,34 +30,85 @@ const IntroducerProfile = () => {
   const navigate = useNavigate();
   const [introducerName, setIntroducerName] = useState("");
   const [txType, setTxType] = useState("");
-  const [page, setPage] = useState(1)
-  const [pageNumber, setPageNumber] = useState("")
-  const [totalData, setTotalData] = useState(0)
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const RawFilterData = [];
 
 
-  // const handelinnerprofile =()=>{
-  //   navigate(`/innerprofile/${users._id}`);
-  // }
 
-  const handlePage = (page) => {
-    setPage(page);
-  }
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+    if (!event.target.value) {
+      setUsers([])
+    }
+  };
 
-  useEffect(() => {
-    AccountService.Introducerprofile(page, q, auth.user)
-      .then((res) => (setUsers(res.data.SecondArray), setPageNumber(res.data.pageNumber), setTotalData(res.data.allIntroDataLength))).catch(err => (setUsers([])))
-  }, [auth, page, q]);
-  console.log("users", users);
+  const fetchData = async (searchTerm = search, newPage = page) => {
+    try {
+      // setIsLoading(true);
+      const res = await AccountService.Introducerprofile(newPage, searchTerm, auth.user);
+      const filteredData = res.data.SecondArray.filter((item) => item !== null);
+      setUsers((prevUsers) =>
+        searchTerm.length > 0 ? filteredData : [...prevUsers, ...filteredData]
+      );
+      setHasMore(newPage < res.data.pageNumber);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      // setIsLoading(false);
+    }
+  };
 
   const handleLiveBl = (e, ID) => {
     e.preventDefault()
     setID(ID);
   };
 
-  console.log("Live Bl", ID);
+  // Debounced search handler using lodash
+  const debouncedSearchHandler = useCallback(
+    debounce((searchTerm) => {
+      setPage(1); // Reset page to 1 on new search
+      fetchData(searchTerm, 1);
+    }, 1300),
+    [] // Empty dependency array ensures stable function
+  );
 
+  useEffect(() => {
+    debouncedSearchHandler(search);
+
+    // Cleanup function to cancel debounce on unmount or change
+    return () => {
+      debouncedSearchHandler.cancel();
+    };
+  }, [search, debouncedSearchHandler]);
+
+  const fetchMoreData = () => {
+    if (hasMore) {
+      const nextPage = page + 1;
+      setPage(nextPage); // Increment page number
+      fetchData(search, nextPage);
+    }
+  };
+
+  useEffect(() => {
+    if (page > 1) {
+      fetchData(); // Fetch more data when page changes
+    }
+  }, [page, search]);
   return (
+    <InfiniteScroll
+      dataLength={users.length}
+      next={fetchMoreData}
+      hasMore={hasMore}
+      loader={<h4>Loading...</h4>}
+      height={800}
+      endMessage={
+        <p style={{ textAlign: 'center' }}>
+          <b>No more data to load</b>
+        </p>
+      }
+    >
     <SingleCard>
     <div className="m-3">
       <ToastContainer />
@@ -68,67 +121,61 @@ const IntroducerProfile = () => {
             id="search-form"
             className="search-input form-control"
             placeholder="Search User by Name"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
+            value={search}
+              onChange={handleSearch}
             aria-label="Sizing example input"
             aria-describedby="inputGroup-sizing-sm"
           />
         </div>
       </SingleCard>
-      {users.length > 0 ? (
-        <>
-          <GridCard columns={3} style={{ marginTop: '20px' }}>
-            {users.map((user, index) => (
-              <div className="col" key={index}>
-                <div className="card container-fluid mt-2 border-dark">
-                  <div className="card-body">
-                    <p className="text-bold">{user.userName}</p>
-                    <IntroducerPayment
-                      IntroducerName={user.userName}
-                      balance={user.balance.balance}
-                      duebalance={user.balance.currentDue}
-                      id={user._id}
-                    />
-                    <Link to={`/innerintroducer/${user._id}`} style={{ cursor: 'pointer' }}>
-                      <button type="button" className="btn btn-primary">
-                        NetWork &nbsp;
-                        <FontAwesomeIcon icon={faNetworkWired} />
-                      </button>
-                    </Link>
-                    <br />
-                    <Link to={`/singleintroducer/${user._id}`} style={{ cursor: 'pointer' }}>
-                      <button type="button" className="btn btn-info mt-2">
-                        Edit Profile &nbsp;
-                        <FontAwesomeIcon icon={faEdit} />
-                      </button>
-                    </Link>
-                    <br />
-                    <button
-                      type="button"
-                      className="btn btn-warning mt-2"
-                      data-toggle="modal"
-                      data-target="#LiveBalance"
-                      onClick={(e) => {
-                        handleLiveBl(e, user._id);
-                      }}
-                    >
-                      Total Profit Lifetime &nbsp;
-                      <FontAwesomeIcon icon={faBalanceScale} />
+        <GridCard columns={3} style={{ marginTop: '20px' }}>
+          {users.map((user, index) => (
+            <div className="col" key={index}>
+              <div className="card container-fluid mt-2 border-dark">
+                <div className="card-body">
+                  <p className="text-bold">{user.userName}</p>
+                  <IntroducerPayment
+                    IntroducerName={user.userName}
+                    balance={user.balance.balance}
+                    duebalance={user.balance.currentDue}
+                    id={user._id}
+                  />
+                  <Link to={`/innerintroducer/${user._id}`} style={{ cursor: 'pointer' }}>
+                    <button type="button" className="btn btn-primary">
+                      NetWork &nbsp;
+                      <FontAwesomeIcon icon={faNetworkWired} />
                     </button>
-                  </div>
+                  </Link>
+                  <br />
+                  <Link to={`/singleintroducer/${user._id}`} style={{ cursor: 'pointer' }}>
+                    <button type="button" className="btn btn-info mt-2">
+                      Edit Profile &nbsp;
+                      <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                  </Link>
+                  <br />
+                  <button
+                    type="button"
+                    className="btn btn-warning mt-2"
+                    data-toggle="modal"
+                    data-target="#LiveBalance"
+                    onClick={(e) => {
+                      handleLiveBl(e, user._id);
+                    }}
+                  >
+                    Total Profit Lifetime &nbsp;
+                    <FontAwesomeIcon icon={faBalanceScale} />
+                  </button>
                 </div>
               </div>
-            ))}
-          </GridCard>
-          <Pagination handlePage={handlePage} page={page} totalPage={pageNumber} totalData={totalData} perPagePagination={10} />
-        </>
-      ) : (
-        <h1 className="text-center mt-4">No Introducer Found</h1>
-      )}
+            </div>
+          ))}
+        </GridCard>
       {ID !== undefined && <LiveBalanceIntroducer ID={ID} />}
       <IntroducerTransaction TxType={txType} IntroducerName={introducerName} />
     </div>
   </SingleCard>
+  </InfiniteScroll>
   );
 };
 

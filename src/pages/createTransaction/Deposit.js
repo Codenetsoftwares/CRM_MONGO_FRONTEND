@@ -483,8 +483,8 @@ const Deposit = () => {
                   </div>
                 </Col>
               </Row>
-              <Button type="submit" variant="primary">
-                Submit
+              <Button variant="success" type="submit" className="w-100">
+                Create
               </Button>
             </Form>
           )}
