@@ -218,75 +218,80 @@ const WebsiteStatement = () => {
   };
 
   const handleDelete = (e, id, transactionType) => {
-    switch (transactionType) {
-      case "Deposit":
-        AccountService.SaveTransaction({ requestId: id }, auth.user)
+    let confirm = window.confirm(
+      "Are You Sure ? You Want To Delete This Transaction"
+    );
+    if (confirm) {
+      switch (transactionType) {
+        case "Deposit":
+          AccountService.SaveTransaction({ requestId: id }, auth.user)
 
-          .then((res) => {
-            toast.success("Transaction delete request sent to Super Admin");
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
-      case "Withdraw":
-        AccountService.SaveTransaction({ requestId: id }, auth.user)
-          .then((res) => {
-            toast.success("Transaction delete request sent to Super Admin");
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
+            .then((res) => {
+              toast.success("Transaction delete request sent to Super Admin");
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
+        case "Withdraw":
+          AccountService.SaveTransaction({ requestId: id }, auth.user)
+            .then((res) => {
+              toast.success("Transaction delete request sent to Super Admin");
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
 
-      case "Manual-Bank-Withdraw":
-        AccountService.SaveBankTransaction({ requestId: id }, auth.user)
+        case "Manual-Bank-Withdraw":
+          AccountService.SaveBankTransaction({ requestId: id }, auth.user)
 
-          .then((res) => {
-            toast.success(
-              "Bank Transaction delete request sent to Super Admin"
-            );
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
+            .then((res) => {
+              toast.success(
+                "Bank Transaction delete request sent to Super Admin"
+              );
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
 
-      case "Manual-Bank-Deposit":
-        AccountService.SaveBankTransaction({ requestId: id }, auth.user)
+        case "Manual-Bank-Deposit":
+          AccountService.SaveBankTransaction({ requestId: id }, auth.user)
 
-          .then((res) => {
-            toast.success(
-              "Website Transaction delete request sent to Super Admin"
-            );
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
+            .then((res) => {
+              toast.success(
+                "Website Transaction delete request sent to Super Admin"
+              );
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
 
-      case "Manual-Website-Withdraw":
-        AccountService.SaveWebsiteTransaction({ requestId: id }, auth.user)
-          .then((res) => {
-            toast.success(
-              "Website Transaction delete request sent to Super Admin"
-            );
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
-      case "Manual-Website-Deposit":
-        AccountService.SaveWebsiteTransaction({ requestId: id }, auth.user)
-          .then((res) => {
-            toast.success("Bank Transaction deleted");
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
-      default:
-      // code block
+        case "Manual-Website-Withdraw":
+          AccountService.SaveWebsiteTransaction({ requestId: id }, auth.user)
+            .then((res) => {
+              toast.success(
+                "Website Transaction delete request sent to Super Admin"
+              );
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
+        case "Manual-Website-Deposit":
+          AccountService.SaveWebsiteTransaction({ requestId: id }, auth.user)
+            .then((res) => {
+              toast.success("Bank Transaction deleted");
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
+        default:
+        // code block
+      }
     }
   };
 
@@ -480,11 +485,10 @@ const WebsiteStatement = () => {
                 padding: "20px",
                 transformStyle: "preserve-3d",
                 margin: "20px",
-                zIndex:"1000"
+                zIndex: "1000",
               }}
             >
               <div className="row g-2">
-                
                 <div className="col-12 col-md-3">
                   <h6 className="fw-bold text-light">Transaction</h6>
                   <select
@@ -516,7 +520,6 @@ const WebsiteStatement = () => {
                   </select>
                 </div>
 
-            
                 <div className="col-12 col-md-3">
                   <h6 className="fw-bold text-light">SubAdminlist</h6>
                   <select
@@ -540,7 +543,6 @@ const WebsiteStatement = () => {
                   </select>
                 </div>
 
-                
                 <div className="col-12 col-md-3">
                   <h6 className="fw-bold text-light">Range Of Amount</h6>
                   <div className="d-flex align-items-center">
@@ -605,7 +607,7 @@ const WebsiteStatement = () => {
                           border: "0.5px solid black",
                           borderRadius: "6px",
                           boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-                          right:"50px"
+                          right: "50px",
                         },
                       }}
                     />
@@ -613,7 +615,6 @@ const WebsiteStatement = () => {
                 </div>
               </div>
 
-             
               <div className="row g-2 mt-3">
                 <div className="col-12 d-flex justify-content-center flex-wrap">
                   <button
@@ -649,7 +650,7 @@ const WebsiteStatement = () => {
                   )}
                 </div>
               </div>
-            </div> 
+            </div>
           </SingleCard>
         </SingleCard>
 
@@ -1439,10 +1440,10 @@ const WebsiteStatement = () => {
                       </>
                     ) : (
                       <tr>
-                      <td colSpan="14" className="text-center fs-4">
-                        No Transaction Found!
-                      </td>
-                    </tr>
+                        <td colSpan="14" className="text-center fs-4">
+                          No Transaction Found!
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 </table>

@@ -60,7 +60,6 @@ const BankStatement = () => {
       nArr = nArr.filter((item) => item[key] === value);
     }
     setDocumentView(nArr);
-
   };
 
   const handleId = (e, id) => {
@@ -74,13 +73,12 @@ const BankStatement = () => {
         (res) => (
           setDocumentView(res.data),
           setAccountData(res.data),
-          setLength((res.data).length),
-          setTotalPage(Math.ceil((res.data).length) / 10)
+          setLength(res.data.length),
+          setTotalPage(Math.ceil(res.data.length) / 10)
         )
       )
       .catch((err) => {
         toast.error(err.response.data.message);
-
       });
   }, [id, auth]);
 
@@ -88,7 +86,6 @@ const BankStatement = () => {
     if (auth.user) {
       TransactionSercvice.subAdminList(auth.user).then((res) => {
         setSubAdminlist(res.data);
-      
       });
     }
   }, [auth]);
@@ -102,7 +99,7 @@ const BankStatement = () => {
   }, [auth]);
 
   useEffect(() => {
-    handleFilter()
+    handleFilter();
   }, [documentView]);
 
   useEffect(() => {
@@ -112,17 +109,15 @@ const BankStatement = () => {
   }, [auth]);
 
   const selectPageHandler = (selectedPage) => {
-  
-
     setPage(selectedPage);
   };
 
   const handleFilter = () => {
-    const sdate = moment(startDatevalue, 'DD-MM-YYYY HH:mm').toDate();
-    const edate = moment(endDatevalue, 'DD-MM-YYYY HH:mm').toDate();
+    const sdate = moment(startDatevalue, "DD-MM-YYYY HH:mm").toDate();
+    const edate = moment(endDatevalue, "DD-MM-YYYY HH:mm").toDate();
     console.log("sdate=====>", sdate);
-    console.log("edate=====>", edate)
-    console.log("documentView=====>", documentView)
+    console.log("edate=====>", edate);
+    console.log("documentView=====>", documentView);
     let filteredDocuments = documentView.filter((data) => {
       const transactionDate = new Date(data.createdAt);
       return transactionDate >= sdate && transactionDate <= edate;
@@ -131,22 +126,19 @@ const BankStatement = () => {
     if (minAmount !== 0 || maxAmount !== 0) {
       filteredDocuments = filteredDocuments.filter((transaction) => {
         return (
-          transaction.withdrawAmount >= minAmount &&
-          transaction.withdrawAmount <= maxAmount ||
-          transaction.depositAmount >= minAmount &&
-          transaction.depositAmount <= maxAmount ||
-          transaction.amount >= minAmount &&
-          transaction.amount <= maxAmount
-
+          (transaction.withdrawAmount >= minAmount &&
+            transaction.withdrawAmount <= maxAmount) ||
+          (transaction.depositAmount >= minAmount &&
+            transaction.depositAmount <= maxAmount) ||
+          (transaction.amount >= minAmount && transaction.amount <= maxAmount)
         );
-      }
-      );
-    };
-    console.log("filteredDocuments=======>", filteredDocuments)
+      });
+    }
+    console.log("filteredDocuments=======>", filteredDocuments);
     setDocumentFilter(filteredDocuments);
     setToggle(false);
     setPage(1);
-  }
+  };
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -190,83 +182,80 @@ const BankStatement = () => {
   };
 
   const handleDelete = (e, id, transactionType) => {
-  
-    switch (transactionType) {
-      case "Deposit":
-        AccountService.SaveTransaction({ requestId: id }, auth.user)
+    let confirm = window.confirm(
+      "Are You Sure ? You Want To Delete This Transaction"
+    );
+    if (confirm) {
+      switch (transactionType) {
+        case "Deposit":
+          AccountService.SaveTransaction({ requestId: id }, auth.user)
 
-          .then((res) => {
-          
+            .then((res) => {
+              toast.success("Transaction delete request sent to Super Admin");
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
+        case "Withdraw":
+          AccountService.SaveTransaction({ requestId: id }, auth.user)
+            .then((res) => {
+              toast.success("Transaction delete request sent to Super Admin");
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
 
-            toast.success("Transaction delete request sent to Super Admin");
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
-      case "Withdraw":
-        AccountService.SaveTransaction({ requestId: id }, auth.user)
-          .then((res) => {
-  
-            toast.success("Transaction delete request sent to Super Admin");
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
+        case "Manual-Bank-Withdraw":
+          AccountService.SaveBankTransaction({ requestId: id }, auth.user)
 
-      case "Manual-Bank-Withdraw":
-        AccountService.SaveBankTransaction({ requestId: id }, auth.user)
+            .then((res) => {
+              toast.success(
+                "Bank Transaction delete request sent to Super Admin"
+              );
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
 
-          .then((res) => {
-   
-            toast.success(
-              "Bank Transaction delete request sent to Super Admin"
-            );
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
+        case "Manual-Bank-Deposit":
+          AccountService.SaveBankTransaction({ requestId: id }, auth.user)
 
-      case "Manual-Bank-Deposit":
-        AccountService.SaveBankTransaction({ requestId: id }, auth.user)
+            .then((res) => {
+              toast.success(
+                "Website Transaction delete request sent to Super Admin"
+              );
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
 
-          .then((res) => {
-      
-            toast.success(
-              "Website Transaction delete request sent to Super Admin"
-            );
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
-
-      case "Manual-Website-Withdraw":
-        AccountService.SaveWebsiteTransaction({ requestId: id }, auth.user)
-          .then((res) => {
-      
-            toast.success(
-              "Website Transaction delete request sent to Super Admin"
-            );
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
-      case "Manual-Website-Deposit":
-        AccountService.SaveWebsiteTransaction({ requestId: id }, auth.user)
-          .then((res) => {
-
-            toast.success("Bank Transaction deleted");
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
-      default:
-      // code block
+        case "Manual-Website-Withdraw":
+          AccountService.SaveWebsiteTransaction({ requestId: id }, auth.user)
+            .then((res) => {
+              toast.success(
+                "Website Transaction delete request sent to Super Admin"
+              );
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
+        case "Manual-Website-Deposit":
+          AccountService.SaveWebsiteTransaction({ requestId: id }, auth.user)
+            .then((res) => {
+              toast.success("Bank Transaction deleted");
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
+        default:
+        // code block
+      }
     }
   };
 
@@ -282,7 +271,7 @@ const BankStatement = () => {
     setPage(1);
     setMinAmount(0);
     setMaxAmount(0);
-    window.location.reload()
+    window.location.reload();
   };
 
   const handleStartDatevalue = (e) => {
@@ -297,8 +286,8 @@ const BankStatement = () => {
   let lastPage = Math.ceil(documentView.length / 10);
   let filterReminder = documentFilter.length % 10;
   let filterLastPage = Math.ceil(documentFilter.length / 10);
-  let lastFilterPageReminder = documentView.length % 10 === !0
-  let lastPageReminder = documentFilter.length % 10 === !0
+  let lastFilterPageReminder = documentView.length % 10 === !0;
+  let lastPageReminder = documentFilter.length % 10 === !0;
 
   return (
     <>
@@ -464,7 +453,7 @@ const BankStatement = () => {
             </div>
           </div>
         </div> */}
-      <SingleCard>
+        <SingleCard>
           <SingleCard style={{ border: "1px solid #4682b4 " }}>
             <div
               className="card card-body rounded-4"
@@ -1005,7 +994,7 @@ const BankStatement = () => {
           // </div>
           <></>
         ) : (
-         <SingleCard className="card card-body rounded-8px mt-2">
+          <SingleCard className="card card-body rounded-8px mt-2">
             <SingleCard className="container-fluid w-90">
               <div
                 className="table-responsive"
@@ -1419,10 +1408,10 @@ const BankStatement = () => {
                       </>
                     ) : (
                       <tr>
-                      <td colSpan="14" className="text-center fs-4">
-                        No Transaction Found!
-                      </td>
-                    </tr>
+                        <td colSpan="14" className="text-center fs-4">
+                          No Transaction Found!
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 </table>

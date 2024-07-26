@@ -123,32 +123,41 @@ const IntroducerStatement = () => {
 
   const handleDelete = (e, id, transactionType) => {
     console.log(transactionType);
-    switch (transactionType) {
-      case "Deposit":
-        AccountService.DeleteIntroducerTransaction({ requestId: id }, auth.user)
+    let confirm = window.confirm("Are You Sure You Want to Active This Bank");
+    if (confirm) {
+      switch (transactionType) {
+        case "Deposit":
+          AccountService.DeleteIntroducerTransaction(
+            { requestId: id },
+            auth.user
+          )
 
-          .then((res) => {
-            console.log(res.data);
+            .then((res) => {
+              console.log(res.data);
 
-            toast.success("Transaction delete request sent to Super Admin");
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
-      case "Withdraw":
-        AccountService.DeleteIntroducerTransaction({ requestId: id }, auth.user)
-          .then((res) => {
-            console.log(res.data);
-            toast.success("Transaction delete request sent to Super Admin");
-          })
-          .catch((err) => {
-            toast.error(err.response.data.message);
-          });
-        break;
+              toast.success("Transaction delete request sent to Super Admin");
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
+        case "Withdraw":
+          AccountService.DeleteIntroducerTransaction(
+            { requestId: id },
+            auth.user
+          )
+            .then((res) => {
+              console.log(res.data);
+              toast.success("Transaction delete request sent to Super Admin");
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+            });
+          break;
 
-      default:
-      // code block
+        default:
+        // code block
+      }
     }
   };
 
@@ -441,9 +450,7 @@ const IntroducerStatement = () => {
 
                         <td>
                           {data.balance ? (
-                            <p className="col fs-6 ">
-                              {data.balance}
-                            </p>
+                            <p className="col fs-6 ">{data.balance}</p>
                           ) : (
                             "N.A"
                           )}
@@ -701,9 +708,7 @@ const IntroducerStatement = () => {
 
                         <td>
                           {data.balance ? (
-                            <p className="col fs-6 ">
-                              {data.balance}
-                            </p>
+                            <p className="col fs-6 ">{data.balance}</p>
                           ) : (
                             "N.A"
                           )}
