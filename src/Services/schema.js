@@ -93,3 +93,32 @@ export const CreateUserSchema = Yup.object({
   introducerPercentage: Yup.string(),
   confirmPassword: Yup.string(),
 });
+
+
+export const CreateSubAdminSchema = Yup.object().shape({
+  firstname: Yup.string()
+    .required('First name is required')
+    .min(2, 'First name must be at least 2 characters')
+    .max(50, 'First name must be at most 50 characters'),
+
+  lastname: Yup.string()
+    .required('Last name is required')
+    .min(2, 'Last name must be at least 2 characters')
+    .max(50, 'Last name must be at most 50 characters'),
+
+  userName: Yup.string()
+    .required('Username is required')
+    .min(3, 'Username must be at least 3 characters')
+    .max(20, 'Username must be at most 20 characters'),
+
+  password: Yup.string()
+    .required('Password is required')
+    .min(6, 'Password must be at least 6 characters')
+    .max(20, 'Password must be at most 20 characters'),
+
+  roles: Yup.array()
+    .of(Yup.string().required('Role is required'))
+    .min(1, 'At least one role is required'),
+});
+
+

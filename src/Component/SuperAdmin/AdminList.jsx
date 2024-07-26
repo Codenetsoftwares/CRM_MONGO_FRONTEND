@@ -33,7 +33,7 @@ const handleSearch = (event) => {
   const fetchData = async (searchTerm = search, newPage = page) => {
     try {
       setIsLoading(true);
-      const res = await AccountService.userprofile(
+      const res = await AccountService.getAdminList(
         newPage,
         searchTerm,
         auth.user
