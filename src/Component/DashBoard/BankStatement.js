@@ -465,6 +465,7 @@ const BankStatement = () => {
                 padding: "20px",
                 transformStyle: "preserve-3d",
                 margin: "20px",
+                zIndex:"1000"
               }}
             >
               <div className="row g-2">

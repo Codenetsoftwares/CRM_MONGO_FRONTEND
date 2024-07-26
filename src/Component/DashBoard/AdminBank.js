@@ -345,7 +345,7 @@ const AdminBank = () => {
                       >
                         <div className="card-body">
                           <p
-                            className="font-weight-bold fs-4"
+                            className="font-weight-bold fs-4 text-truncate"
                             style={{ color: "#708090" }}
                           >
                             {data.bankName}
