@@ -309,11 +309,12 @@ const AdminBank = () => {
         <div className="card-body  mt-2 mb-3">
           <SingleCard className="mb-2 p-4">
             <InfiniteScroll
+            style={{ overflowX: 'hidden' }}
               dataLength={getbankName.length}
               next={fetchMoreData}
               hasMore={hasMore}
               loader={<h4>Loading...</h4>}
-              height={650}
+              height={600}
               endMessage={
                 <p style={{ textAlign: "center" }}>
                   <b>No more data to load</b>

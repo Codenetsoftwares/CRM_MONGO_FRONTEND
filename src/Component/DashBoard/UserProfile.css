@@ -1,4 +1,4 @@
-.blinking-text {
+/* .blinking-text {
   animation: blink 1s linear infinite;
 }
 
@@ -12,4 +12,32 @@
   100% {
     opacity: 0.5;
   }
-}
+} */
+  /* grid card shadow on hover */
+  .card-hover-shadow {
+    transition: box-shadow 0.2s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    
+  }
+
+
+    /* buttons inside each grid card css */
+    .btn-hover-zoom {
+      transition: transform 0.2s ease-in-out;
+    }
+    
+    .btn-hover-zoom:hover {
+      transform: scale(2);
+    }
+    
+    .btn-steel-blue {
+      background-color: #4682b4;
+      color: white;
+      border: none;
+    }
+    .btn-steel-blue:hover {
+      background-color: #3b6e91;
+    }
+
+    
