@@ -8,26 +8,24 @@ const UserProfileView = ({ user }) => {
     <div>
       <div
         className="modal fade"
-        id="exampleModal"
+        id="exampleModalp"
         tabIndex="-1"
         role="dialog"
-        aria-labelledby="#modalprfview"
+        aria-pledby="#modalprfview"
         aria-hidden="true"
       >
         <div className="modal-dialog " role="document">
           <div className="modal-content" style={{ backgroundColor: "#4682b4" }}>
             <div className="modal-header">
-              <h5 className="modal-title text-white" id="exampleModalLabel">
+              <h5 className="modal-title text-white" id="exampleModalp">
                 USER PROFILE
               </h5>
               <button
                 type="button"
-                className="close"
+                className="btn-close"
                 data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
+                aria-p="Close"
+              ></button>
             </div>
             <div className="modal-body">
               <div className="container">
@@ -45,31 +43,29 @@ const UserProfileView = ({ user }) => {
                         marginBottom: "-55px", // Half of image height to overlap
                         filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.8))",
                         backgroundColor: "white",
-                        position: 'relative', // Ensure it has the proper z-index
+                        position: "relative", // Ensure it has the proper z-index
                         zIndex: 1, // Ensure it stacks above other elements
-                        // clipPath: "circle(50% at 50% 50%)", // Clip to the circular shape
-                        // mask: "url(#circle-mask)" // Apply mask to clip shadow effect
-                        // boxShadow: "0 8px 16px rgba(0, 0, 0, 0.8)" 
                       }}
                     />
                     {/* <h4 className="text-white mt-5">{user.userName}</h4> */}
                   </div>
                 </div>
                 <SingleCard
-                 className="single-card"
+                  className="single-card"
                   style={{
                     borderColor: "black",
                     borderStyle: "solid",
                     borderWidth: "2px",
                     filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.8))",
-                    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.8)" ,
+                    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.8)",
                     paddingTop: "20px", // Height of the image to push down content
-                    position: 'relative', // Ensure it has the proper z-index
+                    position: "relative", // Ensure it has the proper z-index
                     zIndex: 0, // Ensure it stacks below the image if needed
-                     boxShadow: "0 0 0 rgba(0, 0, 0, 0)"
+                    boxShadow: "0 0 0 rgba(0, 0, 0, 0)",
+                    // height:"25px"
                   }}
                 >
-                  <SingleCard  >
+                  <SingleCard >
                     <h5 className="text-dark">{user.userName} Details</h5>
                     <div className="row">
                       <div class="col-sm-3 text-truncate">
@@ -184,19 +180,9 @@ const UserProfileView = ({ user }) => {
                       </div>{" "}
                     </div>
                   </SingleCard>
-                 
                 </SingleCard>
               </div>
             </div>
-            {/* <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-            </div> */}
           </div>
         </div>
       </div>

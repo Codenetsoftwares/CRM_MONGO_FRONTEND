@@ -8,8 +8,19 @@ import SingleCard from "../../common/singleCard";
 import GridCard from "../../common/gridCard";
 import "./UserProfile.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBank, faEye, faFileAlt, faKey, faLock, faUser, faUserEdit } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBank,
+  faEye,
+  faFileAlt,
+  faKey,
+  faLock,
+  faUser,
+  faUserEdit,
+} from "@fortawesome/free-solid-svg-icons";
 import UserProfileView from "../Modal/UserProfileView";
+import UserResetPass from "../Modal/UserResetPass";
+import UserBank from "../Modal/userBank";
+import TransactionDetails from "./TransactionDetails";
 
 const UserProfile = () => {
   const auth = useAuth();
@@ -22,7 +33,12 @@ const UserProfile = () => {
   const [activeCard, setActiveCard] = useState(null);
   const [isHovered, setIsHovered] = useState(false); //for user edit icon
   const [profileView, setProfileView] = useState("");
+  const [bankViewEdit, setBankViewEdit] = useState("");
 
+
+  console.log("======>>> data", users);
+
+  const [username, setUsername] = useState([]); // for reset password
   const navigate = useNavigate();
 
   const handleCardClick = (id) => {
@@ -97,6 +113,27 @@ const UserProfile = () => {
     console.log(d);
 
     setProfileView(d);
+  };
+
+  const handleResetPassword = (e, username) => {
+    console.log("onclick username", username);
+    setUsername(username);
+  };
+
+  const handleBankVIewEdit = (e, bankid) => {
+    console.log("onclick of id", bankid);
+    setBankViewEdit(bankid);
+  };
+
+  const handleTransaction = (e, userName) => {
+    e.preventDefault();
+    console.log("Transaction for user:",userName);
+
+    navigate("/transactiondetails", 
+      {
+      state: { txndetails: users[0].transactionDetail },
+    }
+  );
   };
 
   return (
@@ -182,7 +219,7 @@ const UserProfile = () => {
                           type="button"
                           className="btn btn-steel-blue btn-sm btn-hover-zoom fs-4"
                           data-bs-toggle="modal"
-                          data-bs-target="#exampleModal"
+                          data-bs-target="#exampleModalp"
                           onClick={() => {
                             handleProfileView(user._id, user);
                           }}
@@ -198,7 +235,6 @@ const UserProfile = () => {
                         <div className="container">
                           <div className="row g-1 justify-content-center mt-5">
                             <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                              {/* <div className="col-6 col-sm-4 col-md-3 col-lg-2"> */}
                               <button
                                 type="button"
                                 className="btn btn-steel-blue btn-sm btn-hover-zoom"
@@ -214,50 +250,54 @@ const UserProfile = () => {
                               </button>
                             </div>
                             <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                                <button
-                                  type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
-                                  // onClick={(e) => {
-                                  //   handelstatement(e, data._id);
-                                  // }}
-                                  title="Bank Details & Edit"
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faBank}
-                                    className="add-icon"
-                                  />
-                                </button>
-                              </div>
-                              <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                                <button
-                                  type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
-                                  // onClick={(e) => {
-                                  //   handelstatement(e, data._id);
-                                  // }}
-                                  title="Transaction Details"
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faFileAlt}
-                                    className="add-icon"
-                                  />
-                                </button>
-                              </div>
-                              <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                                <button
-                                  type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
-                                  // onClick={(e) => {
-                                  //   handelstatement(e, data._id);
-                                  // }}
-                                  title="Reset Password"
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faKey}
-                                    className="add-icon"
-                                  />
-                                </button>
-                              </div>
+                              <button
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalbank"
+                                type="button"
+                                className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                onClick={(e) => {
+                                  handleResetPassword(e, user.userName);
+                                }}
+                                title="Reset Password"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faBank}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                onClick={(e) =>
+                                  handleTransaction(e, user.userName)
+                                }
+                                title="Transaction Details"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faFileAlt}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalreset"
+                                type="button"
+                                className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                onClick={(e) => {
+                                  handleResetPassword(e, user.userName);
+                                }}
+                                title="Reset Password"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faKey}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -269,6 +309,8 @@ const UserProfile = () => {
           </SingleCard>
         </div>
         <UserProfileView user={profileView} />
+        <UserResetPass UserName={username} />
+        <UserBank />
       </div>
     </div>
   );

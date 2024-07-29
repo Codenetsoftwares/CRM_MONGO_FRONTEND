@@ -460,7 +460,7 @@ const AppRoutes = () => {
             path="transactiondetails"
             element={
               <RequireAuth>
-                <TransactionDetails />
+                <TransactionDetails/>
               </RequireAuth>
             }
           />
