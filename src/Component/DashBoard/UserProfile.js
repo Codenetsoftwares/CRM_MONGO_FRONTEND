@@ -6,6 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { debounce } from "lodash";
 import SingleCard from "../../common/singleCard";
 import GridCard from "../../common/gridCard";
+import { Oval } from 'react-loader-spinner'; // Import the Oval spinner
 
 const UserProfile = () => {
   const auth = useAuth();
@@ -20,15 +21,21 @@ const UserProfile = () => {
   const handleSearch = (event) => {
     setSearch(event.target.value);
     if (!event.target.value) {
-      setUsers([])
+      setUsers([]);
     }
   };
 
   const fetchData = async (searchTerm = search, newPage = page) => {
     try {
       setIsLoading(true);
-      const res = await AccountService.userprofile(newPage, searchTerm, auth.user);
-      const filteredData = res.data.SecondArray.filter((item) => item !== null);
+      const res = await AccountService.userprofile(
+        newPage,
+        searchTerm,
+        auth.user
+      );
+      const filteredData = res.data.SecondArray.filter(
+        (item) => item !== null
+      );
       setUsers((prevUsers) =>
         searchTerm.length > 0 ? filteredData : [...prevUsers, ...filteredData]
       );
@@ -79,9 +86,6 @@ const UserProfile = () => {
   return (
     <SingleCard>
       <div className="m-3">
-        {/* <h1 className="d-flex justify-content-center fs-3 text-bold">
-          USER PROFILE
-        </h1> */}
         <SingleCard>
           <div className="input-group input-group-sm">
             <button type="button" className="btn btn-primary">
@@ -105,10 +109,25 @@ const UserProfile = () => {
           dataLength={users.length}
           next={fetchMoreData}
           hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
+          loader={ // Use the spinner here
+            <div className="d-flex justify-content-center align-items-center" style={{ height: "80vh" }}>
+              <Oval
+                height={40}
+                width={40}
+                color="#4fa94d"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                ariaLabel="oval-loading"
+                secondaryColor="#4fa94d"
+                strokeWidth={2}
+                strokeWidthSecondary={2}
+              />
+            </div>
+          }
           height={800}
           endMessage={
-            <p style={{ textAlign: 'center' }}>
+            <p style={{ textAlign: "center" }}>
               <b>No more data to load</b>
             </p>
           }
@@ -123,7 +142,7 @@ const UserProfile = () => {
                         onClick={() => {
                           handleInnerProfile(user._id);
                         }}
-                        style={{ color: 'blue', cursor: 'pointer' }}
+                        style={{ color: "blue", cursor: "pointer" }}
                       >
                         <span
                           className="d-flex justify-content-center"
@@ -133,7 +152,7 @@ const UserProfile = () => {
                         </span>
                         <span
                           className="d-flex justify-content-center text-warning"
-                          style={{ fontSize: '25px' }}
+                          style={{ fontSize: "25px" }}
                         >
                           &#8679;
                         </span>

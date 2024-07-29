@@ -21,6 +21,7 @@ import SingleCard from "../../common/singleCard";
 import GridCard from "../../common/gridCard";
 import { debounce } from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Oval } from "react-loader-spinner"; // Import the Oval spinner
 
 const IntroducerProfile = () => {
   const auth = useAuth();
@@ -35,33 +36,34 @@ const IntroducerProfile = () => {
   const [hasMore, setHasMore] = useState(true);
   const RawFilterData = [];
 
-
-
   const handleSearch = (event) => {
     setSearch(event.target.value);
     if (!event.target.value) {
-      setUsers([])
+      setUsers([]);
     }
   };
 
   const fetchData = async (searchTerm = search, newPage = page) => {
     try {
-      // setIsLoading(true);
-      const res = await AccountService.Introducerprofile(newPage, searchTerm, auth.user);
-      const filteredData = res.data.SecondArray.filter((item) => item !== null);
+      const res = await AccountService.Introducerprofile(
+        newPage,
+        searchTerm,
+        auth.user
+      );
+      const filteredData = res.data.SecondArray.filter(
+        (item) => item !== null
+      );
       setUsers((prevUsers) =>
         searchTerm.length > 0 ? filteredData : [...prevUsers, ...filteredData]
       );
       setHasMore(newPage < res.data.pageNumber);
     } catch (error) {
       console.error("Error fetching data:", error);
-    } finally {
-      // setIsLoading(false);
     }
   };
 
   const handleLiveBl = (e, ID) => {
-    e.preventDefault()
+    e.preventDefault();
     setID(ID);
   };
 
@@ -96,86 +98,109 @@ const IntroducerProfile = () => {
       fetchData(); // Fetch more data when page changes
     }
   }, [page, search]);
+
   return (
     <InfiniteScroll
       dataLength={users.length}
       next={fetchMoreData}
       hasMore={hasMore}
-      loader={<h4>Loading...</h4>}
+      loader={
+        // Center the spinner
+        <div className="d-flex justify-content-center align-items-center" style={{ height: "80vh" }}>
+          <Oval
+            height={50}
+            width={50}
+            color="#4fa94d"
+            visible={true}
+            ariaLabel="oval-loading"
+            secondaryColor="#4fa94d"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+          />
+        </div>
+      }
       height={800}
       endMessage={
-        <p style={{ textAlign: 'center' }}>
+        <p style={{ textAlign: "center" }}>
           <b>No more data to load</b>
         </p>
       }
     >
-    <SingleCard>
-    <div className="m-3">
-      <ToastContainer />
-      {/* <h1 className="d-flex justify-content-center fs-3 text-bold">INTRODUCER PROFILE</h1> */}
       <SingleCard>
-        <div className="input-group input-group-sm">
-          <input
-            type="search"
-            name="search-form"
-            id="search-form"
-            className="search-input form-control"
-            placeholder="Search User by Name"
-            value={search}
-              onChange={handleSearch}
-            aria-label="Sizing example input"
-            aria-describedby="inputGroup-sizing-sm"
+        <div className="m-3">
+          <ToastContainer />
+          <SingleCard>
+            <div className="input-group input-group-sm">
+              <input
+                type="search"
+                name="search-form"
+                id="search-form"
+                className="search-input form-control"
+                placeholder="Search User by Name"
+                value={search}
+                onChange={handleSearch}
+                aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-sm"
+              />
+            </div>
+          </SingleCard>
+          <GridCard columns={3} style={{ marginTop: "20px" }}>
+            {users.map((user, index) => (
+              <div className="col" key={index}>
+                <div className="card container-fluid mt-2 border-dark">
+                  <div className="card-body">
+                    <p className="text-bold">{user.userName}</p>
+                    <IntroducerPayment
+                      IntroducerName={user.userName}
+                      balance={user.balance.balance}
+                      duebalance={user.balance.currentDue}
+                      id={user._id}
+                    />
+                    <Link
+                      to={`/innerintroducer/${user._id}`}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <button type="button" className="btn btn-primary">
+                        NetWork &nbsp;
+                        <FontAwesomeIcon icon={faNetworkWired} />
+                      </button>
+                    </Link>
+                    <br />
+                    <Link
+                      to={`/singleintroducer/${user._id}`}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <button type="button" className="btn btn-info mt-2">
+                        Edit Profile &nbsp;
+                        <FontAwesomeIcon icon={faEdit} />
+                      </button>
+                    </Link>
+                    <br />
+                    <button
+                      type="button"
+                      className="btn btn-warning mt-2"
+                      data-toggle="modal"
+                      data-target="#LiveBalance"
+                      onClick={(e) => {
+                        handleLiveBl(e, user._id);
+                      }}
+                    >
+                      Total Profit Lifetime &nbsp;
+                      <FontAwesomeIcon icon={faBalanceScale} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </GridCard>
+          {ID !== undefined && <LiveBalanceIntroducer ID={ID} />}
+          <IntroducerTransaction
+            TxType={txType}
+            IntroducerName={introducerName}
           />
         </div>
       </SingleCard>
-        <GridCard columns={3} style={{ marginTop: '20px' }}>
-          {users.map((user, index) => (
-            <div className="col" key={index}>
-              <div className="card container-fluid mt-2 border-dark">
-                <div className="card-body">
-                  <p className="text-bold">{user.userName}</p>
-                  <IntroducerPayment
-                    IntroducerName={user.userName}
-                    balance={user.balance.balance}
-                    duebalance={user.balance.currentDue}
-                    id={user._id}
-                  />
-                  <Link to={`/innerintroducer/${user._id}`} style={{ cursor: 'pointer' }}>
-                    <button type="button" className="btn btn-primary">
-                      NetWork &nbsp;
-                      <FontAwesomeIcon icon={faNetworkWired} />
-                    </button>
-                  </Link>
-                  <br />
-                  <Link to={`/singleintroducer/${user._id}`} style={{ cursor: 'pointer' }}>
-                    <button type="button" className="btn btn-info mt-2">
-                      Edit Profile &nbsp;
-                      <FontAwesomeIcon icon={faEdit} />
-                    </button>
-                  </Link>
-                  <br />
-                  <button
-                    type="button"
-                    className="btn btn-warning mt-2"
-                    data-toggle="modal"
-                    data-target="#LiveBalance"
-                    onClick={(e) => {
-                      handleLiveBl(e, user._id);
-                    }}
-                  >
-                    Total Profit Lifetime &nbsp;
-                    <FontAwesomeIcon icon={faBalanceScale} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </GridCard>
-      {ID !== undefined && <LiveBalanceIntroducer ID={ID} />}
-      <IntroducerTransaction TxType={txType} IntroducerName={introducerName} />
-    </div>
-  </SingleCard>
-  </InfiniteScroll>
+    </InfiniteScroll>
   );
 };
 
