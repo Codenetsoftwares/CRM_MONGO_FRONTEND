@@ -136,4 +136,4 @@ const UserBank = () => {
   );
 };
 
-export default userBank;
+export default UserBank;
