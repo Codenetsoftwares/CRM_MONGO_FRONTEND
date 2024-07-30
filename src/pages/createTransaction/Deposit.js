@@ -8,6 +8,7 @@ import { useAuth } from "../../Utils/Auth";
 import DashService from "../../Services/DashService";
 import FullScreenLoader from "../../Component/FullScreenLoader";
 import { debounce } from "lodash";
+import { toast } from "react-toastify";
 
 const Deposit = () => {
   const initialValues = {
@@ -167,7 +168,7 @@ const Deposit = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, { resetForm }) => {
     // Convert amount from string to number
     values.amount = parseFloat(values.amount); // Or use parseInt if it should be an integer
     console.log("values", values);
@@ -179,14 +180,14 @@ const Deposit = () => {
       DashService.CreateTransactionDeposit(values, auth.user)
         .then((response) => {
           console.log(response.data);
-          alert("Transaction Created Successfully!!");
+          toast.success("Transaction Created Successfully!!");
           setIsLoading(false);
-          window.location.reload();
+          resetForm();
         })
         .catch((error) => {
           setIsLoading(false);
           console.error(error);
-          alert(error.response.data.message);
+          toast.error(error.response.data.message);
         });
     }
   };
@@ -236,9 +237,8 @@ const Deposit = () => {
                         {filteredUserNameOptions.map((option, index) => (
                           <div
                             key={option.userName}
-                            className={`dropdown-item ${
-                              index === activeIndex ? "active" : ""
-                            }`}
+                            className={`dropdown-item ${index === activeIndex ? "active" : ""
+                              }`}
                             onClick={() => handleOptionClick(option, setFieldValue)}
                           >
                             {option.userName}
@@ -270,7 +270,7 @@ const Deposit = () => {
                     />
                   </div>
                 </Col>
-              
+
               </Row>
               <Row className="mb-3">
                 <Col md={6}>
@@ -405,7 +405,7 @@ const Deposit = () => {
                     />
                   </div>
                 </Col>
-               
+
               </Row>
               <Row className="mb-3">
                 <Col md={6}>
