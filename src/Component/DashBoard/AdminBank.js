@@ -9,8 +9,6 @@ import {
   faFileAlt,
   faMinus,
   faEye,
-  faStar,
-  faTimes,
   faCheckCircle,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
@@ -18,41 +16,37 @@ import InnerBank from "../InnerBank";
 import { Link, useNavigate } from "react-router-dom";
 import ModalAddBl from "../Modal/ModalAddBl";
 import ModalWthBl from "../Modal/ModalWthBl";
-import ModalBkdl from "../Modal/ModalBkdl";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import SubAdminBank from "../Modal/SubAdminBank";
-import Pagination from "../Pagination";
-import ShimmerEffect from "../ShimmerEffect";
 import RenewBankPermission from "../Modal/RenewBankPermission";
 import GridCard from "../../common/gridCard";
 import SingleCard from "../../common/singleCard";
 import "./AdminBank.css";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { debounce } from "lodash";
-// import { useParams } from "react-router";
+
 const AdminBank = () => {
   const navigate = useNavigate();
   const auth = useAuth();
+
+  // State declarations
   const [bankName, setBankName] = useState("");
   const [getbankName, setGetBankName] = useState([]);
   const [Id, setId] = useState();
   const [SId, setSId] = useState();
-  const [IdWithdraw, setIdWithdraw] = useState();
   const [SubAdmins, setSubAdmins] = useState([]);
-  const [documentView, setDocumentView] = useState([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
-  const [search, setSearch] = useState(""); // usestate for search state
+  const [search, setSearch] = useState("");
   const [hoveredCard, setHoveredCard] = useState(null);
   const [activeCard, setActiveCard] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const [tempResponse, setTempResponse] = useState("");
+  const [refresh, setRefresh] = useState(false);
 
-  console.log("========>>>> bankName details", getbankName);
-
-  // const { id } = useParams();
+  console.log("========>>>> bankName details", refresh);
 
   const handleCardClick = (id) => {
     setActiveCard(id);
@@ -72,7 +66,7 @@ const AdminBank = () => {
         console.log("res", res);
         if (res.status === 200) {
           toast.success("Bank registered successfully!");
-          Window.location.reload();
+          window.location.reload();
         } else {
           toast.error("Something Went Wrong!!");
         }
@@ -119,21 +113,16 @@ const AdminBank = () => {
     );
 
     if (userConfirmed) {
-      // console.log(data)
       AccountService.deletebank({ requestId: id }, auth.user)
         .then((res) => {
-          // console.log(response.data);
           if (res.status === 200) {
             alert(res.data.message);
-            // alert("Bank Deleted approval sent!");
             window.location.reload();
           }
         })
         .catch((error) => {
           alert(error.response.data.message);
           console.log(error);
-          // toast.error(error);
-          // alert.error("e.message");
         });
     }
   };
@@ -145,12 +134,6 @@ const AdminBank = () => {
       setGetBankName((prev) =>
         searchTerm.length > 0 ? res.data.data : [...prev, ...res.data.data]
       );
-      console.log(
-        "first",
-        searchTerm.length > 0
-          ? res.data.data
-          : (prev) => [...prev, ...res.data.data]
-      );
       setHasMore(page < res.data.pagination.totalPages);
       setTotalPage(res.data.pagination.totalPages);
     } catch (error) {
@@ -160,7 +143,6 @@ const AdminBank = () => {
     }
   };
 
-  // Debounced search handler using lodash
   // Debounced search handler using lodash
   const debouncedSearchHandler = useCallback(
     debounce((searchTerm) => {
@@ -172,7 +154,6 @@ const AdminBank = () => {
   useEffect(() => {
     debouncedSearchHandler(search);
 
-    // Cleanup function to cancel debounce on unmount or change
     return () => {
       debouncedSearchHandler.cancel();
     };
@@ -186,10 +167,6 @@ const AdminBank = () => {
     setSubAdmins(SubAdmins);
     setSId(ID);
   };
-
-  // const handelWithdrawId = (id) => {
-  //   setIdWithdraw(id);
-  // };
 
   const handelActive = (ID) => {
     let confirm = window.confirm("Are You Sure You Want to Active This Bank");
@@ -232,11 +209,11 @@ const AdminBank = () => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, [search, tempResponse]);  // jsx is not changing as per res after render
+  // Refresh data whenever `refresh` changes
+  useEffect(() => {
+    fetchData();
+  }, [refresh]);
 
-  // for search input field handled from frontend   to be done by serverside
   const fetchMoreData = () => {
     if (hasMore) {
       setPage((prevPage) => prevPage + 1); // Increment page number
@@ -248,6 +225,7 @@ const AdminBank = () => {
       fetchData(); // Fetch more data when page changes
     }
   }, [page]);
+
   return (
     <div className="bg-white">
       <div
@@ -289,7 +267,6 @@ const AdminBank = () => {
               </h5>
               <div
                 className="input-icon-web-add position-absolute top-50 translate-middle-y d-flex align-items-center justify-content-center rounded-circle"
-                // onClick={handleSubmit}
                 data-bs-toggle="modal"
                 data-bs-target="#innerbnk"
                 style={{
@@ -306,7 +283,7 @@ const AdminBank = () => {
             </div>
           </div>
         </SingleCard>
-        <div className="card-body  mt-2 mb-3">
+        <div className="card-body mt-2 mb-3">
           <SingleCard className="mb-2 p-4">
             <InfiniteScroll
               dataLength={getbankName.length}
@@ -323,7 +300,6 @@ const AdminBank = () => {
               <br></br>
               <GridCard columns={2}>
                 {getbankName.map((data) => {
-                  console.log("====>>> data", data);
                   return (
                     <div
                       key={data._id}
@@ -332,9 +308,8 @@ const AdminBank = () => {
                       onMouseLeave={() => setHoveredCard(null)}
                     >
                       <div
-                        className={`card d-flex justify-content-between ${
-                          hoveredCard === data._id ? "card-hover-shadow" : ""
-                        }`}
+                        className={`card d-flex justify-content-between ${hoveredCard === data._id ? "card-hover-shadow" : ""
+                          }`}
                         style={{
                           borderRadius: "20px",
                           height: "200px",
@@ -351,8 +326,7 @@ const AdminBank = () => {
                             {data.bankName}
                             <br />
                             <span className="fs-5" style={{ color: "#A9A9A9" }}>
-                              Balance:
-                              {data.balance}
+                              Balance: {data.balance}
                             </span>
                           </p>
                           <div className="container">
@@ -471,7 +445,7 @@ const AdminBank = () => {
                           {data.isActive === true ? (
                             <span
                               type="button"
-                              className="badge-pill badge-success   btn-hover-scale   "
+                              className="badge-pill badge-success btn-hover-scale"
                               title="Active"
                               onClick={() => {
                                 handelInactive(data._id);
@@ -482,12 +456,11 @@ const AdminBank = () => {
                                 icon={faCheckCircle}
                                 className="active-icon ms-1"
                               />
-                              {/* <span className="status-dot status-dot-green position-absolute top-0 start-100 translate-middle"></span> */}
                             </span>
                           ) : (
                             <span
                               type="button"
-                              className="badge-pill badge-secondary  btn-hover-scale"
+                              className="badge-pill badge-secondary btn-hover-scale"
                               title="Inactive"
                               onClick={() => {
                                 handelActive(data._id);
@@ -498,7 +471,6 @@ const AdminBank = () => {
                                 icon={faTimesCircle}
                                 className="active-icon ms-1"
                               />
-                              {/* <span className="status-dot status-dot-red dot-merged position-absolute top-0 start-100 translate-middle"></span> */}
                             </span>
                           )}
                         </div>
@@ -513,7 +485,7 @@ const AdminBank = () => {
 
         <ModalAddBl ID={Id} />
         <ModalWthBl ID={Id} />
-        <InnerBank />
+        <InnerBank setRefresh={setRefresh} />
         <SubAdminBank ID={Id} />
         <RenewBankPermission SubAdmins={SubAdmins} ID={SId} />
       </div>

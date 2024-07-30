@@ -3,7 +3,7 @@ import { useAuth } from "../Utils/Auth";
 import AccountService from "../Services/AccountService";
 import { toast } from "react-toastify";
 
-const InnerBank = ({ getbankName }) => {
+const InnerBank = ({ setRefresh }) => {
   const [bname, setBname] = useState("");
   const [accno, setAccno] = useState("");
   const [ifsc, setIfsc] = useState("");
@@ -58,9 +58,9 @@ const InnerBank = ({ getbankName }) => {
     AccountService.addBank(data, auth.user)
       .then((response) => {
         console.log("bank", response.data);
-        alert(response.data.message);
-        // alert("Bank Added Sucessfully");
-        window.location.reload();
+        toast.success(response.data.message);
+        // Update refresh state in AdminBank
+        setRefresh((prev) => !prev); // Trigger a state change
       })
       .catch((error) => {
         alert(error.response.data.message);
