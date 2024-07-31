@@ -31,6 +31,7 @@ import "./IntroducerProfile.css";
 import IntroducerProfileView from "../Modal/IntroducerProfileView";
 
 import { Oval } from "react-loader-spinner"; // Import the Oval spinner
+import InfiniteScroll from "react-infinite-scroll-component";
 
 
 const IntroducerProfile = ({ data }) => {
@@ -191,7 +192,7 @@ const IntroducerProfile = ({ data }) => {
         </div>
       }
               hasMore={hasMore}
-              loader={<h4 className="mt-4">Loading...</h4>}
+            
               height={600}
               endMessage={
                 <p style={{ textAlign: "center" }}>

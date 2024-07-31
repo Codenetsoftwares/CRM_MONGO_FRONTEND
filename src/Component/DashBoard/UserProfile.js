@@ -222,7 +222,7 @@ const UserProfile = () => {
                 </p>
               }
             >
-                <SingleCard className="mt-3">
+            
               <GridCard columns={3}>
                 {users.map((user, index) => (
                   <div
