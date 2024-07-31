@@ -13,6 +13,7 @@ import IntroducerDepositTransaction from "../Modal/IntroducerDepositTransaction"
 import IntroducerWithdrawTransaction from "../Modal/IntroducerWithdrawTransaction";
 
 const IntroducerPayment = ({ IntroducerName, balance, id, duebalance }) => {
+  console.log('===> id from IntroducerPayment ',IntroducerName)
   const navigate = useNavigate();
   //   const [introducerName, setIntroducerName] = useState("");
   const [txType, setTxType] = useState("");
@@ -33,7 +34,7 @@ const IntroducerPayment = ({ IntroducerName, balance, id, duebalance }) => {
       <div class="card-body">
         <div class="card d-flex justify-content-between">
           <div class="card-body ">
-            <p className="font-weight-bold d-flex justify-content-center">
+            {/* <p className="font-weight-bold d-flex justify-content-center">
               <br />
               <p className="font-weight-bold">
                 Payment Done Lifetime
@@ -43,7 +44,7 @@ const IntroducerPayment = ({ IntroducerName, balance, id, duebalance }) => {
                   Current Due:{duebalance}
                 </p>
               </p>
-            </p>
+            </p> */}
             <div className=" d-flex justify-content-center gap-1">
               <button
                 type="button"

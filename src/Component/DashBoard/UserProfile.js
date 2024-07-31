@@ -170,7 +170,7 @@ const UserProfile = () => {
 
             <div className="flex-grow-1  ml-4 mr-5">
               <input
-                type="text"
+                type="search"
                 className="form-control rounded-pill shadow"
                 placeholder="Search User By Name..."
                 value={search}
@@ -218,8 +218,8 @@ const UserProfile = () => {
                         <button
                           type="button"
                           className="btn btn-steel-blue btn-sm btn-hover-zoom fs-4"
-                          data-bs-toggle="modal"
-                          data-bs-target="#exampleModalp"
+                          data-toggle="modal"
+                          data-target="#exampleModalp"
                           onClick={() => {
                             handleProfileView(user._id, user);
                           }}
