@@ -7,6 +7,7 @@ import { debounce } from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
 import SingleCard from "../../common/singleCard";
 import GridCard from "../../common/gridCard";
+import { Oval } from "react-loader-spinner";
 
 
 const AdminList = () => {
@@ -114,67 +115,85 @@ const handleSearch = (event) => {
 
   return (
     <SingleCard>
-    <div className="card container">
-      <div className="card-header border-transparent">
-        {/* <h3 className="d-flex justify-content-center fs-3 text-bold">
+      <div className="card container">
+        <div className="card-header border-transparent">
+          {/* <h3 className="d-flex justify-content-center fs-3 text-bold">
           LIST OF SUB-ADMIN
         </h3> */}
-      </div>
-      <SingleCard>
-        <div className="input-group input-group-sm mb-3 p-3">
-          <input
-            type="search"
-            name="search-form"
-            id="search-form"
-            className="search-input form-control"
-            placeholder="Search User by Name"
-            value={search}
-            onChange={handleSearch}
-            aria-label="Sizing example input"
-            aria-describedby="inputGroup-sizing-sm"
-          />
         </div>
-      </SingleCard>
-      <InfiniteScroll
-        dataLength={adminList.length}
-        next={fetchMoreData}
-        hasMore={hasMore}
-        loader={<h4>Loading...</h4>}
-        height={750}
-        endMessage={
-          <p style={{ textAlign: 'center' }}>
-            <b>No more data to load</b>
-          </p>
-        }
-      >
-        <GridCard columns={3}>
-          {adminList.map((data, i) => (
-            <div className="col" key={data?._id}>
-              <div className="card container mt-2">
-                <div className="card-body">
-                  <div className="d-flex justify-content-between">
-                    <div className="text-left">
-                      <h5 className="fs-6">{i + 1}.</h5>
-                    </div>
-                    <div>
-                      <h5 className="fs-5 text-nowrap">{data?.userName}</h5>
-                    </div>
-                    <div>
-                      <Link to={`/subadminedit/${data?._id}`}>
-                        <button type="button" className="btn btn-info">
-                          Details
-                        </button>
-                      </Link>
+        <SingleCard>
+          <div className="input-group input-group-sm mb-3 p-3">
+            <input
+              type="search"
+              name="search-form"
+              id="search-form"
+              className="search-input form-control"
+              placeholder="Search User by Name"
+              value={search}
+              onChange={handleSearch}
+              aria-label="Sizing example input"
+              aria-describedby="inputGroup-sizing-sm"
+            />
+          </div>
+        </SingleCard>
+        <InfiniteScroll
+          dataLength={adminList.length}
+          next={fetchMoreData}
+          hasMore={hasMore}
+          loader={
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "80vh" }}
+            >
+              <Oval
+                height={40}
+                width={40}
+                color="#4fa94d"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                ariaLabel="oval-loading"
+                secondaryColor="#4fa94d"
+                strokeWidth={2}
+                strokeWidthSecondary={2}
+              />
+            </div>
+          }
+          height={750}
+          endMessage={
+            <p style={{ textAlign: "center" }}>
+              <b>No more data to load</b>
+            </p>
+          }
+        >
+          <GridCard columns={3}>
+            {adminList.map((data, i) => (
+              <div className="col" key={data?._id}>
+                <div className="card container mt-2">
+                  <div className="card-body">
+                    <div className="d-flex justify-content-between">
+                      <div className="text-left">
+                        <h5 className="fs-6">{i + 1}.</h5>
+                      </div>
+                      <div>
+                        <h5 className="fs-5 text-nowrap">{data?.userName}</h5>
+                      </div>
+                      <div>
+                        <Link to={`/subadminedit/${data?._id}`}>
+                          <button type="button" className="btn btn-info">
+                            Details
+                          </button>
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </GridCard>
-      </InfiniteScroll>
-    </div>
-  </SingleCard>
+            ))}
+          </GridCard>
+        </InfiniteScroll>
+      </div>
+    </SingleCard>
   );
 };
 export default AdminList;

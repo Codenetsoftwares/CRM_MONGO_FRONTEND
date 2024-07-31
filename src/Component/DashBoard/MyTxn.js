@@ -199,7 +199,7 @@ const MyTxn = () => {
   };
 
   const handleDelete = (e, id, transactionType) => {
-    let confirm = window.confirm("Are You Sure You Want to Active This Bank");
+    let confirm = window.confirm("Are You Sure You Want to Delete This Transaction");
     if (confirm) {
       TransactionSercvice.MoveTrashIntroducerTransaction(
         { requestId: id },
