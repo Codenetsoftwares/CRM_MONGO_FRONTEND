@@ -571,19 +571,19 @@ const InnerUserProfile = () => {
                           disabled={!isEditing}
                         />
                       </div>
-                      <button
+                      {/* <button
                         className="btn btn-link"
                         onClick={toggleAccordion}
                       >
                         Payment Details
-                      </button>
+                      </button> */}
 {/* transaction details commented */}
-                      <p
+                      {/* <p
                         className="btn btn-link pt-4"
-                        // onClick={Handletransaction}
+                        onClick={Handletransaction}
                       >
                         Transaction Details
-                      </p>
+                      </p> */}
                       {isAccordionOpen && (
                         <div className="accordion">
                           <div className="accordion-item">

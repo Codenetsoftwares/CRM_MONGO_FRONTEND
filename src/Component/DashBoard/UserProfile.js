@@ -35,7 +35,6 @@ const UserProfile = () => {
   const [profileView, setProfileView] = useState("");
   const [bankViewEdit, setBankViewEdit] = useState("");
 
-
   console.log("======>>> data", users);
 
   const [username, setUsername] = useState([]); // for reset password
@@ -127,13 +126,11 @@ const UserProfile = () => {
 
   const handleTransaction = (e, userName) => {
     e.preventDefault();
-    console.log("Transaction for user:",userName);
+    console.log("Transaction for user:", userName);
 
-    navigate("/transactiondetails", 
-      {
+    navigate("/transactiondetails", {
       state: { txndetails: users[0].transactionDetail },
-    }
-  );
+    });
   };
 
   return (
@@ -258,7 +255,7 @@ const UserProfile = () => {
                                 onClick={(e) => {
                                   handleResetPassword(e, user.userName);
                                 }}
-                                title="Reset Password"
+                                title="Bank Details & Edit"
                               >
                                 <FontAwesomeIcon
                                   icon={faBank}

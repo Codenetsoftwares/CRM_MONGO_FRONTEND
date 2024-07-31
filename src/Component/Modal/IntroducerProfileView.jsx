@@ -1,7 +1,7 @@
 import React from "react";
 import SingleCard from "../../common/singleCard";
 
-const IntroducerProfileView = ({data, onClose}) => {
+const IntroducerProfileView = ({data}) => {
     console.log('===>>>> data',data)
 
   return (
