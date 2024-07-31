@@ -24,11 +24,14 @@ import Pagination from "../Pagination";
 import SingleCard from "../../common/singleCard";
 import GridCard from "../../common/gridCard";
 import { debounce } from "lodash";
-import InfiniteScroll from "react-infinite-scroll-component";
+
 import IntroducerDepositTransaction from "../Modal/IntroducerDepositTransaction";
 import IntroducerWithdrawTransaction from "../Modal/IntroducerWithdrawTransaction";
 import "./IntroducerProfile.css";
 import IntroducerProfileView from "../Modal/IntroducerProfileView";
+
+import { Oval } from "react-loader-spinner"; // Import the Oval spinner
+
 
 const IntroducerProfile = ({ data }) => {
   const auth = useAuth();
@@ -46,7 +49,7 @@ const IntroducerProfile = ({ data }) => {
   const [txType1, setTxType1] = useState("");
   const [profileView, setProfileView] = useState("");
   const RawFilterData = [];
-  console.log("========>>>> id from  IntroducerProfile", users);
+
   const handleSearch = (event) => {
     setSearch(event.target.value);
     if (!event.target.value) {
@@ -64,21 +67,21 @@ const IntroducerProfile = ({ data }) => {
   };
   const fetchData = async (searchTerm = search, newPage = page) => {
     try {
-      // setIsLoading(true);
+
       const res = await AccountService.Introducerprofile(
         newPage,
         searchTerm,
         auth.user
       );
+
       const filteredData = res.data.SecondArray.filter((item) => item !== null);
+
       setUsers((prevUsers) =>
         searchTerm.length > 0 ? filteredData : [...prevUsers, ...filteredData]
       );
       setHasMore(newPage < res.data.pageNumber);
     } catch (error) {
       console.error("Error fetching data:", error);
-    } finally {
-      // setIsLoading(false);
     }
   };
 
@@ -118,6 +121,7 @@ const IntroducerProfile = ({ data }) => {
       fetchData(); // Fetch more data when page changes
     }
   }, [page, search]);
+
 
   const handleCardClick = (id) => {
     setActiveCard(id);
@@ -171,6 +175,21 @@ const IntroducerProfile = ({ data }) => {
               style={{ overflowX: "hidden" }}
               dataLength={users.length}
               next={fetchMoreData}
+  loader={
+        // Center the spinner
+        <div className="d-flex justify-content-center align-items-center" style={{ height: "80vh" }}>
+          <Oval
+            height={50}
+            width={50}
+            color="#4fa94d"
+            visible={true}
+            ariaLabel="oval-loading"
+            secondaryColor="#4fa94d"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+          />
+        </div>
+      }
               hasMore={hasMore}
               loader={<h4 className="mt-4">Loading...</h4>}
               height={600}
@@ -359,6 +378,7 @@ const IntroducerProfile = ({ data }) => {
         {profileView && <IntroducerProfileView data={profileView} />}
       </div>
     </div>
+
   );
 };
 

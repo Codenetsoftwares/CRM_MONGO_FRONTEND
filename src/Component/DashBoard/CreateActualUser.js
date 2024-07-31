@@ -104,7 +104,7 @@ const CreateActualUser = () => {
   }, [auth]);
 
   // Handle form submission
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, { resetForm }) => {
     // Convert percentage fields to numbers
     values.introducerPercentage = parseFloat(values.introducerPercentage);
     values.introducerPercentage1 = parseFloat(values.introducerPercentage1);
@@ -115,8 +115,8 @@ const CreateActualUser = () => {
       AccountService.createActualuser(values, auth.user)
         .then((res) => {
           console.log("res", res);
-          alert(res.data.message);
-          window.location.reload(); // Reload page after successful submission
+          toast.success(res.data.message);
+          resetForm();  // Reset the form after successful submission
         })
         .catch((err) => {
           console.log("error", err.response.data.message);

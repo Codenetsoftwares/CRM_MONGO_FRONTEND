@@ -8,6 +8,7 @@ import { useAuth } from "../../Utils/Auth";
 import DashService from "../../Services/DashService";
 import FullScreenLoader from "../../Component/FullScreenLoader";
 import { debounce } from "lodash";
+import { toast } from "react-toastify";
 
 const Withdraw = () => {
   const initialValues = {
@@ -181,7 +182,7 @@ const Withdraw = () => {
     setActiveWebsiteIndex(-1);
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, { resetForm }) => {
     console.log("values", values);
     const confirmed = window.confirm(
       "Please double-check the form on obhiasb before confirming, as changes or deletions won't be possible afterward."
@@ -191,14 +192,14 @@ const Withdraw = () => {
       DashService.CreateTransactionWithdraw(values, auth.user)
         .then((response) => {
           console.log(response.data);
-          alert("Transaction Created Successfully!!");
+          toast.success("Transaction Created Successfully!!");
           setIsLoading(false);
-          window.location.reload();
+          resetForm();
         })
         .catch((error) => {
           setIsLoading(false);
           console.error(error);
-          alert(error.response.data.message);
+          toast.error(error.response.data.message);
         });
     }
   };

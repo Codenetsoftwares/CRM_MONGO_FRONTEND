@@ -6,6 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { debounce } from "lodash";
 import SingleCard from "../../common/singleCard";
 import GridCard from "../../common/gridCard";
+
 import "./UserProfile.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -21,6 +22,9 @@ import UserProfileView from "../Modal/UserProfileView";
 import UserResetPass from "../Modal/UserResetPass";
 import UserBank from "../Modal/userBank";
 import TransactionDetails from "./TransactionDetails";
+
+import { Oval } from 'react-loader-spinner'; // Import the Oval spinner
+
 
 const UserProfile = () => {
   const auth = useAuth();
@@ -60,7 +64,9 @@ const UserProfile = () => {
         searchTerm,
         auth.user
       );
+
       const filteredData = res.data.SecondArray.filter((item) => item !== null);
+
       setUsers((prevUsers) =>
         searchTerm.length > 0 ? filteredData : [...prevUsers, ...filteredData]
       );
@@ -134,6 +140,7 @@ const UserProfile = () => {
   };
 
   return (
+
     <div className="bg-white">
       <div
         className="card text-center mt-2 mr-5 ml-5"
@@ -151,6 +158,13 @@ const UserProfile = () => {
         >
           <div className="card-header-pill text-bold d-flex">
             {/* <button type="button" className="btn btn-primary">
+
+    <SingleCard>
+      <div className="m-3">
+        <SingleCard>
+          <div className="input-group input-group-sm">
+            <button type="button" className="btn btn-primary">
+
               <i className="fas fa-search"></i>
             </button>
             <input
@@ -176,14 +190,31 @@ const UserProfile = () => {
             </div>
           </div>
         </SingleCard>
+
         <div className="card-body  mt-2 mb-3">
           <SingleCard className="mb-2 p-4">
             <InfiniteScroll
+
               style={{ overflowX: "hidden" }}
               dataLength={users.length}
               next={fetchMoreData}
               hasMore={hasMore}
-              loader={<h4 className="mt-4">Loading...</h4>}
+             loader={ // Use the spinner here
+            <div className="d-flex justify-content-center align-items-center" style={{ height: "80vh" }}>
+              <Oval
+                height={40}
+                width={40}
+                color="#4fa94d"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                ariaLabel="oval-loading"
+                secondaryColor="#4fa94d"
+                strokeWidth={2}
+                strokeWidthSecondary={2}
+              />
+            </div>
+          }
               height={600}
               endMessage={
                 <p style={{ textAlign: "center" }}>
@@ -191,6 +222,7 @@ const UserProfile = () => {
                 </p>
               }
             >
+                <SingleCard className="mt-3">
               <GridCard columns={3}>
                 {users.map((user, index) => (
                   <div
@@ -226,7 +258,7 @@ const UserProfile = () => {
                         <p
                           className="font-weight-bold fs-4 text-truncate mt-3"
                           style={{ color: "#708090" }}
-                        >
+                         >
                           {user.userName}
                         </p>
                         <div className="container">

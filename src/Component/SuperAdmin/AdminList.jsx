@@ -7,9 +7,14 @@ import { debounce } from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
 import SingleCard from "../../common/singleCard";
 import GridCard from "../../common/gridCard";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import SubAdminProfileView from "../Modal/SubAdminProfileView";
+
+import { Oval } from "react-loader-spinner";
+
+
 
 const AdminList = () => {
 
@@ -136,6 +141,7 @@ const AdminList = () => {
   };
 
   return (
+
     <div className="bg-white">
       <div
         className="card text-center mt-2 mr-5 ml-5"
@@ -170,7 +176,25 @@ const AdminList = () => {
               dataLength={adminList.length}
               next={fetchMoreData}
               hasMore={hasMore}
-              loader={<h4 className="mt-4">Loading...</h4>}
+             loader={
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "80vh" }}
+            >
+              <Oval
+                height={40}
+                width={40}
+                color="#4fa94d"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                ariaLabel="oval-loading"
+                secondaryColor="#4fa94d"
+                strokeWidth={2}
+                strokeWidthSecondary={2}
+              />
+            </div>
+          }
               height={600}
               endMessage={
                 <p style={{ textAlign: "center" }}>
@@ -243,6 +267,7 @@ const AdminList = () => {
       </div>
       <SubAdminProfileView data={profileView}/>
     </div>
+
   );
 };
 export default AdminList;

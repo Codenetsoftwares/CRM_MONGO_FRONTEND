@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../Utils/Auth";
 import { useFormik } from "formik";
-import {
-  FaUser,
-  FaEnvelope,
-  FaLock,
-} from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AccountService from "../../Services/AccountService";
@@ -32,10 +28,9 @@ const CreateIntroducer = () => {
   } = useFormik({
     initialValues: formData,
     validationSchema: CreateIntroducerSchema,
-    onSubmit: (values, action) => {
+    onSubmit: (values) => {
       console.log("values++===============>", values);
-      introducerFormHandler(values);
-      resetForm();
+      introducerFormHandler(values); // You don't need to pass resetForm here
     },
     enableReinitialize: true,
   });
@@ -44,13 +39,11 @@ const CreateIntroducer = () => {
     AccountService.createIntroducer(values, auth.user)
       .then((res) => {
         console.log("res", res);
-        alert(res.data.message);
-        window.location.reload();
+        toast.success(res.data.message);
+        resetForm(); // Reset the form after successful submission
       })
       .catch((err) => {
-        // console.log('error',err.response.data.message)
         toast.error(err.response.data.message);
-        return;
       });
   };
 
