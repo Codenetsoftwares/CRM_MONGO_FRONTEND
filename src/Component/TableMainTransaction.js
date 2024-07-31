@@ -31,7 +31,7 @@ const TableMainTransaction = ({
   const handleDelete = (e, id, transactionType) => {
     e.preventDefault();
     console.log(transactionType);
-    let confirm = window.confirm("Are You Sure You Want to Active This Bank");
+    let confirm = window.confirm("Are You Sure You Want to Delete This Transaction");
     if (confirm) {
       switch (transactionType) {
         case "Deposit":
