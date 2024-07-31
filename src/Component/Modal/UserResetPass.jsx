@@ -36,8 +36,30 @@ const UserResetPass = ({ UserName }) => {
   };
 
   return (
-    <div className="collapse" id="collapseExample">
-      <div className="container card card-body">
+    <div>
+      
+      <div className="modal fade"
+        id="modalreset"
+        tabIndex="-1"
+        role="dialog"
+        aria-labelledby="#modalresetpassword"
+        aria-hidden="true">
+    <div className="modal-dialog modal-dialog-centered " role="document">
+      <div  className="modal-content" style={{ backgroundColor: "#4682b4" }}>
+      <div className="modal-header">
+              <h5 className="modal-title text-white" id="exampleModalLabel">
+                RESET PASSWORD
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+      <div className="modal-body">
         <input
           type="text"
           className="form-control mb-1"
@@ -58,14 +80,20 @@ const UserResetPass = ({ UserName }) => {
           value={Cpassword}
           onChange={(e) => setCpassword(e.target.value)}
         />
-        <button
+       
+      </div>
+<div className="modal-footer">
+      <button
           type="button"
-          className="btn btn-success"
+          className="btn btn-dark"
           onClick={handleResetpassword}
         >
           Reset
         </button>
+        </div>
       </div>
+    </div>
+    </div>
     </div>
   );
 };

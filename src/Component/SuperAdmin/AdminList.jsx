@@ -1,16 +1,24 @@
 import React, { useCallback, useEffect, useState } from "react";
 import AccountService from "../../Services/AccountService";
-import { Link } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import { useAuth } from "../../Utils/Auth";
 import Pagination from "../Pagination";
 import { debounce } from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
 import SingleCard from "../../common/singleCard";
 import GridCard from "../../common/gridCard";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import SubAdminProfileView from "../Modal/SubAdminProfileView";
+
 import { Oval } from "react-loader-spinner";
 
 
+
 const AdminList = () => {
+
+   const navigate = useNavigate();
   const [adminList, setAdminList] = useState([]);
   const [Erorr, setErorr] = useState(false);
   const [erorrData, setErorrData] = useState("");
@@ -22,14 +30,24 @@ const AdminList = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const [activeCard, setActiveCard] = useState(null);
+  const [profileView, setProfileView] = useState("");
 
 
-const handleSearch = (event) => {
-  setSearch(event.target.value);
-  if (!event.target.value) {
-    setAdminList([]);
-  }
-};
+  console.log('=====>>> sub list',profileView)
+
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+    if (!event.target.value) {
+      setAdminList([]);
+    }
+  };
+
+  const handleCardClick = (id) => {
+    setActiveCard(id);
+    setTimeout(() => setActiveCard(null), 300); // Reset the animation class after animation duration
+  };
 
   const fetchData = async (searchTerm = search, newPage = page) => {
     try {
@@ -39,12 +57,10 @@ const handleSearch = (event) => {
         searchTerm,
         auth.user
       );
-       const filteredData = res.data.SecondArray.filter(
-         (item) => item !== null
-       );
-       setAdminList((prevUsers) =>
-         searchTerm.length > 0 ? filteredData : [...prevUsers, ...filteredData]
-       );
+      const filteredData = res.data.SecondArray.filter((item) => item !== null);
+      setAdminList((prevUsers) =>
+        searchTerm.length > 0 ? filteredData : [...prevUsers, ...filteredData]
+      );
       setHasMore(newPage < res.data.pageNumber);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -113,34 +129,54 @@ const handleSearch = (event) => {
   // });
   // console.log(auth.user);
 
+  const handleProfileView = (id) => {
+    // console.log(d);
+    const selectedUser = adminList.find((user) => user._id === id);
+    console.log('selected user',selectedUser )
+    setProfileView(selectedUser);
+  };
+
+  const handelDetails = (e, id) => {
+    navigate(`/subadminedit/${id}`);
+  };
+
   return (
-    <SingleCard>
-      <div className="card container">
-        <div className="card-header border-transparent">
-          {/* <h3 className="d-flex justify-content-center fs-3 text-bold">
-          LIST OF SUB-ADMIN
-        </h3> */}
-        </div>
-        <SingleCard>
-          <div className="input-group input-group-sm mb-3 p-3">
-            <input
-              type="search"
-              name="search-form"
-              id="search-form"
-              className="search-input form-control"
-              placeholder="Search User by Name"
-              value={search}
-              onChange={handleSearch}
-              aria-label="Sizing example input"
-              aria-describedby="inputGroup-sizing-sm"
-            />
+
+    <div className="bg-white">
+      <div
+        className="card text-center mt-2 mr-5 ml-5"
+        style={{
+          backgroundColor: "#e6f7ff",
+          position: "relative",
+        }}
+      >
+        <SingleCard
+          style={{
+            backgroundColor: "#e6f7ff",
+            position: "relative",
+            width: "100%",
+          }}
+        >
+          <div className="card-header-pill text-bold d-flex">
+            <div className="flex-grow-1  ml-4 mr-5">
+              <input
+                type="search"
+                className="form-control rounded-pill shadow"
+                placeholder="Search User by Name..."
+                value={search}
+                onChange={handleSearch}
+              />
+            </div>
           </div>
         </SingleCard>
-        <InfiniteScroll
-          dataLength={adminList.length}
-          next={fetchMoreData}
-          hasMore={hasMore}
-          loader={
+        <div className="card-body  mt-2 mb-3">
+          <SingleCard className="mb-2 p-4">
+            <InfiniteScroll
+              style={{ overflowX: "hidden" }}
+              dataLength={adminList.length}
+              next={fetchMoreData}
+              hasMore={hasMore}
+             loader={
             <div
               className="d-flex justify-content-center align-items-center"
               style={{ height: "80vh" }}
@@ -159,41 +195,79 @@ const handleSearch = (event) => {
               />
             </div>
           }
-          height={750}
-          endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>No more data to load</b>
-            </p>
-          }
-        >
-          <GridCard columns={3}>
-            {adminList.map((data, i) => (
-              <div className="col" key={data?._id}>
-                <div className="card container mt-2">
-                  <div className="card-body">
-                    <div className="d-flex justify-content-between">
-                      <div className="text-left">
-                        <h5 className="fs-6">{i + 1}.</h5>
-                      </div>
-                      <div>
-                        <h5 className="fs-5 text-nowrap">{data?.userName}</h5>
-                      </div>
-                      <div>
-                        <Link to={`/subadminedit/${data?._id}`}>
-                          <button type="button" className="btn btn-info">
-                            Details
-                          </button>
-                        </Link>
+              height={600}
+              endMessage={
+                <p style={{ textAlign: "center" }}>
+                  <b>No more data to load</b>
+                </p>
+              }
+            >
+              <GridCard columns={3}>
+                {adminList.map((data, i) => (
+                  <div
+                    key={data?._id}
+                    className="col d-flex justify-content-center align-items-center "
+                    onMouseEnter={() => setHoveredCard(data._id)}
+                    onMouseLeave={() => setHoveredCard(null)}
+                  >
+                    <div
+                      className={`card d-flex justify-content-between ${
+                        hoveredCard === data?._id ? "card-hover-shadow" : ""
+                      }`}
+                      style={{
+                        borderRadius: "20px",
+                        height: "200px",
+                        width: "95%",
+                        position: "relative",
+                      }}
+                      onClick={() => handleCardClick(data?._id)}
+                    >
+                      <div className="card-body">
+                        <button
+                          type="button"
+                          className="btn btn-steel-blue btn-sm btn-hover-zoom fs-4"
+                          data-toggle="modal"
+                          data-target="#subadminProfile"
+                          onClick={() => {
+                            handleProfileView(data._id);
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faUser} className="add-icon" />
+                        </button>
+                        <p
+                          className="font-weight-bold fs-4 text-truncate mt-3"
+                          style={{ color: "#708090" }}
+                        >
+                          {data?.userName}
+                        </p>
+                        <div className="container">
+                          <div>
+                       
+                              <button
+                                type="button"
+                                className="btn btn-steel-blue btn-sm btn-hover-zoom font-weight-bold "
+                                style={{ fontFamily: "'Abril Fatface', serif "}}
+                                onClick={(e) => {
+                                  handelDetails(e, data._id);
+                                }}
+                              >
+                                DETAILS
+                              </button>
+                          
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </GridCard>
-        </InfiniteScroll>
+                ))}
+              </GridCard>
+            </InfiniteScroll>
+          </SingleCard>
+        </div>
       </div>
-    </SingleCard>
+      <SubAdminProfileView data={profileView}/>
+    </div>
+
   );
 };
 export default AdminList;

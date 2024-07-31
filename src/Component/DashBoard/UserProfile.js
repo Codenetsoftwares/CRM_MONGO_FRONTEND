@@ -6,7 +6,25 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { debounce } from "lodash";
 import SingleCard from "../../common/singleCard";
 import GridCard from "../../common/gridCard";
+
+import "./UserProfile.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBank,
+  faEye,
+  faFileAlt,
+  faKey,
+  faLock,
+  faUser,
+  faUserEdit,
+} from "@fortawesome/free-solid-svg-icons";
+import UserProfileView from "../Modal/UserProfileView";
+import UserResetPass from "../Modal/UserResetPass";
+import UserBank from "../Modal/userBank";
+import TransactionDetails from "./TransactionDetails";
+
 import { Oval } from 'react-loader-spinner'; // Import the Oval spinner
+
 
 const UserProfile = () => {
   const auth = useAuth();
@@ -15,8 +33,21 @@ const UserProfile = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const [activeCard, setActiveCard] = useState(null);
+  const [isHovered, setIsHovered] = useState(false); //for user edit icon
+  const [profileView, setProfileView] = useState("");
+  const [bankViewEdit, setBankViewEdit] = useState("");
 
+  console.log("======>>> data", users);
+
+  const [username, setUsername] = useState([]); // for reset password
   const navigate = useNavigate();
+
+  const handleCardClick = (id) => {
+    setActiveCard(id);
+    setTimeout(() => setActiveCard(null), 300); // Reset the animation class after animation duration
+  };
 
   const handleSearch = (event) => {
     setSearch(event.target.value);
@@ -33,9 +64,9 @@ const UserProfile = () => {
         searchTerm,
         auth.user
       );
-      const filteredData = res.data.SecondArray.filter(
-        (item) => item !== null
-      );
+
+      const filteredData = res.data.SecondArray.filter((item) => item !== null);
+
       setUsers((prevUsers) =>
         searchTerm.length > 0 ? filteredData : [...prevUsers, ...filteredData]
       );
@@ -83,12 +114,57 @@ const UserProfile = () => {
     navigate(`/innerprofile`, { state: { page: page, id: id, q: search } });
   };
 
+  const handleProfileView = (gg, d) => {
+    console.log(d);
+
+    setProfileView(d);
+  };
+
+  const handleResetPassword = (e, username) => {
+    console.log("onclick username", username);
+    setUsername(username);
+  };
+
+  const handleBankVIewEdit = (e, bankid) => {
+    console.log("onclick of id", bankid);
+    setBankViewEdit(bankid);
+  };
+
+  const handleTransaction = (e, userName) => {
+    e.preventDefault();
+    console.log("Transaction for user:", userName);
+
+    navigate("/transactiondetails", {
+      state: { txndetails: users[0].transactionDetail },
+    });
+  };
+
   return (
+
+    <div className="bg-white">
+      <div
+        className="card text-center mt-2 mr-5 ml-5"
+        style={{
+          backgroundColor: "#e6f7ff",
+          position: "relative",
+        }}
+      >
+        <SingleCard
+          style={{
+            backgroundColor: "#e6f7ff",
+            position: "relative",
+            width: "100%",
+          }}
+        >
+          <div className="card-header-pill text-bold d-flex">
+            {/* <button type="button" className="btn btn-primary">
+
     <SingleCard>
       <div className="m-3">
         <SingleCard>
           <div className="input-group input-group-sm">
             <button type="button" className="btn btn-primary">
+
               <i className="fas fa-search"></i>
             </button>
             <input
@@ -101,15 +177,29 @@ const UserProfile = () => {
               onChange={handleSearch}
               aria-label="Sizing example input"
               aria-describedby="inputGroup-sizing-sm"
-            />
+            /> */}
+
+            <div className="flex-grow-1  ml-4 mr-5">
+              <input
+                type="search"
+                className="form-control rounded-pill shadow"
+                placeholder="Search User By Name..."
+                value={search}
+                onChange={handleSearch}
+              />
+            </div>
           </div>
         </SingleCard>
 
-        <InfiniteScroll
-          dataLength={users.length}
-          next={fetchMoreData}
-          hasMore={hasMore}
-          loader={ // Use the spinner here
+        <div className="card-body  mt-2 mb-3">
+          <SingleCard className="mb-2 p-4">
+            <InfiniteScroll
+
+              style={{ overflowX: "hidden" }}
+              dataLength={users.length}
+              next={fetchMoreData}
+              hasMore={hasMore}
+             loader={ // Use the spinner here
             <div className="d-flex justify-content-center align-items-center" style={{ height: "80vh" }}>
               <Oval
                 height={40}
@@ -125,50 +215,133 @@ const UserProfile = () => {
               />
             </div>
           }
-          height={800}
-          endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>No more data to load</b>
-            </p>
-          }
-        >
-          <SingleCard className="mt-3">
-            <GridCard columns={3}>
-              {users.map((user, index) => (
-                <div className="col" key={index}>
-                  <div className="card container-fluid w-75 mt-2 border-dark">
-                    <div className="card-body">
-                      <p
-                        onClick={() => {
-                          handleInnerProfile(user._id);
-                        }}
-                        style={{ color: "blue", cursor: "pointer" }}
-                      >
-                        <span
-                          className="d-flex justify-content-center"
-                          title="Click here to know User details"
+              height={600}
+              endMessage={
+                <p style={{ textAlign: "center" }}>
+                  <b>No more data to load</b>
+                </p>
+              }
+            >
+                <SingleCard className="mt-3">
+              <GridCard columns={3}>
+                {users.map((user, index) => (
+                  <div
+                    key={user._id}
+                    className="col d-flex justify-content-center align-items-center "
+                    onMouseEnter={() => setHoveredCard(user._id)}
+                    onMouseLeave={() => setHoveredCard(null)}
+                  >
+                    <div
+                      className={`card d-flex justify-content-between ${
+                        hoveredCard === user._id ? "card-hover-shadow" : ""
+                      }`}
+                      style={{
+                        borderRadius: "20px",
+                        height: "200px",
+                        width: "95%",
+                        position: "relative",
+                      }}
+                      onClick={() => handleCardClick(user._id)}
+                    >
+                      <div className="card-body ">
+                        <button
+                          type="button"
+                          className="btn btn-steel-blue btn-sm btn-hover-zoom fs-4"
+                          data-toggle="modal"
+                          data-target="#exampleModalp"
+                          onClick={() => {
+                            handleProfileView(user._id, user);
+                          }}
                         >
-                          <b>{user.userName}</b>
-                        </span>
-                        <span
-                          className="d-flex justify-content-center text-warning"
-                          style={{ fontSize: "25px" }}
-                        >
-                          &#8679;
-                        </span>
-                        <span className="d-flex justify-content-center text-success blinking-text">
-                          Click UserName to know User details
-                        </span>
-                      </p>
+                          <FontAwesomeIcon icon={faUser} className="add-icon" />
+                        </button>
+                        <p
+                          className="font-weight-bold fs-4 text-truncate mt-3"
+                          style={{ color: "#708090" }}
+                         >
+                          {user.userName}
+                        </p>
+                        <div className="container">
+                          <div className="row g-1 justify-content-center mt-5">
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                onClick={() => {
+                                  handleInnerProfile(user._id);
+                                }}
+                                title="Profile Edit"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faUserEdit}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalbank"
+                                type="button"
+                                className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                onClick={(e) => {
+                                  handleResetPassword(e, user.userName);
+                                }}
+                                title="Bank Details & Edit"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faBank}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                onClick={(e) =>
+                                  handleTransaction(e, user.userName)
+                                }
+                                title="Transaction Details"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faFileAlt}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalreset"
+                                type="button"
+                                className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                onClick={(e) => {
+                                  handleResetPassword(e, user.userName);
+                                }}
+                                title="Reset Password"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faKey}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </GridCard>
+                ))}
+              </GridCard>
+            </InfiniteScroll>
           </SingleCard>
-        </InfiniteScroll>
+        </div>
+        <UserProfileView user={profileView} />
+        <UserResetPass UserName={username} />
+        <UserBank />
       </div>
-    </SingleCard>
+    </div>
   );
 };
 

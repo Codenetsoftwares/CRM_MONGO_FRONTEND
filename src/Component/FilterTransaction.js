@@ -86,7 +86,7 @@ const FilterTransaction = ({ purpose, handleData, page, handlePage, handleTotalD
       TransactionSercvice.bankList(auth.user).then((res) => {
         setBankList(res.data);
       });
-      AccountService.website(auth.user).then((res) => setWebsiteList(res.data));
+      TransactionSercvice.websiteList(auth.user).then((res) => setWebsiteList(res.data));
       AccountService.introducerId(auth.user).then((res) =>
         setIntroducerList(res.data)
       );

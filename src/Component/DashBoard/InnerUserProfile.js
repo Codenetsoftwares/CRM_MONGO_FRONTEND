@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import UserResetPass from "../Modal/UserResetPass";
 import { Alert } from "react-bootstrap";
+import SingleCard from "../../common/singleCard";
 
 const InnerUserProfile = () => {
   // const { id } = useParams();
@@ -207,7 +208,7 @@ const InnerUserProfile = () => {
 
   return (
     <div
-      className="d-flex align-items-center justify-content-center"
+      className="d-flex align-items-center justify-content-center mt-3"
       style={{
         // background:
         //   "linear-gradient(90deg, rgba(23,183,184,1) 0%, rgba(23,184,155,0.9668242296918768) 100%)",
@@ -222,7 +223,7 @@ const InnerUserProfile = () => {
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-lg-9">
-            <h1
+            {/* <h1
               className="text-center mb-4"
               style={{
                 fontFamily: "Montserrat, sans-serif",
@@ -232,14 +233,25 @@ const InnerUserProfile = () => {
               }}
             >
               User Profile
-            </h1>
+            </h1> */}
             <div className="row justify-content-center">
-              <div className="card">
-                <div className="card-body" style={{ background: "black" }}>
+              {/* <div className="card"> */}
+                <SingleCard className="mt-2" style={{ backgroundColor: "#4682b4" }}>
+                <SingleCard    className="card shadow-lg p-3 mb-5 bg-white rounded"
+                      style={{
+                        backgroundColor: "#f8f9fa",
+                        borderRadius: "10px",
+                        padding: "20px",
+                        filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.8))",
+                        boxShadow: "none"  // Remove default box shadow
+                      }}>
+                <div className="card-body" >
                   {foundObject && (
                     <>
                       <div className="mb-3">
-                        <label className="form-label text-primary">
+                        <div className="row">
+                          <div className="col-md-4">
+                        <label className="form-label text-dark">
                           First Name
                         </label>
                         <input
@@ -253,10 +265,14 @@ const InnerUserProfile = () => {
                           className="form-control"
                           disabled={!isEditing}
                         />
-                      </div>
-
-                      <div className="mb-3">
-                        <label className="form-label text-primary">
+                      
+                        </div>
+                      
+                      
+                      
+                      
+                      <div className="col-md-4">
+                        <label className="form-label text-dark">
                           Last Name
                         </label>
                         <input
@@ -271,8 +287,11 @@ const InnerUserProfile = () => {
                           disabled={!isEditing}
                         />
                       </div>
-                      <div className="mb-3">
-                        <label className="form-label text-primary">
+                    
+                     
+                     
+                      <div className="col-md-4">
+                        <label className="form-label text-dark">
                           Contact Number
                         </label>
                         <input
@@ -286,6 +305,8 @@ const InnerUserProfile = () => {
                           className="form-control"
                           disabled={!isEditing}
                         />
+                  </div>
+                  </div>
                       </div>
                       {/* <div className="mb-3">
                         <label className="form-label">Email</label>
@@ -321,7 +342,7 @@ const InnerUserProfile = () => {
                             <div className="row">
                               {/* Introducer 1 Start */}
                               <div className="col-md-4">
-                                <label className="form-label text-primary">
+                                <label className="form-label text-dark">
                                   Change Introducer 1
                                 </label>
                                 <div className="input-group mb-3">
@@ -360,7 +381,7 @@ const InnerUserProfile = () => {
 
                               {/* Introducer 2 Start */}
                               <div className="col-md-4">
-                                <label className="form-label text-primary">
+                                <label className="form-label text-dark">
                                   Change Introducer 2
                                 </label>
                                 <div className="input-group mb-3">
@@ -399,7 +420,7 @@ const InnerUserProfile = () => {
 
                               {/* Introducer 3 Start */}
                               <div className="col-md-4">
-                                <label className="form-label text-primary">
+                                <label className="form-label text-dark">
                                   Change Introducer 3
                                 </label>
                                 <div className="input-group mb-3">
@@ -441,7 +462,7 @@ const InnerUserProfile = () => {
                         <div className="mb-3">
                           <div className="row">
                             <div className="col-md-4">
-                              <label className="form-label text-primary">
+                              <label className="form-label text-dark">
                                 Lvl 1 Introducer
                               </label>
                               <input
@@ -453,7 +474,7 @@ const InnerUserProfile = () => {
                             </div>
 
                             <div className="col-md-4">
-                              <label className="form-label text-primary">
+                              <label className="form-label text-dark">
                                 Lvl 2 Introducer
                               </label>
                               <input
@@ -465,7 +486,7 @@ const InnerUserProfile = () => {
                             </div>
 
                             <div className="col-md-4">
-                              <label className="form-label text-primary">
+                              <label className="form-label text-dark">
                                 Lvl 3 Introducer
                               </label>
                               <input
@@ -482,7 +503,7 @@ const InnerUserProfile = () => {
                       <div className="mb-3">
                         <div className="row">
                           <div className="col-md-4">
-                            <label className="form-label text-primary">
+                            <label className="form-label text-dark">
                               Lvl 1 Introducer %
                             </label>
                             <input
@@ -499,7 +520,7 @@ const InnerUserProfile = () => {
                           </div>
 
                           <div className="col-md-4">
-                            <label className="form-label text-primary">
+                            <label className="form-label text-dark">
                               Lvl 2 Introducer %
                             </label>
                             <input
@@ -516,7 +537,7 @@ const InnerUserProfile = () => {
                           </div>
 
                           <div className="col-md-4">
-                            <label className="form-label text-primary">
+                            <label className="form-label text-dark">
                               Lvl 3 Introducer %
                             </label>
                             <input
@@ -535,7 +556,7 @@ const InnerUserProfile = () => {
                       </div>
 
                       <div className="mb-3">
-                        <label className="form-label text-primary">
+                        <label className="form-label text-dark">
                           Website Details
                         </label>
                         <input
@@ -550,19 +571,19 @@ const InnerUserProfile = () => {
                           disabled={!isEditing}
                         />
                       </div>
-                      <button
+                      {/* <button
                         className="btn btn-link"
                         onClick={toggleAccordion}
                       >
                         Payment Details
-                      </button>
-
-                      <p
+                      </button> */}
+{/* transaction details commented */}
+                      {/* <p
                         className="btn btn-link pt-4"
                         onClick={Handletransaction}
                       >
                         Transaction Details
-                      </p>
+                      </p> */}
                       {isAccordionOpen && (
                         <div className="accordion">
                           <div className="accordion-item">
@@ -742,7 +763,7 @@ const InnerUserProfile = () => {
                       )}
                       {isEditing ? (
                         <button
-                          className="btn btn-success mx-1"
+                          className="btn btn-dark mx-1 "
                           onClick={handleSave}
                         >
                           <FontAwesomeIcon icon={faSave} /> Save
@@ -750,7 +771,7 @@ const InnerUserProfile = () => {
                       ) : (
                         <>
                           <button
-                            className="btn btn-info mx-1"
+                            className="btn btn-secondary mx-1"
                             onClick={handleToggleEdit}
                           >
                             <FontAwesomeIcon icon={faEdit} /> Edit
@@ -760,25 +781,26 @@ const InnerUserProfile = () => {
                     </>
                   )}
                 </div>
-
-                <button
+                </SingleCard>
+                </SingleCard>
+                {/* <button
                   class="btn btn-primary"
                   type="button"
                   data-toggle="collapse"
                   data-target="#collapseExample"
                   aria-expanded="false"
                   aria-controls="collapseExample"
-                  onClick={(e) => {
-                    handleResetPassword(e, foundObject.userName);
-                  }}
+                  // onClick={(e) => {
+                  //   handleResetPassword(e, foundObject.userName);
+                  // }}
                 >
                   Reset password
-                </button>
-              </div>
+                </button> */}
+              {/* </div> */}
             </div>
           </div>
         </div>
-        <UserResetPass UserName={username} />
+        {/* <UserResetPass UserName={username} /> */}
       </div>
     </div>
   );
