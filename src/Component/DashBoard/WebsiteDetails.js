@@ -325,7 +325,7 @@ const WebsiteDetails = () => {
           <SingleCard className="mb-2 p-4">
             <InfiniteScroll
               style={{ overflowX: "hidden" }}
-              dataLength={getWebsite.length}
+              dataLength={getWebsite.length ?? 0}
               next={fetchMoreData}
               hasMore={hasMore}
               loader={

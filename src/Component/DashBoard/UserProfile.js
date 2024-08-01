@@ -23,8 +23,7 @@ import UserResetPass from "../Modal/UserResetPass";
 import UserBank from "../Modal/userBank";
 import TransactionDetails from "./TransactionDetails";
 
-import { Oval } from 'react-loader-spinner'; // Import the Oval spinner
-
+import { Oval } from "react-loader-spinner"; // Import the Oval spinner
 
 const UserProfile = () => {
   const auth = useAuth();
@@ -77,7 +76,7 @@ const UserProfile = () => {
       setIsLoading(false);
     }
   };
-
+  console.log("testing", users.length);
   // Debounced search handler using lodash
   const debouncedSearchHandler = useCallback(
     debounce((searchTerm) => {
@@ -140,7 +139,6 @@ const UserProfile = () => {
   };
 
   return (
-
     <div className="bg-white">
       <div
         className="card text-center mt-2 mr-5 ml-5"
@@ -194,27 +192,40 @@ const UserProfile = () => {
         <div className="card-body  mt-2 mb-3">
           <SingleCard className="mb-2 p-4">
             <InfiniteScroll
-
               style={{ overflowX: "hidden" }}
               dataLength={users.length}
               next={fetchMoreData}
               hasMore={hasMore}
-             loader={ // Use the spinner here
-            <div className="d-flex justify-content-center align-items-center" style={{ height: "40vh" }}>
-              <Oval
-                height={40}
-                width={40}
-                color="#4fa94d"
-                wrapperStyle={{}}
-                wrapperClass=""
-                visible={true}
-                ariaLabel="oval-loading"
-                secondaryColor="#4fa94d"
-                strokeWidth={2}
-                strokeWidthSecondary={2}
-              />
-            </div>
-          }
+              loader={
+                // Use the spinner here
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{
+                    height: "80vh",
+                    backgroundColor: "orange",
+                    zIndex: "10000",
+                    position: "relative",
+                  }}
+                >
+                  <Oval
+                    height={40}
+                    width={40}
+                    color="#4fa94d"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                    ariaLabel="oval-loading"
+                    secondaryColor="#4fa94d"
+                    strokeWidth={2}
+                    strokeWidthSecondary={2}
+                    style={{
+                      backgroundColor: "orange",
+                      zIndex: "10000",
+                      position: "absolute",
+                    }}
+                  />
+                </div>
+              }
               height={600}
               endMessage={
                 <p style={{ textAlign: "center" }}>
@@ -222,7 +233,6 @@ const UserProfile = () => {
                 </p>
               }
             >
-            
               <GridCard columns={3}>
                 {users.map((user, index) => (
                   <div
@@ -258,7 +268,7 @@ const UserProfile = () => {
                         <p
                           className="font-weight-bold fs-4 text-truncate mt-3"
                           style={{ color: "#708090" }}
-                         >
+                        >
                           {user.userName}
                         </p>
                         <div className="container">

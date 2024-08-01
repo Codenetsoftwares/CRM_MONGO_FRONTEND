@@ -54,7 +54,6 @@ const AdminBank = () => {
     setTimeout(() => setActiveCard(null), 300); // Reset the animation class after animation duration
   };
 
-
   const handleSearch = (event) => {
     setSearch(event.target.value);
     if (!event.target.value) {
@@ -113,6 +112,7 @@ const AdminBank = () => {
     }
   };
 
+  console.log("testing", getbankName.length);
   // Refresh data whenever `refresh` changes
   useEffect(() => {
     setGetBankName([]);
@@ -259,8 +259,8 @@ const AdminBank = () => {
         <div className="card-body  mt-2 mb-3">
           <SingleCard className="mb-2 p-4">
             <InfiniteScroll
-              style={{ overflowX: "hidden" }}
-              dataLength={getbankName.length}
+              style={{ overflowX: "hidden"}}
+              dataLength={getbankName.length ?? 0}
               next={fetchMoreData}
               hasMore={hasMore}
               loader={
@@ -290,7 +290,7 @@ const AdminBank = () => {
                 </p>
               }
             >
-              <br />
+              {/* <br /> */}
               <GridCard>
                 {getbankName.map((data) => {
                   return (
