@@ -11,7 +11,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import GridCard from "../../common/gridCard";
 import SingleCard from "../../common/singleCard";
 
-const RenewWebsitePermission = ({ SubAdmins, ID }) => {
+const RenewWebsitePermission = ({ SubAdmins, ID, setRefresh }) => {
   const [toggle, setToggle] = useState(true);
   const [subAdmin, setSubAdmin] = useState([]);
   const [checkboxStates, setCheckboxStates] = useState([]); // State for checkbox data
@@ -198,7 +198,8 @@ const RenewWebsitePermission = ({ SubAdmins, ID }) => {
     AccountService.revokeAllPermissionWebsite(ID, SubAdminID, auth.user)
       .then((response) => {
         alert("All Permission Revoked For this SubAdmin");
-        window.location.reload();
+        setRefresh((prev) => !prev);
+        document.querySelector("#RenewWebsitePermission .btn-close").click();
         console.log(response.data);
       })
       .catch((error) => {

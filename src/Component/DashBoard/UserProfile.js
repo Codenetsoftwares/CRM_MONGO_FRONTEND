@@ -200,7 +200,7 @@ const UserProfile = () => {
               next={fetchMoreData}
               hasMore={hasMore}
              loader={ // Use the spinner here
-            <div className="d-flex justify-content-center align-items-center" style={{ height: "80vh" }}>
+            <div className="d-flex justify-content-center align-items-center" style={{ height: "40vh" }}>
               <Oval
                 height={40}
                 width={40}

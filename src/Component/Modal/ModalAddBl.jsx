@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FullScreenLoader from "../FullScreenLoader";
 
-const ModalAddBl = ({ ID }) => {
+const ModalAddBl = ({ ID, setRefresh }) => {
   const auth = useAuth();
   const [Amount, SetAmount] = useState(0);
   const [Remarks, SetRemarks] = useState("");
@@ -17,6 +17,11 @@ const ModalAddBl = ({ ID }) => {
 
   const handelRemarkschange = (e) => {
     SetRemarks(e.target.value);
+  };
+
+  const resetForm = () => {
+    SetAmount(0);
+    SetRemarks("");
   };
 
   const handelsubmit = (e) => {
@@ -44,7 +49,9 @@ const ModalAddBl = ({ ID }) => {
         if (res.status === 200) {
           console.log(res);
           alert(res.data.message);
-          window.location.reload();
+          setRefresh((prev) => !prev);
+          document.querySelector("#modalAdbl .btn-close").click();
+          resetForm();
         }
       })
       .catch((error) => {
@@ -68,7 +75,7 @@ const ModalAddBl = ({ ID }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Provide Bank Deposit Amount
+                Deposit Amount
               </h5>
 
               <button
