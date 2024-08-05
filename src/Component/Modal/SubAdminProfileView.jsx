@@ -16,7 +16,7 @@ const SubAdminProfileView = ({ data }) => {
         <div className="modal-dialog modal-dialog-centered " role="document">
           <div className="modal-content" style={{ backgroundColor: "#4682b4" }}>
             <div className="modal-header">
-              <h5 className="modal-title text-white">INTRODUCER PROFILE</h5>
+              <h5 className="modal-title text-white">Introducer Profile</h5>
               <button
                 type="button"
                 className="btn-close"

@@ -38,6 +38,7 @@ const UserProfile = () => {
   const [isHovered, setIsHovered] = useState(false); //for user edit icon
   const [profileView, setProfileView] = useState("");
   const [bankViewEdit, setBankViewEdit] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
 
   console.log("======>>> data", users);
 
@@ -125,9 +126,10 @@ const UserProfile = () => {
     setUsername(username);
   };
 
-  const handleBankVIewEdit = (e, bankid) => {
+  const handleBankVIewEdit = (e, bankid,user) => {
     console.log("onclick of id", bankid);
     setBankViewEdit(bankid);
+    setSelectedUser(user);
   };
 
   const handleTransaction = (e, userName) => {
@@ -280,14 +282,14 @@ const UserProfile = () => {
                             </div>
                             <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                               <button
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalbank"
+                                data-toggle="modal"
+                                data-target="#modalbank"
                                 type="button"
                                 className="btn btn-steel-blue btn-sm btn-hover-zoom"
                                 onClick={(e) => {
-                                  handleResetPassword(e, user.userName);
+                                  handleBankVIewEdit(e, user._id, user);
                                 }}
-                                title="Bank Details & Edit"
+                                title="Bank View & Edit"
                               >
                                 <FontAwesomeIcon
                                   icon={faBank}
@@ -339,7 +341,13 @@ const UserProfile = () => {
         </div>
         <UserProfileView user={profileView} />
         <UserResetPass UserName={username} />
-        <UserBank />
+        {selectedUser && (
+        <UserBank
+          bankDetail={selectedUser.bankDetail}
+          upiDetail={selectedUser.upiDetail}
+          paramsid ={bankViewEdit}
+        />
+      )}
       </div>
     </div>
   );

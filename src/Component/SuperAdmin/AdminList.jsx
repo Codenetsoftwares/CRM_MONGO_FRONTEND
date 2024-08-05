@@ -246,12 +246,12 @@ const AdminList = () => {
                               <button
                                 type="button"
                                 className="btn btn-steel-blue btn-sm btn-hover-zoom font-weight-bold "
-                                style={{ fontFamily: "'Abril Fatface', serif "}}
+                                style={{ fontFamily: "'Abril Fatface', serif ", textDecoration: "underline",}}
                                 onClick={(e) => {
                                   handelDetails(e, data._id);
                                 }}
                               >
-                                DETAILS
+                                 Click here for more details
                               </button>
                           
                           </div>
