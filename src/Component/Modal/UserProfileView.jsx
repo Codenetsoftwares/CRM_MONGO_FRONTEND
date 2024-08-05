@@ -18,7 +18,7 @@ const UserProfileView = ({ user }) => {
           <div className="modal-content" style={{ backgroundColor: "#4682b4" }}>
             <div className="modal-header">
               <h5 className="modal-title text-white" id="exampleModalp">
-                USER PROFILE
+                User Profile
               </h5>
               <button
                 type="button"
