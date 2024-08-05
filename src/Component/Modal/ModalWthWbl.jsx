@@ -5,11 +5,16 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FullScreenLoader from "../FullScreenLoader";
 
-const ModalWthWbl = ({ ID }) => {
+const ModalWthWbl = ({ ID, setRefresh }) => {
   const auth = useAuth();
   const [Amount, SetAmount] = useState(0);
   const [Remarks, SetRemarks] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const resetForm = () => {
+    SetAmount(0);
+    SetRemarks("");
+  };
 
   const handelamtchange = (e) => {
     SetAmount(e.target.value);
@@ -43,7 +48,9 @@ const ModalWthWbl = ({ ID }) => {
         setIsLoading(false);
         if (res.status === 200) {
           alert(res.data.message);
-          window.location.reload();
+          setRefresh((prev) => !prev);
+          document.querySelector("#modalWithdrawBlwebsite .btn-close").click();
+          resetForm();
         }
       })
       .catch((error) => {
@@ -67,7 +74,7 @@ const ModalWthWbl = ({ ID }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Provide Website Withdrawal Amount
+                Withdrawal Amount
               </h5>
 
               <button

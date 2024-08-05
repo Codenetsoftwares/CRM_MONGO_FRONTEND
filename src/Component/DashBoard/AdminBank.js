@@ -25,6 +25,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { debounce } from "lodash";
+import { Oval } from "react-loader-spinner";
 
 const AdminBank = () => {
   const navigate = useNavigate();
@@ -46,43 +47,11 @@ const AdminBank = () => {
   const [tempResponse, setTempResponse] = useState("");
   const [refresh, setRefresh] = useState(false);
 
-  console.log("========>>>> bankName details", refresh);
+  console.log("refresh", refresh);
 
   const handleCardClick = (id) => {
     setActiveCard(id);
     setTimeout(() => setActiveCard(null), 300); // Reset the animation class after animation duration
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    AccountService.addbank(
-      {
-        name: bankName,
-      },
-      auth.user
-    )
-      .then((res) => {
-        console.log("res", res);
-        if (res.status === 200) {
-          toast.success("Bank registered successfully!");
-          window.location.reload();
-        } else {
-          toast.error("Something Went Wrong!!");
-        }
-      })
-
-      .catch((err) => {
-        if (!err.response) {
-          alert(err.message);
-          return;
-        }
-      });
-    window.location.reload();
-  };
-
-  const handlePage = (page) => {
-    setPage(page);
   };
 
   const handleSearch = (event) => {
@@ -142,6 +111,13 @@ const AdminBank = () => {
       setIsLoading(false);
     }
   };
+
+  console.log("testing", getbankName.length);
+  // Refresh data whenever `refresh` changes
+  useEffect(() => {
+    setGetBankName([]);
+    fetchData();
+  }, [refresh]);
 
   // Debounced search handler using lodash
   const debouncedSearchHandler = useCallback(
@@ -209,14 +185,11 @@ const AdminBank = () => {
     }
   };
 
-  // Refresh data whenever `refresh` changes
-  useEffect(() => {
-    fetchData();
-  }, [refresh]);
-
   const fetchMoreData = () => {
     if (hasMore) {
-      setPage((prevPage) => prevPage + 1); // Increment page number
+      const nextPage = page + 1;
+      setPage(nextPage); // Increment page number
+      fetchData(search, nextPage);
     }
   };
 
@@ -283,14 +256,33 @@ const AdminBank = () => {
             </div>
           </div>
         </SingleCard>
-        <div className="card-body mt-2 mb-3">
+        <div className="card-body  mt-2 mb-3">
           <SingleCard className="mb-2 p-4">
             <InfiniteScroll
-            style={{ overflowX: 'hidden' }}
-              dataLength={getbankName.length}
+              style={{ overflowX: "hidden"}}
+              dataLength={getbankName.length ?? 0}
               next={fetchMoreData}
               hasMore={hasMore}
-              loader={<h4>Loading...</h4>}
+              loader={
+                // Use the spinner here
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ height: "80vh" }}
+                >
+                  <Oval
+                    height={40}
+                    width={40}
+                    color="#4fa94d"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                    ariaLabel="oval-loading"
+                    secondaryColor="#4fa94d"
+                    strokeWidth={2}
+                    strokeWidthSecondary={2}
+                  />
+                </div>
+              }
               height={600}
               endMessage={
                 <p style={{ textAlign: "center" }}>
@@ -298,8 +290,8 @@ const AdminBank = () => {
                 </p>
               }
             >
-              <br></br>
-              <GridCard columns={2}>
+              {/* <br /> */}
+              <GridCard>
                 {getbankName.map((data) => {
                   return (
                     <div
@@ -309,8 +301,9 @@ const AdminBank = () => {
                       onMouseLeave={() => setHoveredCard(null)}
                     >
                       <div
-                        className={`card d-flex justify-content-between ${hoveredCard === data._id ? "card-hover-shadow" : ""
-                          }`}
+                        className={`card d-flex justify-content-between ${
+                          hoveredCard === data._id ? "card-hover-shadow" : ""
+                        }`}
                         style={{
                           borderRadius: "20px",
                           height: "200px",
@@ -484,11 +477,15 @@ const AdminBank = () => {
           </SingleCard>
         </div>
 
-        <ModalAddBl ID={Id} />
-        <ModalWthBl ID={Id} />
-        <InnerBank setRefresh={setRefresh} />
+        <ModalAddBl ID={Id} setRefresh={setRefresh} refresh={refresh} />
+        <ModalWthBl ID={Id} setRefresh={setRefresh} refresh={refresh} />
+        <InnerBank setRefresh={setRefresh} refresh={refresh} />
         <SubAdminBank ID={Id} />
-        <RenewBankPermission SubAdmins={SubAdmins} ID={SId} />
+        <RenewBankPermission
+          SubAdmins={SubAdmins}
+          ID={SId}
+          setRefresh={setRefresh}
+        />
       </div>
     </div>
   );

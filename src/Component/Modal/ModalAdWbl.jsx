@@ -4,13 +4,18 @@ import AccountService from "../../Services/AccountService";
 import { toast } from "react-toastify";
 import FullScreenLoader from "../FullScreenLoader";
 
-const ModalAdWbl = ({ ID }) => {
+const ModalAdWbl = ({ ID, setRefresh }) => {
   const auth = useAuth();
   const [Amount, SetAmount] = useState(0);
   const [Remarks, SetRemarks] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   console.log("id", ID);
+
+  const resetForm = () => {
+    SetAmount(0);
+    SetRemarks("");
+  };
 
   const handelamtchange = (e) => {
     SetAmount(e.target.value);
@@ -41,7 +46,9 @@ const ModalAdWbl = ({ ID }) => {
         setIsLoading(false);
         if (res.status === 200) {
           alert(res.data.message);
-          window.location.reload();
+          setRefresh((prev) => !prev);
+          document.querySelector("#modalAddBlWebsite .btn-close").click();
+          resetForm();
         }
       })
       .catch((error) => {
@@ -66,7 +73,7 @@ const ModalAdWbl = ({ ID }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Provide Website Deposit Amount
+                Deposit Amount
               </h5>
 
               <button

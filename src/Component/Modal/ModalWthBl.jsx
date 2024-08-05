@@ -4,7 +4,7 @@ import AccountService from "../../Services/AccountService";
 import { toast } from "react-toastify";
 import FullScreenLoader from "../FullScreenLoader";
 
-const ModalWthBl = ({ ID }) => {
+const ModalWthBl = ({ ID, setRefresh, refresh }) => {
   const auth = useAuth();
   const [Amount, SetAmount] = useState(0);
   const [Remarks, SetRemarks] = useState("");
@@ -18,6 +18,11 @@ const ModalWthBl = ({ ID }) => {
     SetRemarks(e.target.value);
   };
 
+  console.log("========>>>> refresh", refresh);
+  const resetForm = () => {
+    SetAmount(0);
+    SetRemarks("");
+  };
   const handelsubmit = (e) => {
     e.preventDefault();
     console.log("This is", ID);
@@ -43,7 +48,9 @@ const ModalWthBl = ({ ID }) => {
         setIsLoading(false);
         if (res.status === 200) {
           alert(res.data.message);
-          window.location.reload();
+          setRefresh((prev) => !prev);
+          document.querySelector("#modalWthbl .btn-close").click();
+          resetForm();
         }
       })
       .catch((error) => {
@@ -67,7 +74,7 @@ const ModalWthBl = ({ ID }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Provide Bank Withdrawal Amount
+                Withdrawal Amount
               </h5>
 
               <button

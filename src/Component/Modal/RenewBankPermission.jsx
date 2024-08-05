@@ -11,7 +11,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import SingleCard from "../../common/singleCard";
 import GridCard from "../../common/gridCard";
 
-const RenewBankPermission = ({ SubAdmins, ID }) => {
+const RenewBankPermission = ({ SubAdmins, ID, setRefresh }) => {
   const [toggle, setToggle] = useState(true);
   const [subAdmin, setSubAdmin] = useState([]);
   const [checkboxStates, setCheckboxStates] = useState([]); // State for checkbox data
@@ -187,7 +187,8 @@ const RenewBankPermission = ({ SubAdmins, ID }) => {
       .then((response) => {
         console.log("res", response.data);
         alert(response.data.message);
-        window.location.reload();
+        setRefresh((prev) => !prev);
+        document.querySelector("#RenewBankPermission .btn-close").click();
       })
       .catch((error) => {
         alert(error.response.data.message);

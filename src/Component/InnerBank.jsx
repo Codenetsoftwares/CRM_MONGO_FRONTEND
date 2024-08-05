@@ -3,7 +3,7 @@ import { useAuth } from "../Utils/Auth";
 import AccountService from "../Services/AccountService";
 import { toast } from "react-toastify";
 
-const InnerBank = ({ setRefresh }) => {
+const InnerBank = ({ setRefresh, refresh }) => {
   const [bname, setBname] = useState("");
   const [accno, setAccno] = useState("");
   const [ifsc, setIfsc] = useState("");
@@ -11,38 +11,28 @@ const InnerBank = ({ setRefresh }) => {
   const [upi, setUpi] = useState("");
   const [upiName, setUpiName] = useState("");
   const [upiPhoneNumber, setUpiPhoneNumber] = useState("");
-  // const [selectedBank, setSelectedBank] = useState(null);
 
   const auth = useAuth();
-  // console.log("This is Auth==>>>", auth);
-  // console.log("getbank", getbankName);
-  const bnamechnage = (e) => {
-    setBname(e.target.value);
-  };
-  const accnochnage = (e) => {
-    setAccno(e.target.value);
-  };
-  const ifscchnage = (e) => {
-    setIfsc(e.target.value);
-  };
-  const hnamechnage = (e) => {
-    setHname(e.target.value);
-  };
-  const hUpichnage = (e) => {
-    setUpi(e.target.value);
-  };
-  const hupiNamechnage = (e) => {
-    setUpiName(e.target.value);
-  };
-  const hUpiNumberchnage = (e) => {
-    setUpiPhoneNumber(e.target.value);
+
+  const resetForm = () => {
+    setBname("");
+    setAccno("");
+    setIfsc("");
+    setHname("");
+    setUpi("");
+    setUpiName("");
+    setUpiPhoneNumber("");
   };
 
-  // const handleShowDetails = (bank) => {
-  //   setSelectedBank(bank);
-  // };
+  const bnameChange = (e) => setBname(e.target.value);
+  const accnoChange = (e) => setAccno(e.target.value);
+  const ifscChange = (e) => setIfsc(e.target.value);
+  const hnameChange = (e) => setHname(e.target.value);
+  const upiChange = (e) => setUpi(e.target.value);
+  const upiNameChange = (e) => setUpiName(e.target.value);
+  const upiPhoneNumberChange = (e) => setUpiPhoneNumber(e.target.value);
 
-  const handelsubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const data = {
@@ -57,14 +47,14 @@ const InnerBank = ({ setRefresh }) => {
 
     AccountService.addBank(data, auth.user)
       .then((response) => {
-        console.log("bank", response.data);
         toast.success(response.data.message);
-        // Update refresh state in AdminBank
-        setRefresh((prev) => !prev); // Trigger a state change
+        setRefresh((prev) => !prev);
+        resetForm();
+        // Hide the modal manually since data-bs-dismiss does not work with async
+        document.querySelector("#innerbnk .btn-close").click();
       })
       .catch((error) => {
-        alert(error.response.data.message);
-        console.log(error);
+        toast.error(error.response.data.message);
       });
   };
 
@@ -73,7 +63,7 @@ const InnerBank = ({ setRefresh }) => {
       <div
         className="modal fade"
         id="innerbnk"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
@@ -83,7 +73,6 @@ const InnerBank = ({ setRefresh }) => {
               <h5 className="modal-title" id="exampleModalLabel">
                 Please Provide The Details
               </h5>
-
               <button
                 type="button"
                 className="btn-close"
@@ -91,58 +80,55 @@ const InnerBank = ({ setRefresh }) => {
                 aria-label="Close"
               ></button>
             </div>
-
             <div className="d-flex flex-column modal-body gap-2">
               <input
                 type="text"
                 className="form-control"
                 placeholder="Name of Bank *"
-                aria-describedby="addon-wrapping"
-                onChange={bnamechnage}
-                // value={selectedBank.bankName}
-                // readOnly
+                onChange={bnameChange}
+                value={bname}
               />
               <input
                 type="text"
                 className="form-control"
                 placeholder="Acc No. *"
-                aria-describedby="addon-wrapping"
-                onChange={accnochnage}
+                onChange={accnoChange}
+                value={accno}
               />
               <input
                 type="text"
                 className="form-control"
                 placeholder="IFSC CODE "
-                aria-describedby="addon-wrapping"
-                onChange={ifscchnage}
+                onChange={ifscChange}
+                value={ifsc}
               />
               <input
                 type="text"
                 className="form-control"
                 placeholder="Name of the Acc. Holder "
-                aria-describedby="addon-wrapping"
-                onChange={hnamechnage}
+                onChange={hnameChange}
+                value={hname}
               />
               <input
                 type="text"
                 className="form-control"
                 placeholder="UPI ID "
-                aria-describedby="addon-wrapping"
-                onChange={hUpichnage}
+                onChange={upiChange}
+                value={upi}
               />
               <input
                 type="text"
                 className="form-control"
                 placeholder="UPI App Name "
-                aria-describedby="addon-wrapping"
-                onChange={hupiNamechnage}
+                onChange={upiNameChange}
+                value={upiName}
               />
               <input
                 type="text"
                 className="form-control"
                 placeholder="UPI Phone Number "
-                aria-describedby="addon-wrapping"
-                onChange={hUpiNumberchnage}
+                onChange={upiPhoneNumberChange}
+                value={upiPhoneNumber}
               />
             </div>
             <div className="modal-footer">
@@ -156,7 +142,7 @@ const InnerBank = ({ setRefresh }) => {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={handelsubmit}
+                onClick={handleSubmit}
               >
                 Add Bank
               </button>
@@ -164,15 +150,6 @@ const InnerBank = ({ setRefresh }) => {
           </div>
         </div>
       </div>
-
-      {/* <ul>
-        {getbankName.map((bank, index) => (
-          <li key={index}>
-            {bank.bankName}
-            <button onClick={() => handleShowDetails(bank)}>Show Details</button>
-          </li>
-        ))}
-      </ul> */}
     </div>
   );
 };
