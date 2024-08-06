@@ -9,6 +9,8 @@ import DashService from "../../Services/DashService";
 import FullScreenLoader from "../../Component/FullScreenLoader";
 import { debounce } from "lodash";
 import { toast } from "react-toastify";
+import SingleCard from "../../common/singleCard";
+import { errorHandler } from "../../Utils/helper";
 
 const Deposit = () => {
   const initialValues = {
@@ -179,31 +181,38 @@ const Deposit = () => {
       setIsLoading(true);
       DashService.CreateTransactionDeposit(values, auth.user)
         .then((response) => {
-          console.log(response.data);
-          toast.success("Transaction Created Successfully!!");
-          setIsLoading(false);
-          resetForm();
+
+          setTimeout(() => {
+            setIsLoading(false);
+            toast.success("Transaction Created Successfully!!");
+            resetForm();
+          }, 1000); // Delay for 1 seconds (2000 milliseconds)
+          
+        
         })
-        .catch((error) => {
-          setIsLoading(false);
-          console.error(error);
-          toast.error(error.response.data.message);
+        .catch((err) => {
+          setTimeout(() => {
+            setIsLoading(false);
+            errorHandler(err.message, "Something went wrong");
+          }, 1000);
         });
     }
   };
 
   return (
-    <div>
+    <div className="mt-3" >
       <FullScreenLoader show={isLoading} />
+      <SingleCard className={"   mr-5 ml-5"}  style={{ backgroundColor: "#e6f7ff" }}>
+      <SingleCard>
       <Container
         className="p-4"
         style={{
-          backgroundColor: "#f9fafc",
+          // backgroundColor: "#f9fafc",
           borderRadius: "8px",
           maxWidth: "1250px",
         }}
       >
-        <h3 className="mb-4">Make New Transaction</h3>
+        <h3 className="text-bold col d-flex justify-content-center ">Make New Transaction</h3>
         <Formik
           initialValues={initialValues}
           validationSchema={CreateDepositTransactionSchema}
@@ -211,7 +220,7 @@ const Deposit = () => {
         >
           {({ values, setFieldValue, handleChange, handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
-              <Row className="mb-3">
+              <Row className="mt-5">
                 <Col md={6}>
                   <div className="form-group">
                     <label htmlFor="userName">
@@ -483,13 +492,15 @@ const Deposit = () => {
                   </div>
                 </Col>
               </Row>
-              <Button variant="success" type="submit" className="w-100">
+              <Button variant="dark" type="submit" className="w-100">
                 Create
               </Button>
             </Form>
           )}
         </Formik>
       </Container>
+      </SingleCard>
+      </SingleCard>
     </div>
   );
 };

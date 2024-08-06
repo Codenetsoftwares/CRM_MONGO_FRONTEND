@@ -4,6 +4,9 @@ import { useAuth } from "../../Utils/Auth";
 import AccountService from "../../Services/AccountService";
 import DashService from "../../Services/DashService";
 import FullScreenLoader from "../FullScreenLoader";
+import { toast } from "react-toastify";
+import { errorHandler } from "../../Utils/helper";
+import SingleCard from "../../common/singleCard";
 
 function Withdraw() {
   const auth = useAuth();
@@ -25,7 +28,6 @@ function Withdraw() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
 
   useEffect(() => {
     AccountService.getActiveBank(auth.user).then((res) => setBank(res.data));
@@ -78,18 +80,17 @@ function Withdraw() {
     if (confirmed) {
       DashService.CreateTransactionWithdraw(data, auth.user)
         .then((response) => {
-          // Handle successful response from the backend
-          console.log(response.data);
-          alert("Transaction Created Successfully!!");
-          setIsLoading(false);
-          window.location.reload();
+          setTimeout(() => {
+            setIsLoading(false);
+            toast.success(response.data.message);
+            window.location.reload();
+          }, 1000); // Delay for 1 seconds (2000 milliseconds)
         })
-        .catch((error) => {
-          // Handle error from the backend
-          setIsLoading(false);
-          console.error(error);
-          alert(error.response.data.message);
-          //  alert("Failed! Transaction ID Does Not Exists");
+        .catch((err) => {
+          setTimeout(() => {
+            setIsLoading(false);
+            errorHandler(err.message, "Something went wrong");
+          }, 1000);
         });
     }
   };
@@ -100,8 +101,8 @@ function Withdraw() {
     // Filter the options based on the input value
     const filtered = value
       ? UId.filter((data) =>
-        data.userName.toLowerCase().includes(value.toLowerCase())
-      )
+          data.userName.toLowerCase().includes(value.toLowerCase())
+        )
       : [];
     setFilteredOptions(filtered);
   };
@@ -112,23 +113,28 @@ function Withdraw() {
   };
 
   return (
+
+     
     <div
-      className="Container fluid='lg'"
+      className="Container fluid='lg mt-3"
       style={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         height: "90vh",
         // background: "linear-gradient(to left, green, white)",
-        margin: 0,
+        margin: 1,
         padding: 12,
         boxSizing: "border-box",
         color: "white",
+        border: "1px solid red"
       }}
     >
+
+<SingleCard>
       <FullScreenLoader show={isLoading} />
       <div
-        className="form-box"
+        className="form-box "
         style={{
           width: "380px",
           // height: '450px',
@@ -139,6 +145,7 @@ function Withdraw() {
           justifyContent: "flex-start",
           opacity: 1,
           borderRadius: "2%",
+                 border: "1px solid red"
         }}
       >
         <div
@@ -389,7 +396,10 @@ function Withdraw() {
           </form>
         </div>
       </div>
+      </SingleCard>
     </div>
+ 
+    
   );
 }
 

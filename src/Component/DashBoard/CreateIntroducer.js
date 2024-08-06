@@ -7,6 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 import AccountService from "../../Services/AccountService";
 import SingleCard from "../../common/singleCard";
 import { CreateIntroducerSchema } from "../../Services/schema";
+import FullScreenLoader from "../FullScreenLoader.jsx";
+import { errorHandler } from "../../Utils/helper.js";
 
 const CreateIntroducer = () => {
   const auth = useAuth();
@@ -16,6 +18,7 @@ const CreateIntroducer = () => {
     userName: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     values,
@@ -36,14 +39,22 @@ const CreateIntroducer = () => {
   });
 
   const introducerFormHandler = (values) => {
+    setIsLoading(true);
     AccountService.createIntroducer(values, auth.user)
       .then((res) => {
-        console.log("res", res);
-        toast.success(res.data.message);
-        resetForm(); // Reset the form after successful submission
+        setTimeout(() => {
+          setIsLoading(false);
+          toast.success(res.data.message);
+          resetForm(); 
+        }, 1000); // Delay for 1 seconds (2000 milliseconds)
+        
+     
       })
       .catch((err) => {
-        toast.error(err.response.data.message);
+        setTimeout(() => {
+          setIsLoading(false);
+          errorHandler(err.message, "Something went wrong");
+        }, 1000);
       });
   };
 
@@ -62,6 +73,7 @@ const CreateIntroducer = () => {
       className="d-flex justify-content-center "
       style={{ overflow: "hidden" }}
     >
+        <FullScreenLoader show={isLoading} />
       <div className="container pt-5">
         <div className="row justify-content-center">
           <div className="col-lg-9">

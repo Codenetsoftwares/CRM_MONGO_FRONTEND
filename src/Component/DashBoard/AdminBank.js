@@ -26,6 +26,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { debounce } from "lodash";
 import { Oval } from "react-loader-spinner";
+import { errorHandler } from "../../Utils/helper";
 
 const AdminBank = () => {
   const navigate = useNavigate();
@@ -90,7 +91,7 @@ const AdminBank = () => {
           }
         })
         .catch((error) => {
-          alert(error.response.data.message);
+         errorHandler(error.message, "Something went wrong");
           console.log(error);
         });
     }
@@ -106,7 +107,7 @@ const AdminBank = () => {
       setHasMore(page < res.data.pagination.totalPages);
       setTotalPage(res.data.pagination.totalPages);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      errorHandler(error.message, "Something went wrong");
     } finally {
       setIsLoading(false);
     }
@@ -159,7 +160,7 @@ const AdminBank = () => {
           console.log("======>>>> response", response.data.message);
         })
         .catch((error) => {
-          console.error(error);
+          errorHandler(error.message, "Something went wrong");
         });
     }
   };
@@ -180,7 +181,7 @@ const AdminBank = () => {
           console.log(response.data);
         })
         .catch((error) => {
-          console.error(error);
+          errorHandler(error.message, "Something went wrong");
         });
     }
   };

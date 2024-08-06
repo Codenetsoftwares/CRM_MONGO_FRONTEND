@@ -251,7 +251,7 @@ const AdminList = () => {
                                   handelDetails(e, data._id);
                                 }}
                               >
-                                 Click here for more details
+                                 Click Here For More Details
                               </button>
                           
                           </div>

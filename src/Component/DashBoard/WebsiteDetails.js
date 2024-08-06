@@ -29,6 +29,7 @@ import "./WebsiteDetails.css";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { debounce } from "lodash";
 import { Oval } from "react-loader-spinner";
+import { errorHandler } from "../../Utils/helper";
 
 const WebsiteDetails = () => {
   const auth = useAuth();
@@ -86,7 +87,7 @@ const WebsiteDetails = () => {
         }
       })
       .catch((err) => {
-        alert(err.response.data.message);
+        errorHandler(err.message, "Something went wrong");
         console.log(err);
       });
     // window.location.reload();
@@ -122,7 +123,7 @@ const WebsiteDetails = () => {
           }
         })
         .catch((error) => {
-          toast.error(error);
+          errorHandler(error.message, "Something went wrong");
           // alert.error("e.message");
         });
     }
@@ -147,7 +148,7 @@ const WebsiteDetails = () => {
       setHasMore(page < res.data.pagination.totalPages);
       setTotalPage(res.data.pagination.totalPages);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      errorHandler(error.message, "Something went wrong");
     } finally {
       setIsLoading(false);
     }
@@ -222,6 +223,7 @@ const WebsiteDetails = () => {
         console.log(response.data);
       })
       .catch((error) => {
+        errorHandler(error.message, "Something went wrong");
         console.error(error);
       });
   };
@@ -237,9 +239,9 @@ const WebsiteDetails = () => {
         window.location.reload();
         console.log(response.data);
       })
-      .catch((error) => {
-        alert(error.response.data.message);
-        console.error(error);
+      .catch((err) => {
+       errorHandler(err.message, "Something went wrong");
+        // console.error(error);
       });
   };
   const handelSubAdmin = (SubAdmins, ID) => {

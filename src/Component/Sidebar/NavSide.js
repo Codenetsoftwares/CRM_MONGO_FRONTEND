@@ -25,7 +25,7 @@ const NavSide = ({ onSelect }) => {
 
   useEffect(() => {
     setUserEmail(auth.user?.userName);
-    setUserRole(auth.user.role);
+    setUserRole(auth.user?.role);
 
   }, [auth]);
 
@@ -102,7 +102,7 @@ const NavSide = ({ onSelect }) => {
               className="brand-image img-circle elevation-3"
               style={{ opacity: ".8" }}
             />
-            <span className="brand-text font-weight-light text-white">
+            <span className="brand-text font-weight-bold text-white text-align-center">
               &nbsp;obhiasb
             </span>
             <span
@@ -125,7 +125,7 @@ const NavSide = ({ onSelect }) => {
               <img src={userIcon} className="img-circle" alt="User Image" />
             </div>
             <div className="info">
-              <p href="#" className="text-white" style={{ fontSize: "10px" }}>
+              <p href="#" className="text-grey text-bold  fs-6 "    >
                 {useremail}
               </p>
             </div>

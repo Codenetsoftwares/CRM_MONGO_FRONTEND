@@ -9,6 +9,8 @@ import DashService from "../../Services/DashService";
 import FullScreenLoader from "../../Component/FullScreenLoader";
 import { debounce } from "lodash";
 import { toast } from "react-toastify";
+import { errorHandler } from "../../Utils/helper";
+import SingleCard from "../../common/singleCard";
 
 const Withdraw = () => {
   const initialValues = {
@@ -31,9 +33,8 @@ const Withdraw = () => {
   const [allUserNameOptions, setAllUserNameOptions] = useState([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isBankDropdownVisible, setIsBankDropdownVisible] = useState(false);
-  const [isWebsiteDropdownVisible, setIsWebsiteDropdownVisible] = useState(
-    false
-  );
+  const [isWebsiteDropdownVisible, setIsWebsiteDropdownVisible] =
+    useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [activeBankIndex, setActiveBankIndex] = useState(-1);
@@ -106,8 +107,8 @@ const Withdraw = () => {
 
   const handleKeyDown = (e, setFieldValue) => {
     if (e.key === "ArrowDown") {
-      setActiveIndex((prevIndex) =>
-        (prevIndex + 1) % filteredUserNameOptions.length
+      setActiveIndex(
+        (prevIndex) => (prevIndex + 1) % filteredUserNameOptions.length
       );
     } else if (e.key === "ArrowUp") {
       setActiveIndex(
@@ -124,8 +125,8 @@ const Withdraw = () => {
 
   const handleBankKeyDown = (e, setFieldValue) => {
     if (e.key === "ArrowDown") {
-      setActiveBankIndex((prevIndex) =>
-        (prevIndex + 1) % filteredBankOptions.length
+      setActiveBankIndex(
+        (prevIndex) => (prevIndex + 1) % filteredBankOptions.length
       );
     } else if (e.key === "ArrowUp") {
       setActiveBankIndex(
@@ -142,8 +143,8 @@ const Withdraw = () => {
 
   const handleWebsiteKeyDown = (e, setFieldValue) => {
     if (e.key === "ArrowDown") {
-      setActiveWebsiteIndex((prevIndex) =>
-        (prevIndex + 1) % filteredWebsiteOptions.length
+      setActiveWebsiteIndex(
+        (prevIndex) => (prevIndex + 1) % filteredWebsiteOptions.length
       );
     } else if (e.key === "ArrowUp") {
       setActiveWebsiteIndex(
@@ -198,24 +199,26 @@ const Withdraw = () => {
         })
         .catch((error) => {
           setIsLoading(false);
-          console.error(error);
-          toast.error(error.response.data.message);
+          errorHandler(error.message, "Something went wrong");
+         
         });
     }
   };
 
   return (
-    <div>
+    <div className="mt-3" >
       <FullScreenLoader show={isLoading} />
+      <SingleCard className={"   mr-5 ml-5"}  style={{ backgroundColor: "#e6f7ff" }}>
+        <SingleCard>
       <Container
-        className="p-4"
+        className="p-4  "
         style={{
-          backgroundColor: "#f9fafc",
+          // backgroundColor: "#f9fafc",
           borderRadius: "8px",
-          maxWidth: "1250px",
+          maxWidth: "1050px",
         }}
       >
-        <h3 className="mb-4">Make New Transaction</h3>
+        <h3 className="text-bold col d-flex justify-content-center  ">Make New Transaction</h3>
         <Formik
           initialValues={initialValues}
           validationSchema={CreateWithDrawTransactionSchema}
@@ -223,7 +226,7 @@ const Withdraw = () => {
         >
           {({ values, setFieldValue, handleChange, handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
-              <Row className="mb-3">
+              <Row className=" mt-5">
                 <Col md={6}>
                   <div className="form-group">
                     <label htmlFor="userName">
@@ -512,13 +515,15 @@ const Withdraw = () => {
                   </div>
                 </Col>
               </Row>
-              <Button variant="danger" type="submit" className="w-100">
+              <Button variant="dark" type="submit" className="w-100">
                 Create
               </Button>
             </Form>
           )}
         </Formik>
       </Container>
+      </SingleCard>
+      </SingleCard>
     </div>
   );
 };
