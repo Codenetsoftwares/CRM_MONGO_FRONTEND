@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TransactionSercvice from "../../Services/TransactionSercvice";
 import { useAuth } from "../../Utils/Auth";
+import { errorHandler } from "../../Utils/helper";
 
 const SubAdminBank = ({ ID, EditApi, purpose }) => {
   console.log("first1011110", purpose)
@@ -44,6 +45,32 @@ const SubAdminBank = ({ ID, EditApi, purpose }) => {
 
 
   }, [auth]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       let res;
+  //       if (purpose === "bank") {
+  //         res = await TransactionSercvice.bankSubAdminList(auth.user);
+  //       } else {
+  //         res = await TransactionSercvice.websiteSubAdminList(auth.user);
+  //       }
+
+  //       setSubAdmin(res.data);
+  //       setSubAdminlist(res.data.map((data) => data.userName));
+  //       setCheckboxStates(res.data.map(() => false)); // Initialize checkbox states
+  //       setCheckboxIsDeposit(res.data.map(() => false));
+  //       setCheckboxIsWithdraw(res.data.map(() => false));
+  //       setCheckboxIsEdit(res.data.map(() => false));
+  //       setCheckboxIsDelete(res.data.map(() => false));
+  //       setCheckboxIsRenew(res.data.map(() => false));
+  //     } catch (err) {
+  //       errorHandler(err, 'Failed to fetch sub admin list');
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [auth, purpose]);
 
   //  For subadmin Name Change
   const handleCheckboxChange = (index) => {

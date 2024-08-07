@@ -118,7 +118,7 @@ const AdminBank = () => {
   useEffect(() => {
     setGetBankName([]);
     fetchData();
-  }, [refresh]);
+  }, [refresh,search]);
 
   // Debounced search handler using lodash
   const debouncedSearchHandler = useCallback(
@@ -329,13 +329,13 @@ const AdminBank = () => {
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isWithdraw ? "":"avoid-clicks"}`}
                                   data-bs-toggle="modal"
                                   data-bs-target="#modalWthbl"
                                   onClick={() => {
                                     handelId(data._id);
                                   }}
-                                  disabled={!data.isWithdraw}
+                                  // disabled={!data.isWithdraw}
                                   title="Withdraw"
                                 >
                                   <FontAwesomeIcon
@@ -481,7 +481,7 @@ const AdminBank = () => {
         <ModalAddBl ID={Id} setRefresh={setRefresh} refresh={refresh} />
         <ModalWthBl ID={Id} setRefresh={setRefresh} refresh={refresh} />
         <InnerBank setRefresh={setRefresh} refresh={refresh} />
-        <SubAdminBank ID={Id} />
+        {/* <SubAdminBank ID={Id} /> */}
         <RenewBankPermission
           SubAdmins={SubAdmins}
           ID={SId}

@@ -43,18 +43,33 @@ const Withdraw = () => {
   const auth = useAuth();
 
   useEffect(() => {
-    AccountService.getActiveBank(auth.user).then((res) => {
-      setBankOptions(res.data);
-      setFilteredBankOptions(res.data);
-    });
-    AccountService.getActiveWebsite(auth.user).then((res) => {
-      setWebsiteOptions(res.data);
-      setFilteredWebsiteOptions(res.data);
-    });
-    AccountService.userId(auth.user).then((res) => {
-      setAllUserNameOptions(res.data);
-      setFilteredUserNameOptions(res.data);
-    });
+    const fetchData = async () => {
+      try {
+        const bankRes = await AccountService.getActiveBank(auth.user);
+        setBankOptions(bankRes.data);
+        setFilteredBankOptions(bankRes.data);
+      } catch (err) {
+        errorHandler(err, 'Failed to fetch active banks');
+      }
+
+      try {
+        const websiteRes = await AccountService.getActiveWebsite(auth.user);
+        setWebsiteOptions(websiteRes.data);
+        setFilteredWebsiteOptions(websiteRes.data);
+      } catch (err) {
+        errorHandler(err, 'Failed to fetch active websites');
+      }
+
+      try {
+        const userRes = await AccountService.userId(auth.user);
+        setAllUserNameOptions(userRes.data);
+        setFilteredUserNameOptions(userRes.data);
+      } catch (err) {
+        errorHandler(err, 'Failed to fetch user IDs');
+      }
+    };
+
+    fetchData();
   }, [auth]);
 
   const handleSearchUserName = useCallback(

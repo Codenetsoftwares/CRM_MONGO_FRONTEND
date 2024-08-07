@@ -9,6 +9,7 @@ import AccountService from "../Services/AccountService";
 import { toast } from "react-toastify";
 import SingleCard from "../common/singleCard";
 import GridCard from "../common/gridCard";
+import { errorHandler } from "../Utils/helper";
 
 const FilterMainTransaction = ({
   purpose,
@@ -36,7 +37,34 @@ const FilterMainTransaction = ({
   const [maxAmount, setMaxAmount] = useState(0);
   const [searchByTransactionId, setSearchByTransactionId] = useState("");
 
-  const handleFilter = () => {
+  // const handleFilter = () => {
+  //   const data = {
+  //     transactionType: select,
+  //     introducerList: introducer,
+  //     subAdminList: subAdmin,
+  //     BankList: bank,
+  //     WebsiteList: website,
+  //     sdate: moment(startDatevalue).toDate(),
+  //     edate: moment(endDatevalue).toDate(),
+  //     maxAmount: maxAmount,
+  //     minAmount: minAmount,
+  //     transactionID: searchByTransactionId,
+  //   };
+  //   TransactionSercvice.filterTransaction(data, page, auth.user)
+  //     .then((res) => {
+  //       return (
+  //         setDocumentView(res.data.paginatedResults),
+  //         console.log(documentView),
+  //         handleData(res.data.paginatedResults, res.data.pageNumber),
+  //         handleTotalData(res.data.allIntroDataLength)
+  //       );
+  //     })
+  //     .catch((err) => {
+  //       return handleData(""), toast.error(err.response.data.message);
+  //     });
+  // };
+
+  const handleFilter = async () => {
     const data = {
       transactionType: select,
       introducerList: introducer,
@@ -49,18 +77,17 @@ const FilterMainTransaction = ({
       minAmount: minAmount,
       transactionID: searchByTransactionId,
     };
-    TransactionSercvice.filterTransaction(data, page, auth.user)
-      .then((res) => {
-        return (
-          setDocumentView(res.data.paginatedResults),
-          console.log(documentView),
-          handleData(res.data.paginatedResults, res.data.pageNumber),
-          handleTotalData(res.data.allIntroDataLength)
-        );
-      })
-      .catch((err) => {
-        return handleData(""), toast.error(err.response.data.message);
-      });
+  
+    try {
+      const res = await TransactionSercvice.filterTransaction(data, page, auth.user);
+      setDocumentView(res.data.paginatedResults);
+      console.log(documentView);
+      handleData(res.data.paginatedResults, res.data.pageNumber);
+      handleTotalData(res.data.allIntroDataLength);
+    } catch (err) {
+      handleData("");
+     errorHandler(err, err.response?.data?.message || 'Failed to filter transactions');
+    }
   };
 
   const handleReset = () => {
@@ -84,24 +111,60 @@ const FilterMainTransaction = ({
     handleFilter();
   }, [page]);
 
-  useEffect(() => {
-    if (auth.user) {
-      TransactionSercvice.subAdminList(auth.user).then((res) => {
-        setSubAdminlist(res.data);
-      });
-      TransactionSercvice.bankList(auth.user).then((res) => {
-        setBankList(res.data);
-      });
-      TransactionSercvice.websiteList(auth.user).then((response)  =>  
-      {setWebsList(response.data)
+  // useEffect(() => {
+  //   if (auth.user) {
+  //     TransactionSercvice.subAdminList(auth.user).then((res) => {
+  //       setSubAdminlist(res.data);
+  //     });
+  //     TransactionSercvice.bankList(auth.user).then((res) => {
+  //       setBankList(res.data);
+  //     });
+  //     TransactionSercvice.websiteList(auth.user).then((response)  =>  
+  //     {setWebsList(response.data)
 
-      } 
+  //     } 
       
-      );
-      AccountService.introducerId(auth.user).then((res) =>
-        setIntroducerList(res.data)
-      );
-    }
+  //     );
+  //     AccountService.introducerId(auth.user).then((res) =>
+  //       setIntroducerList(res.data)
+  //     );
+  //   }
+  // }, [auth]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (auth.user) {
+        try {
+          const subAdminRes = await TransactionSercvice.subAdminList(auth.user);
+          setSubAdminlist(subAdminRes.data);
+        } catch (err) {
+          errorHandler(err, 'Failed to fetch sub admin list');
+        }
+
+        try {
+          const bankRes = await TransactionSercvice.bankList(auth.user);
+          setBankList(bankRes.data);
+        } catch (err) {
+          errorHandler(err, 'Failed to fetch bank list');
+        }
+
+        try {
+          const websiteRes = await TransactionSercvice.websiteList(auth.user);
+          setWebsList(websiteRes.data);
+        } catch (err) {
+          errorHandler(err, 'Failed to fetch website list');
+        }
+
+        try {
+          const introducerRes = await AccountService.introducerId(auth.user);
+          setIntroducerList(introducerRes.data);
+        } catch (err) {
+          errorHandler(err, 'Failed to fetch introducer list');
+        }
+      }
+    };
+
+    fetchData();
   }, [auth]);
   console.log('=========>>>>>>> data ',websList);
   console.log("banklist",bankList)

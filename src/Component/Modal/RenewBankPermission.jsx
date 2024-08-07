@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import SingleCard from "../../common/singleCard";
 import GridCard from "../../common/gridCard";
+import { errorHandler } from "../../Utils/helper";
 
 const RenewBankPermission = ({ SubAdmins, ID, setRefresh }) => {
   const [toggle, setToggle] = useState(true);
@@ -190,9 +191,9 @@ const RenewBankPermission = ({ SubAdmins, ID, setRefresh }) => {
         setRefresh((prev) => !prev);
         document.querySelector("#RenewBankPermission .btn-close").click();
       })
-      .catch((error) => {
-        alert(error.response.data.message);
-        console.log(error);
+      .catch((err) => {
+      errorHandler(err, 'Failed to fetch active websites');
+        // console.log(error);
       });
   };
 

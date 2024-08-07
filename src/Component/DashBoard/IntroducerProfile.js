@@ -32,6 +32,7 @@ import IntroducerProfileView from "../Modal/IntroducerProfileView";
 
 import { Oval } from "react-loader-spinner"; // Import the Oval spinner
 import InfiniteScroll from "react-infinite-scroll-component";
+import { errorHandler } from "../../Utils/helper";
 
 
 const IntroducerProfile = ({ data }) => {
@@ -81,8 +82,8 @@ const IntroducerProfile = ({ data }) => {
         searchTerm.length > 0 ? filteredData : [...prevUsers, ...filteredData]
       );
       setHasMore(newPage < res.data.pageNumber);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } catch (err) {
+     errorHandler(err.message, "Something went wrong");
     }
   };
 

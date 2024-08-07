@@ -139,7 +139,9 @@ const WebsiteDetails = () => {
   const fetchData = async (searchTerm = search) => {
     try {
       setIsLoading(true);
+    
       const res = await AccountService.website(auth.user, page, searchTerm);
+  
       setGetWebsite(
         searchTerm.length > 0
           ? res.data.data
@@ -148,6 +150,7 @@ const WebsiteDetails = () => {
       setHasMore(page < res.data.pagination.totalPages);
       setTotalPage(res.data.pagination.totalPages);
     } catch (error) {
+    
       errorHandler(error.message, "Something went wrong");
     } finally {
       setIsLoading(false);
@@ -158,7 +161,7 @@ const WebsiteDetails = () => {
   useEffect(() => {
     setGetWebsite([]);
     fetchData();
-  }, [refresh]);
+  }, [refresh, search]);
 
   // Debounced search handler using lodash
   const debouncedSearchHandler = useCallback(

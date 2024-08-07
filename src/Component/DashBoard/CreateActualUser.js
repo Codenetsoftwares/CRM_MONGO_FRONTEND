@@ -110,15 +110,34 @@ const CreateActualUser = () => {
   );
 
   // Fetch introducer options on component mount
+  // useEffect(() => {
+  //   AccountService.IntroducerUserId(auth.user).then((res) => {
+  //     setIntroducerOption(res.data);
+  //     setIntroducerOption1(res.data);
+  //     setIntroducerOption2(res.data);
+  //     setFilteredIntroducerOption(res.data);
+  //     setFilteredIntroducerOption1(res.data);
+  //     setFilteredIntroducerOption2(res.data);
+  //   });
+  // }, [auth]);
+
+
   useEffect(() => {
-    AccountService.IntroducerUserId(auth.user).then((res) => {
-      setIntroducerOption(res.data);
-      setIntroducerOption1(res.data);
-      setIntroducerOption2(res.data);
-      setFilteredIntroducerOption(res.data);
-      setFilteredIntroducerOption1(res.data);
-      setFilteredIntroducerOption2(res.data);
-    });
+    const fetchData = async () => {
+      try {
+        const res = await AccountService.IntroducerUserId(auth.user);
+        setIntroducerOption(res.data);
+        setIntroducerOption1(res.data);
+        setIntroducerOption2(res.data);
+        setFilteredIntroducerOption(res.data);
+        setFilteredIntroducerOption1(res.data);
+        setFilteredIntroducerOption2(res.data);
+      } catch (err) {
+        errorHandler(err, 'Failed to fetch introducer options');
+      }
+    };
+
+    fetchData();
   }, [auth]);
 
   // Handle form submission
