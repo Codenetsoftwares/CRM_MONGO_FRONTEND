@@ -37,37 +37,34 @@ const Login = () => {
 
   const authFormHandler = async (values) => {
     setIsLoading(true);
-    await AccountService.adminlogin(values) // Corrected here to pass values directly
-      .then((res) => {
-        if (res.status === 200) {
-          sessionStorage.setItem("user", res.data.token.accessToken);
-          sessionStorage.setItem("role", res.data.token.role);
-          console.log("===>", auth);
-          console.log("admin");
-           setTimeout(() => {
-            setIsLoading(false);
-            toast.success("Login Successfully");
-            auth.login();
-            navigate("/welcome");
-          }, 1000); 
+    try {
+      const res = await AccountService.adminlogin(values); // Corrected here to pass values directly
 
-      
-     
-          // window.location.reload();
-        } else {
-          setTimeout(() => {
-            setIsLoading(false);
-            toast.error(res.data.message);
-            navigate("/");
-          }, 1000);
-        }
-      })
-      .catch((err) => {
+      if (res.status === 200) {
+        sessionStorage.setItem("user", res.data.token.accessToken);
+        sessionStorage.setItem("role", res.data.token.role);
+        console.log("===>", auth);
+        console.log("admin");
+
         setTimeout(() => {
           setIsLoading(false);
-          errorHandler(err.message, "Something went wrong");
+          toast.success("Login Successfully");
+          auth.login();
+          navigate("/welcome");
+          window.location.reload();
         }, 1000);
-      });
+      }
+    } catch (err) {
+      setTimeout(() => {
+        setIsLoading(false);
+        if (err.response && err.response.status === 404) {
+          toast.error("User not found");
+          navigate("/");
+        } else {
+          errorHandler(err.message, "Something went wrong");
+        }
+      }, 1000);
+    }
   };
 
   return (

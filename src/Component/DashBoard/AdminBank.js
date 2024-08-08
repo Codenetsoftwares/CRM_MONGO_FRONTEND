@@ -324,8 +324,8 @@ const AdminBank = () => {
                               Balance: {data.balance}
                             </span>
                           </p>
-                          <div className="container">
-                            <div className="row g-1 justify-content-center mt-5">
+                          {/* <div className="container"> */}
+                            <div className="row justify-content-center mt-5">
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
@@ -347,13 +347,14 @@ const AdminBank = () => {
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                  // className="btn btn-steel-blue btn-sm btn-hover-zoom"
                                   data-bs-toggle="modal"
                                   data-bs-target="#modalAdbl"
                                   onClick={() => {
                                     handelId(data._id);
                                   }}
-                                  disabled={!data.isDeposit}
+                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isDeposit ? "":"avoid-clicks"}`}
+                                  // disabled={!data.isDeposit}
                                   title="Deposit"
                                 >
                                   <FontAwesomeIcon
@@ -381,14 +382,14 @@ const AdminBank = () => {
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isEdit ? "":"avoid-clicks"}`}
                                   onClick={(e) => {
                                     handelEditbank(e, data._id);
                                   }}
                                   title="Edit Bank"
                                   data-toggle="modal"
                                   data-target="#exampleModalCenter"
-                                  disabled={!data.isEdit}
+                                  // disabled={!data.isEdit}
                                 >
                                   <FontAwesomeIcon
                                     icon={faEdit}
@@ -400,12 +401,12 @@ const AdminBank = () => {
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isDelete ? "":"avoid-clicks"}`}
                                   onClick={(e) => {
                                     handleDeleteBank(e, data._id);
                                   }}
                                   title="Delete"
-                                  disabled={!data.isDelete}
+                                  // disabled={!data.isDelete}
                                 >
                                   <FontAwesomeIcon
                                     icon={faTrashAlt}
@@ -417,14 +418,14 @@ const AdminBank = () => {
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isRenew ? "":"avoid-clicks"}`}
                                   data-toggle="modal"
                                   data-target="#RenewBankPermission"
                                   onClick={() => {
                                     handelSubAdmin(data.subAdmins, data._id);
                                   }}
                                   title="Renew Permission"
-                                  disabled={!data.isRenew}
+                                  // disabled={!data.isRenew}
                                 >
                                   <FontAwesomeIcon
                                     icon={faEye}
@@ -432,7 +433,7 @@ const AdminBank = () => {
                                   />
                                 </button>
                               </div>
-                            </div>
+                           
                           </div>
                         </div>
 

@@ -254,7 +254,7 @@ const IntroducerProfile = ({ data }) => {
                         {/* <IntroducerPayment id={user._id} /> */}
                         {/* </div> */}
                         <div className="container">
-                          <div className="row g-1 justify-content-center mt-5">
+                          <div className="row g-1 justify-content-center mt-3">
                             <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                               <button
                                 type="button"
@@ -370,7 +370,7 @@ const IntroducerProfile = ({ data }) => {
             </InfiniteScroll>
           </SingleCard>
         </div>
-        {ID !== undefined && <LiveBalanceIntroducer ID={ID} />}
+        {ID && !!ID.length && <LiveBalanceIntroducer ID={ID} />}
         <IntroducerTransaction
           TxType={txType}
           IntroducerName={introducerName}

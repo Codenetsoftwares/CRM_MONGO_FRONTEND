@@ -15,7 +15,7 @@ export const CreateDepositTransactionSchema = Yup.object({
   amount: Yup.string()
     .required("Amount is required"),
   paymentMethod: Yup.string()
-    .oneOf(["UPI", "IMPS"], "Invalid Transaction Type")
+    .oneOf(["UPI", "IMPS","NEFT"], "Invalid Transaction Type")
     .required("Payment Method is required"),
   userName: Yup.string().required("User Name is required"),
   bankName: Yup.string().required("Bank Name is required"),
@@ -83,10 +83,10 @@ export const CreateUserSchema = Yup.object({
   contactNumber: Yup.string()
     .min(10, "Contact Number must be at least 10 characters")
     .required("Contact Number is required"),
-  introducersUserName: Yup.string()
-    .required("Introducers Username is required"),
-  introducerPercentage: Yup.string()
-    .required("Introducers Percentage is required"),
+  // introducersUserName: Yup.string()
+  //   .required("Introducers Username is required"),
+  // introducerPercentage: Yup.string()
+  //   .required("Introducers Percentage is required"),
   introducersUserName1: Yup.string(),
   introducersUserName2: Yup.string(),
   introducerPercentage: Yup.string(),

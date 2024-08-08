@@ -200,6 +200,7 @@ const Deposit = () => {
           setTimeout(() => {
             setIsLoading(false);
             toast.success("Transaction Created Successfully!!");
+            // toast.success(response.message);
             resetForm();
           }, 1000); // Delay for 1 seconds (2000 milliseconds)
           
@@ -208,7 +209,12 @@ const Deposit = () => {
         .catch((err) => {
           setTimeout(() => {
             setIsLoading(false);
-            errorHandler(err.message, "Something went wrong");
+            if (err.response && err.response.status === 400) {
+              toast.error("Insufficient Website balance");
+              // navigate("/");
+            } else {
+              errorHandler(err.message, "Something went wrong");
+            }
           }, 1000);
         });
     }
@@ -217,7 +223,7 @@ const Deposit = () => {
   return (
     <div className="mt-3" >
       <FullScreenLoader show={isLoading} />
-      <SingleCard className={"   mr-5 ml-5"}  style={{ backgroundColor: "#e6f7ff" }}>
+      <SingleCard className={"  mr-5 ml-5"}  style={{ backgroundColor: "#e6f7ff" }}>
       <SingleCard>
       <Container
         className="p-4"
@@ -479,7 +485,7 @@ const Deposit = () => {
                     >
                       <option value="UPI">UPI</option>
                       <option value="IMPS">IMPS</option>
-                      <option value="RTGS">RTGS</option>
+                      {/* <option value="RTGS">RTGS</option> */}
                       <option value="NEFT">NEFT</option>
                     </Field>
                     <ErrorMessage

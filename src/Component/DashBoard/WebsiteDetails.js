@@ -418,13 +418,13 @@ const WebsiteDetails = () => {
                           <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                             <button
                               type="button"
-                              className="btn btn-custom btn-sm btn-zoom-out"
+                              className={`btn btn-custom btn-sm btn-zoom-out ${data.isDeposit? "" :"avoid-clicks"}`}
                               data-bs-toggle="modal"
                               data-bs-target="#modalAddBlWebsite"
                               onClick={() => {
                                 handelId(data._id);
                               }}
-                              disabled={!data.isDeposit}
+                              // disabled={!data.isDeposit}
                               title="Deposit"
                             >
                               <FontAwesomeIcon
@@ -452,14 +452,14 @@ const WebsiteDetails = () => {
                           <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                             <button
                               type="button"
-                              className="btn btn-custom btn-sm btn-zoom-out"
+                              className={`btn btn-custom btn-sm btn-zoom-out ${data.isEdit? "" :"avoid-clicks"}`}
                               onClick={() => {
                                 handelWebsiteEdit(data._id, data.websiteName);
                               }}
                               title="Edit Website"
                               data-toggle="modal"
                               data-target="#editwebsite"
-                              disabled={!data.isEdit}
+                              // disabled={!data.isEdit}
                             >
                               <FontAwesomeIcon
                                 icon={faEdit}
@@ -471,12 +471,12 @@ const WebsiteDetails = () => {
                           <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                             <button
                               type="button"
-                              className="btn btn-custom btn-sm btn-zoom-out"
+                              className={`btn btn-custom btn-sm btn-zoom-out ${data.isDelete? "" :"avoid-clicks"}`}
                               onClick={(e) => {
                                 handeldeletewebsite(data._id);
                               }}
                               title="Delete"
-                              disabled={!data.isDelete}
+                              // disabled={!data.isDelete}
                             >
                               <FontAwesomeIcon
                                 icon={faTrashAlt}
