@@ -204,7 +204,7 @@ const UserProfile = () => {
                   className="d-flex justify-content-center align-items-center"
                   style={{
                     height: "80vh",
-                    backgroundColor: "orange",
+                    // backgroundColor: "orange",
                     zIndex: "10000",
                     position: "relative",
                   }}
@@ -274,7 +274,7 @@ const UserProfile = () => {
                           {user.userName}
                         </p>
                         <div className="container">
-                          <div className="row g-1 justify-content-center mt-5">
+                          <div className="row g-1 justify-content-center mt-3">
                             <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                               <button
                                 type="button"
@@ -324,8 +324,8 @@ const UserProfile = () => {
                             </div>
                             <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                               <button
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalreset"
+                                data-toggle="modal"
+                                data-target="#modalreset"
                                 type="button"
                                 className="btn btn-steel-blue btn-sm btn-hover-zoom"
                                 onClick={(e) => {

@@ -6,6 +6,12 @@ const EditWebsite = ({ ID, webName }) => {
   const auth = useAuth();
 
   const [Name, SetName] = useState("");
+
+  const resetForm = () => {
+    console.log("first");
+    SetName("");
+  };
+
   const handelSubmit = () => {
     const data = { websiteName: Name };
     console.log(ID);
@@ -35,7 +41,15 @@ const EditWebsite = ({ ID, webName }) => {
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
                 Provide New Name
-              </h5> 
+              </h5>
+
+              <button
+                type="button"
+                className="btn-close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={resetForm}
+              ></button>
             </div>
 
             <div className="modal-body">
@@ -74,6 +88,7 @@ const EditWebsite = ({ ID, webName }) => {
                   type="text"
                   className="form-control"
                   placeholder="New Website Name"
+                  value={Name}
                   onChange={(e) => {
                     SetName(e.target.value);
                   }}
@@ -81,7 +96,14 @@ const EditWebsite = ({ ID, webName }) => {
               </form>
             </div>
             <div className="modal-footer">
-              
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+                onClick={resetForm}
+              >
+                Close
+              </button>
               <button
                 type="button"
                 className="btn btn-primary"

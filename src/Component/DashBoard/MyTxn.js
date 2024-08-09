@@ -14,6 +14,7 @@ import EditTransaction from "../Modal/EditTransaction";
 import TransactionSercvice from "../../Services/TransactionSercvice";
 import { Button } from "react-bootstrap";
 import Pagination from "../Pagination";
+import { errorHandler } from "../../Utils/helper";
 
 const MyTxn = () => {
   const { id } = useParams();
@@ -72,53 +73,123 @@ const MyTxn = () => {
     setDataId(id);
   };
 
+  // useEffect(() => {
+  //   TransactionSercvice.subadminWiseTxn(auth.user.userName, auth.user).then(
+  //     (res) => {
+  //       console.log("res=>>>>", res.data.data);
+
+  //       const filteredData = [];
+
+  //       res.data.data.forEach((item) => {
+  //         if (item !== null) {
+  //           filteredData.push(item);
+  //         }
+  //       });
+
+  //       setDocumentView(filteredData);
+  //       setAccountData(filteredData);
+  //       setLength(filteredData.length);
+  //       setTotalPage(Math.ceil(res.data.length) / 10);
+  //     }
+  //   );
+  // }, [auth]);
+
   useEffect(() => {
-    TransactionSercvice.subadminWiseTxn(auth.user.userName, auth.user).then(
-      (res) => {
+    const fetchData = async () => {
+      try {
+        const res = await TransactionSercvice.subadminWiseTxn(auth.user.userName, auth.user);
         console.log("res=>>>>", res.data.data);
 
-        const filteredData = [];
-
-        res.data.data.forEach((item) => {
-          if (item !== null) {
-            filteredData.push(item);
-          }
-        });
+        const filteredData = res.data.data.filter(item => item !== null);
 
         setDocumentView(filteredData);
         setAccountData(filteredData);
         setLength(filteredData.length);
-        setTotalPage(Math.ceil(res.data.length) / 10);
+        setTotalPage(Math.ceil(res.data.length / 10));
+      } catch (err) {
+        errorHandler(err, 'Failed to fetch subadmin wise transactions');
       }
-    );
+    };
+
+    fetchData();
   }, [auth]);
 
   console.log("txn=>>>", documentView);
 
+  // useEffect(() => {
+  //   if (auth.user) {
+  //     TransactionSercvice.subAdminList(auth.user).then((res) => {
+  //       setSubAdminlist(res.data);
+  //     });
+  //   }
+  // }, [auth]);
   useEffect(() => {
-    if (auth.user) {
-      TransactionSercvice.subAdminList(auth.user).then((res) => {
-        setSubAdminlist(res.data);
-      });
-    }
+    const fetchData = async () => {
+      if (auth.user) {
+        try {
+          const res = await TransactionSercvice.subAdminList(auth.user);
+          setSubAdminlist(res.data);
+        } catch (err) {
+          errorHandler(err, 'Failed to fetch sub admin list');
+        }
+      }
+    };
+
+    fetchData();
   }, [auth]);
 
   useEffect(() => {
-    if (auth.user) {
-      TransactionSercvice.bankList(auth.user).then((res) => {
-        setBankList(res.data);
-      });
-    }
+    const fetchData = async () => {
+      if (auth.user) {
+        try {
+          const res = await TransactionSercvice.bankList(auth.user);
+          setBankList(res.data);
+        } catch (err) {
+          errorHandler(err, 'Failed to fetch bank list');
+        }
+      }
+    };
+
+    // if (auth.user) {
+    //   TransactionSercvice.bankList(auth.user).then((res) => {
+    //     setBankList(res.data);
+    //   });
+    // }
+    fetchData();
   }, [auth]);
 
   useEffect(() => {
-    AccountService.website(auth.user).then((res) => setWebsiteList(res.data));
+    const fetchData = async () => {
+      if (auth.user) {
+        try {
+          const res = await AccountService.website(auth.user);
+          setWebsiteList(res.data);
+        } catch (err) {
+          errorHandler(err, 'Failed to fetch Website list');
+        }
+      }
+    };
+    fetchData();
+    // AccountService.website(auth.user).then((res) => setWebsiteList(res.data));
   }, [auth]);
 
   useEffect(() => {
-    AccountService.introducerId(auth.user).then((res) =>
-      setIntroducerList(res.data)
-    );
+
+    const fetchData = async () => {
+      if (auth.user) {
+        try {
+          const res = await AccountService.introducerId(auth.user);
+          setIntroducerList(res.data);
+        } catch (err) {
+          errorHandler(err, 'Failed to fetch Introducer list');
+        }
+      }
+    };
+    // AccountService.introducerId(auth.user).then((res) =>
+    //   setIntroducerList(res.data)
+    // );
+
+    fetchData();
   }, [auth]);
 
   const selectPageHandler = (selectedPage) => {
@@ -311,7 +382,7 @@ const MyTxn = () => {
                   required
                   min={1}
                 />
-                <h6 className="fw-bold mx-2">To</h6>
+                <h6 className="fw-bold mx-2">to</h6>
                 <input
                   className="form-control mx-0 mx-md-2"
                   type="number"
@@ -873,17 +944,16 @@ const MyTxn = () => {
                                   <td>
                                     {data.amount && (
                                       <p
-                                        className={`col fs-6  ${
-                                          data.transactionType.includes(
-                                            "Manual-Website-Withdraw"
-                                          ) ||
+                                        className={`col fs-6  ${data.transactionType.includes(
+                                          "Manual-Website-Withdraw"
+                                        ) ||
                                           data.transactionType.includes(
                                             "Manual-Bank-Withdraw"
                                           ) ||
                                           data.transactionType === "Withdraw"
-                                            ? "text-red"
-                                            : "text-black"
-                                        }`}
+                                          ? "text-red"
+                                          : "text-black"
+                                          }`}
                                       >
                                         {data.amount}
                                       </p>
@@ -905,17 +975,16 @@ const MyTxn = () => {
                                   <td>
                                     {data.transactionType && (
                                       <p
-                                        className={`col fs-6  text-bold ${
-                                          data.transactionType.includes(
-                                            "Manual-Website-Withdraw"
-                                          ) ||
+                                        className={`col fs-6  text-bold ${data.transactionType.includes(
+                                          "Manual-Website-Withdraw"
+                                        ) ||
                                           data.transactionType.includes(
                                             "Manual-Bank-Withdraw"
                                           ) ||
                                           data.transactionType === "Withdraw"
-                                            ? "text-red"
-                                            : "text-black"
-                                        }`}
+                                          ? "text-red"
+                                          : "text-black"
+                                          }`}
                                       >
                                         {data.transactionType}
                                       </p>
@@ -1019,17 +1088,16 @@ const MyTxn = () => {
                                   <td>
                                     {data.amount && (
                                       <p
-                                        className={`col fs-6  ${
-                                          data.transactionType.includes(
-                                            "Manual-Website-Withdraw"
-                                          ) ||
+                                        className={`col fs-6  ${data.transactionType.includes(
+                                          "Manual-Website-Withdraw"
+                                        ) ||
                                           data.transactionType.includes(
                                             "Manual-Bank-Withdraw"
                                           ) ||
                                           data.transactionType === "Withdraw"
-                                            ? "text-red"
-                                            : "text-black"
-                                        }`}
+                                          ? "text-red"
+                                          : "text-black"
+                                          }`}
                                       >
                                         {data.amount}
                                       </p>
@@ -1061,17 +1129,16 @@ const MyTxn = () => {
                                   <td>
                                     {data.transactionType && (
                                       <p
-                                        className={`col fs-6  text-bold ${
-                                          data.transactionType.includes(
-                                            "Manual-Website-Withdraw"
-                                          ) ||
+                                        className={`col fs-6  text-bold ${data.transactionType.includes(
+                                          "Manual-Website-Withdraw"
+                                        ) ||
                                           data.transactionType.includes(
                                             "Manual-Bank-Withdraw"
                                           ) ||
                                           data.transactionType === "Withdraw"
-                                            ? "text-red"
-                                            : "text-black"
-                                        }`}
+                                          ? "text-red"
+                                          : "text-black"
+                                          }`}
                                       >
                                         {data.transactionType}
                                       </p>

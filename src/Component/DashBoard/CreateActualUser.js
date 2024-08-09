@@ -1,6 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../Utils/Auth";
-import { FaUser, FaEnvelope, FaLock, FaMobile, FaKey, FaIdCard, FaPercent } from "react-icons/fa";
+import {
+  FaUser,
+  FaEnvelope,
+  FaLock,
+  FaMobile,
+  FaKey,
+  FaIdCard,
+  FaPercent,
+} from "react-icons/fa";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
@@ -8,11 +16,14 @@ import "react-toastify/dist/ReactToastify.css";
 import SingleCard from "../../common/singleCard";
 import { CreateUserSchema } from "../../Services/schema";
 import AccountService from "../../Services/AccountService";
-import { debounce } from 'lodash';
+import { debounce } from "lodash";
+import FullScreenLoader from "../FullScreenLoader.jsx";
+import { errorHandler } from "../../Utils/helper.js";
 
 const CreateActualUser = () => {
   // Get authentication context
   const auth = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Initial form values
   const initialValues = {
@@ -34,8 +45,12 @@ const CreateActualUser = () => {
   const [introducerOption1, setIntroducerOption1] = useState([]);
   const [introducerOption2, setIntroducerOption2] = useState([]);
   const [filteredIntroducerOption, setFilteredIntroducerOption] = useState([]);
-  const [filteredIntroducerOption1, setFilteredIntroducerOption1] = useState([]);
-  const [filteredIntroducerOption2, setFilteredIntroducerOption2] = useState([]);
+  const [filteredIntroducerOption1, setFilteredIntroducerOption1] = useState(
+    []
+  );
+  const [filteredIntroducerOption2, setFilteredIntroducerOption2] = useState(
+    []
+  );
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isDropdownVisible1, setIsDropdownVisible1] = useState(false);
   const [isDropdownVisible2, setIsDropdownVisible2] = useState(false);
@@ -45,7 +60,7 @@ const CreateActualUser = () => {
     debounce((value) => {
       if (value) {
         // Filter introducer options based on user input
-        const filteredItems = introducerOption.filter(item =>
+        const filteredItems = introducerOption.filter((item) =>
           item.userName.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredIntroducerOption(filteredItems);
@@ -54,7 +69,8 @@ const CreateActualUser = () => {
         setFilteredIntroducerOption([]);
         setIsDropdownVisible(false); // Hide dropdown if input is empty
       }
-    }, 1300), [introducerOption]
+    }, 1300),
+    [introducerOption]
   );
 
   // Debounced search handler for introducer user name 1
@@ -62,7 +78,7 @@ const CreateActualUser = () => {
     debounce((value) => {
       if (value) {
         // Filter introducer options based on user input
-        const filteredItems = introducerOption1.filter(item =>
+        const filteredItems = introducerOption1.filter((item) =>
           item.userName.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredIntroducerOption1(filteredItems);
@@ -71,7 +87,8 @@ const CreateActualUser = () => {
         setFilteredIntroducerOption1([]);
         setIsDropdownVisible1(false); // Hide dropdown if input is empty
       }
-    }, 1300), [introducerOption1]
+    }, 1300),
+    [introducerOption1]
   );
 
   // Debounced search handler for introducer user name 2
@@ -79,7 +96,7 @@ const CreateActualUser = () => {
     debounce((value) => {
       if (value) {
         // Filter introducer options based on user input
-        const filteredItems = introducerOption2.filter(item =>
+        const filteredItems = introducerOption2.filter((item) =>
           item.userName.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredIntroducerOption2(filteredItems);
@@ -88,19 +105,39 @@ const CreateActualUser = () => {
         setFilteredIntroducerOption2([]);
         setIsDropdownVisible2(false); // Hide dropdown if input is empty
       }
-    }, 1300), [introducerOption2]
+    }, 1300),
+    [introducerOption2]
   );
 
   // Fetch introducer options on component mount
+  // useEffect(() => {
+  //   AccountService.IntroducerUserId(auth.user).then((res) => {
+  //     setIntroducerOption(res.data);
+  //     setIntroducerOption1(res.data);
+  //     setIntroducerOption2(res.data);
+  //     setFilteredIntroducerOption(res.data);
+  //     setFilteredIntroducerOption1(res.data);
+  //     setFilteredIntroducerOption2(res.data);
+  //   });
+  // }, [auth]);
+
+
   useEffect(() => {
-    AccountService.IntroducerUserId(auth.user).then((res) => {
-      setIntroducerOption(res.data);
-      setIntroducerOption1(res.data);
-      setIntroducerOption2(res.data);
-      setFilteredIntroducerOption(res.data);
-      setFilteredIntroducerOption1(res.data);
-      setFilteredIntroducerOption2(res.data);
-    });
+    const fetchData = async () => {
+      try {
+        const res = await AccountService.IntroducerUserId(auth.user);
+        setIntroducerOption(res.data);
+        setIntroducerOption1(res.data);
+        setIntroducerOption2(res.data);
+        setFilteredIntroducerOption(res.data);
+        setFilteredIntroducerOption1(res.data);
+        setFilteredIntroducerOption2(res.data);
+      } catch (err) {
+        errorHandler(err, 'Failed to fetch introducer options');
+      }
+    };
+
+    fetchData();
   }, [auth]);
 
   // Handle form submission
@@ -112,33 +149,41 @@ const CreateActualUser = () => {
 
     // Check if passwords match before submitting
     if (values.password === values.confirmPassword) {
+      setIsLoading(true);
       AccountService.createActualuser(values, auth.user)
         .then((res) => {
-          console.log("res", res);
-          toast.success(res.data.message);
-          resetForm();  // Reset the form after successful submission
+          setTimeout(() => {
+            setIsLoading(false);
+            toast.success(res.data.message);
+            resetForm();
+          }, 1000); // Delay for 1 seconds (2000 milliseconds)
         })
         .catch((err) => {
-          console.log("error", err.response.data.message);
-          toast.error(err.response.data.message); // Display error message
-          return;
+          setTimeout(() => {
+            setIsLoading(false);
+            errorHandler(err.message, "Something went wrong");
+          }, 1000);
         });
     }
   };
 
   return (
     <>
+
+
       <div className="row justify-content-center">
+      <FullScreenLoader show={isLoading} />
         <div className="col-lg-9">
           <div className="row justify-content-center">
             <SingleCard className="mt-2" style={{ backgroundColor: "#e6f7ff" }}>
               <SingleCard
                 className="card shadow-lg p-3 mb-5 bg-white rounded"
                 style={{
-                  boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.1)',
-                  borderRadius: '10px',
-                  padding: '20px',
-                  backgroundColor: '#f8f9fa',
+                  boxShadow:
+                    "0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.1)",
+                  borderRadius: "10px",
+                  padding: "20px",
+                  backgroundColor: "#f8f9fa",
                 }}
               >
                 <div className="card-body">
@@ -147,7 +192,13 @@ const CreateActualUser = () => {
                     validationSchema={CreateUserSchema} // Validation schema
                     onSubmit={handleSubmit} // Submit handler
                   >
-                    {({ errors, touched, setFieldValue, handleChange, handleSubmit }) => (
+                    {({
+                      errors,
+                      touched,
+                      setFieldValue,
+                      handleChange,
+                      handleSubmit,
+                    }) => (
                       <Form>
                         <div className="row g-3">
                           {/* User Name Field */}
@@ -163,12 +214,19 @@ const CreateActualUser = () => {
                               name="userName"
                               placeholder="Enter User Name"
                             />
-                            <ErrorMessage name="userName" component="div" className="text-danger" />
+                            <ErrorMessage
+                              name="userName"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
 
                           {/* Contact Number Field */}
                           <div className="col-md-4">
-                            <label htmlFor="contactNumber" className="form-label">
+                            <label
+                              htmlFor="contactNumber"
+                              className="form-label"
+                            >
                               <FaMobile /> Enter Contact No.
                               <span className="text-danger">*</span>
                             </label>
@@ -179,7 +237,11 @@ const CreateActualUser = () => {
                               name="contactNumber"
                               placeholder="Contact Number"
                             />
-                            <ErrorMessage name="contactNumber" component="div" className="text-danger" />
+                            <ErrorMessage
+                              name="contactNumber"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
 
                           {/* First Name Field */}
@@ -195,7 +257,11 @@ const CreateActualUser = () => {
                               name="firstname"
                               placeholder="Enter First Name"
                             />
-                            <ErrorMessage name="firstname" component="div" className="text-danger" />
+                            <ErrorMessage
+                              name="firstname"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
 
                           {/* Last Name Field */}
@@ -211,7 +277,11 @@ const CreateActualUser = () => {
                               name="lastname"
                               placeholder="Enter Last Name"
                             />
-                            <ErrorMessage name="lastname" component="div" className="text-danger" />
+                            <ErrorMessage
+                              name="lastname"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
 
                           {/* Password Field */}
@@ -227,12 +297,19 @@ const CreateActualUser = () => {
                               name="password"
                               placeholder="Enter Password"
                             />
-                            <ErrorMessage name="password" component="div" className="text-danger" />
+                            <ErrorMessage
+                              name="password"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
 
                           {/* Confirm Password Field */}
                           <div className="col-md-4">
-                            <label htmlFor="confirmPassword" className="form-label">
+                            <label
+                              htmlFor="confirmPassword"
+                              className="form-label"
+                            >
                               <FaKey /> Confirm Password
                               <span className="text-danger">*</span>
                             </label>
@@ -243,7 +320,11 @@ const CreateActualUser = () => {
                               name="confirmPassword"
                               placeholder="Confirm Password"
                             />
-                            <ErrorMessage name="confirmPassword" component="div" className="text-danger" />
+                            <ErrorMessage
+                              name="confirmPassword"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
 
                           {/* Introducer User Name Field */}
@@ -261,29 +342,58 @@ const CreateActualUser = () => {
                                 autoComplete="off"
                                 onChange={(e) => {
                                   handleChange(e);
-                                  handleSearchIntroducerUserName(e.target.value); // Trigger search on change
+                                  handleSearchIntroducerUserName(
+                                    e.target.value
+                                  ); // Trigger search on change
                                 }}
                                 placeholder="Search Introducer Name"
                               />
-                              <ErrorMessage name="introducersUserName" component="div" className="text-danger" />
+                              <ErrorMessage
+                                name="introducersUserName"
+                                component="div"
+                                className="text-danger"
+                              />
                               {/* Dropdown for search results */}
                               {isDropdownVisible && (
-                                <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '120px', overflow: 'auto' }}>
+                                <ul
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    listStyle: "none",
+                                    padding: 0,
+                                    margin: 0,
+                                    position: "absolute",
+                                    zIndex: 1,
+                                    background: "white",
+                                    width: "93%",
+                                    maxHeight: "120px",
+                                    overflow: "auto",
+                                  }}
+                                >
                                   {filteredIntroducerOption.length > 0 ? (
-                                    filteredIntroducerOption.map((option, index) => (
-                                      <li
-                                        key={index}
-                                        onClick={() => {
-                                          setFieldValue('introducersUserName', option.userName); // Set selected value
-                                          setIsDropdownVisible(false); // Hide dropdown
-                                        }}
-                                        style={{ padding: '8px', cursor: 'pointer' }}
-                                      >
-                                        {option.userName}
-                                      </li>
-                                    ))
+                                    filteredIntroducerOption.map(
+                                      (option, index) => (
+                                        <li
+                                          key={index}
+                                          onClick={() => {
+                                            setFieldValue(
+                                              "introducersUserName",
+                                              option.userName
+                                            ); // Set selected value
+                                            setIsDropdownVisible(false); // Hide dropdown
+                                          }}
+                                          style={{
+                                            padding: "8px",
+                                            cursor: "pointer",
+                                          }}
+                                        >
+                                          {option.userName}
+                                        </li>
+                                      )
+                                    )
                                   ) : (
-                                    <li style={{ padding: '8px' }}>Not found</li>
+                                    <li style={{ padding: "8px" }}>
+                                      Not found
+                                    </li>
                                   )}
                                 </ul>
                               )}
@@ -304,29 +414,58 @@ const CreateActualUser = () => {
                                 autoComplete="off"
                                 onChange={(e) => {
                                   handleChange(e);
-                                  handleSearchIntroducerUserName1(e.target.value); // Trigger search on change
+                                  handleSearchIntroducerUserName1(
+                                    e.target.value
+                                  ); // Trigger search on change
                                 }}
                                 placeholder="Search Introducer Name 1"
                               />
-                              <ErrorMessage name="introducersUserName1" component="div" className="text-danger" />
+                              <ErrorMessage
+                                name="introducersUserName1"
+                                component="div"
+                                className="text-danger"
+                              />
                               {/* Dropdown for search results */}
                               {isDropdownVisible1 && (
-                                <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '120px', overflow: 'auto' }}>
+                                <ul
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    listStyle: "none",
+                                    padding: 0,
+                                    margin: 0,
+                                    position: "absolute",
+                                    zIndex: 1,
+                                    background: "white",
+                                    width: "93%",
+                                    maxHeight: "120px",
+                                    overflow: "auto",
+                                  }}
+                                >
                                   {filteredIntroducerOption1.length > 0 ? (
-                                    filteredIntroducerOption1.map((option, index) => (
-                                      <li
-                                        key={index}
-                                        onClick={() => {
-                                          setFieldValue('introducersUserName1', option.userName); // Set selected value
-                                          setIsDropdownVisible1(false); // Hide dropdown
-                                        }}
-                                        style={{ padding: '8px', cursor: 'pointer' }}
-                                      >
-                                        {option.userName}
-                                      </li>
-                                    ))
+                                    filteredIntroducerOption1.map(
+                                      (option, index) => (
+                                        <li
+                                          key={index}
+                                          onClick={() => {
+                                            setFieldValue(
+                                              "introducersUserName1",
+                                              option.userName
+                                            ); // Set selected value
+                                            setIsDropdownVisible1(false); // Hide dropdown
+                                          }}
+                                          style={{
+                                            padding: "8px",
+                                            cursor: "pointer",
+                                          }}
+                                        >
+                                          {option.userName}
+                                        </li>
+                                      )
+                                    )
                                   ) : (
-                                    <li style={{ padding: '8px' }}>Not found</li>
+                                    <li style={{ padding: "8px" }}>
+                                      Not found
+                                    </li>
                                   )}
                                 </ul>
                               )}
@@ -347,29 +486,58 @@ const CreateActualUser = () => {
                                 autoComplete="off"
                                 onChange={(e) => {
                                   handleChange(e);
-                                  handleSearchIntroducerUserName2(e.target.value); // Trigger search on change
+                                  handleSearchIntroducerUserName2(
+                                    e.target.value
+                                  ); // Trigger search on change
                                 }}
                                 placeholder="Search Introducer Name 2"
                               />
-                              <ErrorMessage name="introducersUserName2" component="div" className="text-danger" />
+                              <ErrorMessage
+                                name="introducersUserName2"
+                                component="div"
+                                className="text-danger"
+                              />
                               {/* Dropdown for search results */}
                               {isDropdownVisible2 && (
-                                <ul style={{ border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, position: 'absolute', zIndex: 1, background: 'white', width: '93%', maxHeight: '120px', overflow: 'auto' }}>
+                                <ul
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    listStyle: "none",
+                                    padding: 0,
+                                    margin: 0,
+                                    position: "absolute",
+                                    zIndex: 1,
+                                    background: "white",
+                                    width: "93%",
+                                    maxHeight: "120px",
+                                    overflow: "auto",
+                                  }}
+                                >
                                   {filteredIntroducerOption2.length > 0 ? (
-                                    filteredIntroducerOption2.map((option, index) => (
-                                      <li
-                                        key={index}
-                                        onClick={() => {
-                                          setFieldValue('introducersUserName2', option.userName); // Set selected value
-                                          setIsDropdownVisible2(false); // Hide dropdown
-                                        }}
-                                        style={{ padding: '8px', cursor: 'pointer' }}
-                                      >
-                                        {option.userName}
-                                      </li>
-                                    ))
+                                    filteredIntroducerOption2.map(
+                                      (option, index) => (
+                                        <li
+                                          key={index}
+                                          onClick={() => {
+                                            setFieldValue(
+                                              "introducersUserName2",
+                                              option.userName
+                                            ); // Set selected value
+                                            setIsDropdownVisible2(false); // Hide dropdown
+                                          }}
+                                          style={{
+                                            padding: "8px",
+                                            cursor: "pointer",
+                                          }}
+                                        >
+                                          {option.userName}
+                                        </li>
+                                      )
+                                    )
                                   ) : (
-                                    <li style={{ padding: '8px' }}>Not found</li>
+                                    <li style={{ padding: "8px" }}>
+                                      Not found
+                                    </li>
                                   )}
                                 </ul>
                               )}
@@ -378,8 +546,11 @@ const CreateActualUser = () => {
 
                           {/* Introducer Percentage Fields */}
                           <div className="col-md-4">
-                            <label htmlFor="introducerPercentage" className="form-label">
-                               Introducer's Percentage
+                            <label
+                              htmlFor="introducerPercentage"
+                              className="form-label"
+                            >
+                              Introducer's Percentage
                               <span className="text-danger">*</span>
                             </label>
                             <Field
@@ -389,12 +560,19 @@ const CreateActualUser = () => {
                               name="introducerPercentage"
                               placeholder="Introducer's Percentage"
                             />
-                            <ErrorMessage name="introducerPercentage" component="div" className="text-danger" />
+                            <ErrorMessage
+                              name="introducerPercentage"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
 
                           <div className="col-md-4">
-                            <label htmlFor="introducerPercentage1" className="form-label">
-                               Introducer's Percentage 1
+                            <label
+                              htmlFor="introducerPercentage1"
+                              className="form-label"
+                            >
+                              Introducer's Percentage 1
                               {/* <span className="text-danger">*</span> */}
                             </label>
                             <Field
@@ -404,11 +582,18 @@ const CreateActualUser = () => {
                               name="introducerPercentage1"
                               placeholder="Introducer's Percentage 1"
                             />
-                            <ErrorMessage name="introducerPercentage1" component="div" className="text-danger" />
+                            <ErrorMessage
+                              name="introducerPercentage1"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
 
                           <div className="col-md-4">
-                            <label htmlFor="introducerPercentage2" className="form-label">
+                            <label
+                              htmlFor="introducerPercentage2"
+                              className="form-label"
+                            >
                               Introducer's Percentage 2
                               {/* <span className="text-danger">*</span> */}
                             </label>
@@ -419,15 +604,21 @@ const CreateActualUser = () => {
                               name="introducerPercentage2"
                               placeholder="Introducer's Percentage 2"
                             />
-                            <ErrorMessage name="introducerPercentage2" component="div" className="text-danger" />
+                            <ErrorMessage
+                              name="introducerPercentage2"
+                              component="div"
+                              className="text-danger"
+                            />
                           </div>
-
                         </div>
                         {/* Submit Button */}
                         <div className="col-12">
                           <div className="row justify-content-center mt-4">
                             <div className="col-md-6 submit-button">
-                              <button type="submit" className="btn btn-dark w-100 fw-bold">
+                              <button
+                                type="submit"
+                                className="btn btn-dark w-100 fw-bold"
+                              >
                                 Create User
                               </button>
                             </div>

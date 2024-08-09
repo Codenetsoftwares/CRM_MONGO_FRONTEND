@@ -26,6 +26,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { debounce } from "lodash";
 import { Oval } from "react-loader-spinner";
+import { errorHandler } from "../../Utils/helper";
 
 const AdminBank = () => {
   const navigate = useNavigate();
@@ -90,7 +91,7 @@ const AdminBank = () => {
           }
         })
         .catch((error) => {
-          alert(error.response.data.message);
+         errorHandler(error.message, "Something went wrong");
           console.log(error);
         });
     }
@@ -106,7 +107,7 @@ const AdminBank = () => {
       setHasMore(page < res.data.pagination.totalPages);
       setTotalPage(res.data.pagination.totalPages);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      errorHandler(error.message, "Something went wrong");
     } finally {
       setIsLoading(false);
     }
@@ -116,8 +117,9 @@ const AdminBank = () => {
   // Refresh data whenever `refresh` changes
   useEffect(() => {
     setGetBankName([]);
+    // setPage(1)
     fetchData();
-  }, [refresh]);
+  }, [refresh,search]);
 
   // Debounced search handler using lodash
   const debouncedSearchHandler = useCallback(
@@ -159,7 +161,7 @@ const AdminBank = () => {
           console.log("======>>>> response", response.data.message);
         })
         .catch((error) => {
-          console.error(error);
+          errorHandler(error.message, "Something went wrong");
         });
     }
   };
@@ -180,7 +182,7 @@ const AdminBank = () => {
           console.log(response.data);
         })
         .catch((error) => {
-          console.error(error);
+          errorHandler(error.message, "Something went wrong");
         });
     }
   };
@@ -290,9 +292,10 @@ const AdminBank = () => {
                 </p>
               }
             >
-              {/* <br /> */}
+              <br />
               <GridCard>
                 {getbankName.map((data) => {
+                  const isInactive = !data.isActive; // Check if the card is inactive
                   return (
                     <div
                       key={data._id}
@@ -323,18 +326,18 @@ const AdminBank = () => {
                               Balance: {data.balance}
                             </span>
                           </p>
-                          <div className="container">
-                            <div className="row g-1 justify-content-center mt-5">
+                          {/* <div className="container"> */}
+                            <div className="row justify-content-center mt-5">
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isWithdraw && !isInactive ? "":"avoid-clicks"}`}
                                   data-bs-toggle="modal"
                                   data-bs-target="#modalWthbl"
                                   onClick={() => {
                                     handelId(data._id);
                                   }}
-                                  disabled={!data.isWithdraw}
+                                  // disabled={!data.isWithdraw}
                                   title="Withdraw"
                                 >
                                   <FontAwesomeIcon
@@ -346,13 +349,14 @@ const AdminBank = () => {
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                  // className="btn btn-steel-blue btn-sm btn-hover-zoom"
                                   data-bs-toggle="modal"
                                   data-bs-target="#modalAdbl"
                                   onClick={() => {
                                     handelId(data._id);
                                   }}
-                                  disabled={!data.isDeposit}
+                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isDeposit && !isInactive? "":"avoid-clicks"}`}
+                                  // disabled={!data.isDeposit}
                                   title="Deposit"
                                 >
                                   <FontAwesomeIcon
@@ -380,14 +384,14 @@ const AdminBank = () => {
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isEdit && !isInactive ? "":"avoid-clicks"}`}
                                   onClick={(e) => {
                                     handelEditbank(e, data._id);
                                   }}
                                   title="Edit Bank"
                                   data-toggle="modal"
                                   data-target="#exampleModalCenter"
-                                  disabled={!data.isEdit}
+                                  // disabled={!data.isEdit}
                                 >
                                   <FontAwesomeIcon
                                     icon={faEdit}
@@ -399,12 +403,12 @@ const AdminBank = () => {
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isDelete ? "":"avoid-clicks"}`}
                                   onClick={(e) => {
                                     handleDeleteBank(e, data._id);
                                   }}
                                   title="Delete"
-                                  disabled={!data.isDelete}
+                                  // disabled={!data.isDelete}
                                 >
                                   <FontAwesomeIcon
                                     icon={faTrashAlt}
@@ -416,14 +420,14 @@ const AdminBank = () => {
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                  className="btn btn-steel-blue btn-sm btn-hover-zoom"
+                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isRenew && !isInactive ? "":"avoid-clicks"}`}
                                   data-toggle="modal"
                                   data-target="#RenewBankPermission"
                                   onClick={() => {
                                     handelSubAdmin(data.subAdmins, data._id);
                                   }}
                                   title="Renew Permission"
-                                  disabled={!data.isRenew}
+                                  // disabled={!data.isRenew}
                                 >
                                   <FontAwesomeIcon
                                     icon={faEye}
@@ -431,7 +435,7 @@ const AdminBank = () => {
                                   />
                                 </button>
                               </div>
-                            </div>
+                           
                           </div>
                         </div>
 
@@ -480,7 +484,7 @@ const AdminBank = () => {
         <ModalAddBl ID={Id} setRefresh={setRefresh} refresh={refresh} />
         <ModalWthBl ID={Id} setRefresh={setRefresh} refresh={refresh} />
         <InnerBank setRefresh={setRefresh} refresh={refresh} />
-        <SubAdminBank ID={Id} />
+        {/* <SubAdminBank ID={Id} /> */}
         <RenewBankPermission
           SubAdmins={SubAdmins}
           ID={SId}

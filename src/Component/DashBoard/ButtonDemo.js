@@ -9,7 +9,7 @@ function ButtonDemo() {
   const [userrole, setUserRole] = useState([]);
 
   useEffect(() => {
-    setUserRole(auth.user.role);
+    setUserRole(auth.user?.role);
   }, [auth]);
   return (
     <div className="container-fluid">

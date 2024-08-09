@@ -9,6 +9,8 @@ import DashService from "../../Services/DashService";
 import FullScreenLoader from "../../Component/FullScreenLoader";
 import { debounce } from "lodash";
 import { toast } from "react-toastify";
+import SingleCard from "../../common/singleCard";
+import { errorHandler } from "../../Utils/helper";
 
 const Deposit = () => {
   const initialValues = {
@@ -40,18 +42,33 @@ const Deposit = () => {
 
   // Fetch options from the server
   useEffect(() => {
-    AccountService.getActiveBank(auth.user).then((res) => {
-      setBankOptions(res.data);
-      setFilteredBankOptions(res.data);
-    });
-    AccountService.getActiveWebsite(auth.user).then((res) => {
-      setWebsiteOptions(res.data);
-      setFilteredWebsiteOptions(res.data);
-    });
-    AccountService.userId(auth.user).then((res) => {
-      setAllUserNameOptions(res.data);
-      setFilteredUserNameOptions(res.data);
-    });
+    const fetchData = async () => {
+      try {
+        const bankRes = await AccountService.getActiveBank(auth.user);
+        setBankOptions(bankRes.data);
+        setFilteredBankOptions(bankRes.data);
+      } catch (err) {
+        errorHandler(err, 'Failed to fetch active banks');
+      }
+
+      try {
+        const websiteRes = await AccountService.getActiveWebsite(auth.user);
+        setWebsiteOptions(websiteRes.data);
+        setFilteredWebsiteOptions(websiteRes.data);
+      } catch (err) {
+        errorHandler(err, 'Failed to fetch active websites');
+      }
+
+      try {
+        const userRes = await AccountService.userId(auth.user);
+        setAllUserNameOptions(userRes.data);
+        setFilteredUserNameOptions(userRes.data);
+      } catch (err) {
+        errorHandler(err, 'Failed to fetch user IDs');
+      }
+    };
+
+    fetchData();
   }, [auth]);
 
   // Debounce function to search user names
@@ -179,31 +196,44 @@ const Deposit = () => {
       setIsLoading(true);
       DashService.CreateTransactionDeposit(values, auth.user)
         .then((response) => {
-          console.log(response.data);
-          toast.success("Transaction Created Successfully!!");
-          setIsLoading(false);
-          resetForm();
+
+          setTimeout(() => {
+            setIsLoading(false);
+            toast.success("Transaction Created Successfully!!");
+            // toast.success(response.message);
+            resetForm();
+          }, 1000); // Delay for 1 seconds (2000 milliseconds)
+          
+        
         })
-        .catch((error) => {
-          setIsLoading(false);
-          console.error(error);
-          toast.error(error.response.data.message);
+        .catch((err) => {
+          setTimeout(() => {
+            setIsLoading(false);
+            if (err.response && err.response.status === 400) {
+              toast.error("Insufficient Website balance");
+              // navigate("/");
+            } else {
+              errorHandler(err.message, "Something went wrong");
+            }
+          }, 1000);
         });
     }
   };
 
   return (
-    <div>
+    <div className="mt-3" >
       <FullScreenLoader show={isLoading} />
+      <SingleCard className={"  mr-5 ml-5"}  style={{ backgroundColor: "#e6f7ff" }}>
+      <SingleCard>
       <Container
         className="p-4"
         style={{
-          backgroundColor: "#f9fafc",
+          // backgroundColor: "#f9fafc",
           borderRadius: "8px",
           maxWidth: "1250px",
         }}
       >
-        <h3 className="mb-4">Make New Transaction</h3>
+        <h3 className="text-bold col d-flex justify-content-center ">Make New Transaction</h3>
         <Formik
           initialValues={initialValues}
           validationSchema={CreateDepositTransactionSchema}
@@ -211,8 +241,8 @@ const Deposit = () => {
         >
           {({ values, setFieldValue, handleChange, handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
-              <Row className="mb-3">
-                <Col md={6}>
+              <Row className="mt-5">
+              <Col md={6}>
                   <div className="form-group">
                     <label htmlFor="userName">
                       <FaSearch /> Search Customer Name
@@ -232,25 +262,48 @@ const Deposit = () => {
                       onKeyDown={(e) => handleKeyDown(e, setFieldValue)}
                       placeholder="Search Customer Name"
                     />
-                    {isDropdownVisible && (
-                      <div className="dropdown-menu show w-100">
-                        {filteredUserNameOptions.map((option, index) => (
-                          <div
-                            key={option.userName}
-                            className={`dropdown-item ${index === activeIndex ? "active" : ""
-                              }`}
-                            onClick={() => handleOptionClick(option, setFieldValue)}
-                          >
-                            {option.userName}
-                          </div>
-                        ))}
-                      </div>
-                    )}
                     <ErrorMessage
                       name="userName"
                       component="div"
                       className="text-danger"
                     />
+                    {isDropdownVisible && (
+                      <ul
+                        style={{
+                          border: "1px solid #ccc",
+                          listStyle: "none",
+                          padding: 0,
+                          margin: 0,
+                          position: "absolute",
+                          zIndex: 1,
+                          background: "white",
+                          width: "93%",
+                          maxHeight: "200px",
+                          overflow: "auto",
+                        }}
+                      >
+                        {filteredUserNameOptions.length > 0 ? (
+                          filteredUserNameOptions.map((option, index) => (
+                            <li
+                              key={index}
+                              onClick={() =>
+                                handleOptionClick(option, setFieldValue)
+                              }
+                              style={{
+                                padding: "8px",
+                                cursor: "pointer",
+                                backgroundColor:
+                                  activeIndex === index ? "#f0f0f0" : "white",
+                              }}
+                            >
+                              {option.userName}
+                            </li>
+                          ))
+                        ) : (
+                          <li style={{ padding: "8px" }}>Not found</li>
+                        )}
+                      </ul>
+                    )}
                   </div>
                 </Col>
                 <Col md={6}>
@@ -455,7 +508,7 @@ const Deposit = () => {
                     >
                       <option value="UPI">UPI</option>
                       <option value="IMPS">IMPS</option>
-                      <option value="RTGS">RTGS</option>
+                      {/* <option value="RTGS">RTGS</option> */}
                       <option value="NEFT">NEFT</option>
                     </Field>
                     <ErrorMessage
@@ -483,13 +536,15 @@ const Deposit = () => {
                   </div>
                 </Col>
               </Row>
-              <Button variant="success" type="submit" className="w-100">
+              <Button variant="dark" type="submit" className="w-100">
                 Create
               </Button>
             </Form>
           )}
         </Formik>
       </Container>
+      </SingleCard>
+      </SingleCard>
     </div>
   );
 };

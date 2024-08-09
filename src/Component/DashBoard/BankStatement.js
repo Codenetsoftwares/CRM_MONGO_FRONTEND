@@ -50,6 +50,7 @@ const BankStatement = () => {
   const [length, setLength] = useState("");
   const [minAmount, setMinAmount] = useState(0);
   const [maxAmount, setMaxAmount] = useState(0);
+  console.log('=====>>>>> document filter',documentFilter)
 
   const test = ["transactionType", "subAdminName", "websiteName", "bankName"];
 
@@ -200,6 +201,7 @@ const BankStatement = () => {
         case "Withdraw":
           AccountService.SaveTransaction({ requestId: id }, auth.user)
             .then((res) => {
+           
               toast.success("Transaction delete request sent to Super Admin");
             })
             .catch((err) => {

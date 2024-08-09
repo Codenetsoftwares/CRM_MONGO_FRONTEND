@@ -274,20 +274,22 @@ const RenewWebsitePermission = ({ SubAdmins, ID, setRefresh }) => {
                 style={{
                   overflowY: "auto",
                   maxHeight: "600px",
-                  border: "1px solid #e0e0e0",
-                  borderRadius: "8px",
+                  // border: "1px solid #e0e0e0",
+                  // borderRadius: "8px",
                 }}
               >
                 <GridCard
-                  columns={1}
-                  style={{ margin: "1rem", borderRadius: "8px" }}
+                  columns={2}
+                  columnsLg={4}
+                  style={{ display: "flex", justifyContent: "space-betwwen" }}
                 >
-                  {subAdmin.map((admin, index) => (
+                
+                  {subAdmin.map((admin, index) => { return (
+                      <span className="p-0" style={{ margin: "1rem", borderRadius: "8px" ,  border: "1px solid #e0e0e0"}}>
                     <SingleCard
                       key={index}
-                      className="p-4 mb-4 shadow-sm  "
+                      className="p-4 shadow-sm  "
                       style={{
-                        marginBottom: "1rem",
                         borderRadius: "8px",
                         border: "1px solid #3b6e91",
                         position: "relative",
@@ -389,7 +391,9 @@ const RenewWebsitePermission = ({ SubAdmins, ID, setRefresh }) => {
                         ))}
                       </div>
                     </SingleCard>
-                  ))}
+                    </span>
+                  )})}
+                 
                 </GridCard>
               </SingleCard>
             )}

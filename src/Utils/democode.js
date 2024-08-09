@@ -27,7 +27,7 @@ export const RequireAuth = ({ children }) => {
     if (Object.keys(user).length === 0) {
       return (
         <Navigate
-          to='/'
+          to='/accounts/login'
           state={{ path: location.pathname + location.search }}
         />
       );

@@ -13,8 +13,9 @@ const AdminEditrole = () => {
   const navigate = useNavigate();
   const [checkedItems, setCheckedItems] = useState([]);
   const [displayEdit, setDisplayEdit] = useState(false);
-  const [adminData, setAdminData] = useState({});
+  const [adminData, setAdminData] = useState([]);
   const [username, setUsername] = useState([]);
+console.log('====>>> admin data',adminData)
 
   const setData = () => {
     setCheckedItems(adminData.roles);

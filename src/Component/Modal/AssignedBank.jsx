@@ -3,6 +3,7 @@ import { useAuth } from "../../Utils/Auth";
 import AccountService from "../../Services/AccountService";
 
 const AssignedBank = ({ ID }) => {
+  console.log('=====>>> username', ID )
   const [BankNames, setBankNames] = useState([]);
   const auth = useAuth();
 

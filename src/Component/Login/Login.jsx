@@ -7,11 +7,14 @@ import AccountService from "../../Services/AccountService";
 import { useAuth } from "../../Utils/Auth";
 import { useFormik } from "formik";
 import { LoginSchema } from "../../Services/schema";
+import { errorHandler } from "../../Utils/helper.js";
+import FullScreenLoader from "../FullScreenLoader.jsx";
 
 const Login = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const [authForm] = useState({ userName: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     values,
@@ -33,32 +36,44 @@ const Login = () => {
   });
 
   const authFormHandler = async (values) => {
-    await AccountService.adminlogin(values) // Corrected here to pass values directly
-      .then((res) => {
-        if (res.status === 200) {
-          sessionStorage.setItem("user", res.data.token.accessToken);
-          sessionStorage.setItem("role", res.data.token.role);
-          console.log("===>", auth);
-          console.log("admin");
+    setIsLoading(true);
+    try {
+      const res = await AccountService.adminlogin(values); // Pass values directly
+
+      if (res.status === 200) {
+        sessionStorage.setItem("user", res.data.token.accessToken);
+        sessionStorage.setItem("role", res.data.token.role);
+        console.log("===>", auth);
+        console.log("admin");
+
+        setTimeout(() => {
+          setIsLoading(false);
           toast.success("Login Successfully");
           auth.login();
           navigate("/welcome");
           window.location.reload();
-        } else {
-          toast.error(res.data.message);
-          navigate("/");
-        }
-      })
-      .catch((err) => {
+        }, 1000);
+      }
+    } catch (err) {
+      setTimeout(() => {
+        setIsLoading(false);
         if (err.response) {
-          toast.error("Invalid User Id Or Password");
-          return;
+          if (err.response.status === 404) {
+            toast.error("User not found");
+            navigate("/");
+          } else if (err.response.status === 401) {
+            toast.error("Password is incorrect");
+          } else {
+            errorHandler(err.message, "Something went wrong");
+          }
         }
-      });
+      }, 1000);
+    }
   };
 
   return (
     <div>
+      <FullScreenLoader show={isLoading} />
       <section
         className="vh-100"
         style={{
@@ -91,7 +106,9 @@ const Login = () => {
                         onBlur={handleBlur}
                       />
                       {errors.userName && touched.userName ? (
-                        <p>{errors.userName}</p>
+                        <p className="text-danger fs-6 text-start ml-2">
+                          {errors.userName}
+                        </p>
                       ) : null}
                     </div>
 
@@ -106,7 +123,9 @@ const Login = () => {
                         onBlur={handleBlur}
                       />
                       {errors.password && touched.password ? (
-                        <p>{errors.password}</p>
+                        <p className="text-danger fs-6 text-start ml-2">
+                          {errors.password}
+                        </p>
                       ) : null}
                     </div>
 

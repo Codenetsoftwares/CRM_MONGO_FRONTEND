@@ -6,6 +6,7 @@ import DashService from "../../Services/DashService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FullScreenLoader from "../FullScreenLoader";
+import { errorHandler } from "../../Utils/helper";
 function Deposit() {
   const auth = useAuth();
   const [Bank, setBank] = useState([]);
@@ -105,7 +106,7 @@ function Deposit() {
           // Handle error from the backend
           setIsLoading(false);
           console.error(error);
-          alert(error.response.data.message);
+        errorHandler(error.message, "Something went wrong");
         });
     }
   };

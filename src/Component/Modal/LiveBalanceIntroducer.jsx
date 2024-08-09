@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../Utils/Auth";
 import AccountService from "../../Services/AccountService";
 import { toast } from "react-toastify";
+import { errorHandler } from "../../Utils/helper";
 
 const LiveBalanceIntroducer = ({ ID }) => {
   const auth = useAuth();
@@ -13,8 +14,8 @@ const LiveBalanceIntroducer = ({ ID }) => {
         // console.log("res", res.data.LiveBalance);
         SetLiveBalance(res.data.LiveBalance);
       })
-      .catch((error) => {
-        toast.error(error.response.data.message);
+      .catch((err) => {
+       errorHandler(err.message, "Something went wrong");
         SetLiveBalance(0);
       });
   }, [auth.user, ID]);

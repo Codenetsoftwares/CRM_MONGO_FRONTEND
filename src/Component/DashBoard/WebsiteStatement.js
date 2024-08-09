@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import EditTransaction from "../Modal/EditTransaction";
 import Pagination from "../Pagination";
 import SingleCard from "../../common/singleCard";
+import { errorHandler } from "../../Utils/helper";
 
 const WebsiteStatement = () => {
   const { id } = useParams();
@@ -130,12 +131,27 @@ const WebsiteStatement = () => {
     setPage(selectedPage);
   };
 
+  // useEffect(() => {
+  //   if (auth.user) {
+  //     TransactionSercvice.subAdminList(auth.user).then((res) => {
+  //       setSubAdminlist(res.data);
+  //     });
+  //   }
+  // }, [auth]);
+
   useEffect(() => {
-    if (auth.user) {
-      TransactionSercvice.subAdminList(auth.user).then((res) => {
-        setSubAdminlist(res.data);
-      });
-    }
+    const fetchData = async () => {
+      if (auth.user) {
+        try {
+          const res = await TransactionSercvice.subAdminList(auth.user);
+          setSubAdminlist(res.data);
+        } catch (err) {
+          errorHandler(err, 'Failed to fetch sub admin list');
+        }
+      }
+    };
+
+    fetchData();
   }, [auth]);
 
   useEffect(() => {

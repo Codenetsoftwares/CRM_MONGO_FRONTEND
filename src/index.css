@@ -16,3 +16,9 @@ code {
 
   right: 0px;
 }
+
+
+.avoid-clicks {
+  pointer-events: none;
+  opacity: 0.7  ;
+}

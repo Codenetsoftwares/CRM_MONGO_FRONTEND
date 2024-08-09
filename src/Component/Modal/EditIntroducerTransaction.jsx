@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../Utils/Auth";
 import TransactionSercvice from "../../Services/TransactionSercvice";
+import { errorHandler } from "../../Utils/helper";
 
 const EditIntroducerTransaction = ({
   id,
@@ -56,7 +57,7 @@ const EditIntroducerTransaction = ({
             window.location.reload();
           })
           .catch((err) => {
-            alert(err.response.data.message);
+           errorHandler(err.message, "Something went wrong");
           });
         break;
       case "Withdraw":

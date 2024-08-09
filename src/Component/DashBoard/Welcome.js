@@ -1,5 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useAuth } from "../../Utils/Auth";
 // import useLocalStorage from "use-local-storage";
 
 const Welcome = () => {
@@ -8,7 +9,8 @@ const Welcome = () => {
   //   "theme",
   //   defaultDark ? "dark" : "light"
   // );
-
+const auth =useAuth();
+console.log("auth", auth);
   return (
     <div className="container-fluid  mb-3 ">
       <nav className="navbar navbar-dark bg-dark py-2 ">
