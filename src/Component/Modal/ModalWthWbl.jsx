@@ -82,6 +82,7 @@ const ModalWthWbl = ({ ID, setRefresh }) => {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={resetForm}
               ></button>
             </div>
 
@@ -124,6 +125,7 @@ const ModalWthWbl = ({ ID, setRefresh }) => {
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
+                onClick={resetForm}
               >
                 Close
               </button>
