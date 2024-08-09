@@ -72,6 +72,22 @@ const Withdraw = () => {
     fetchData();
   }, [auth]);
 
+  const handleSearchBank = useCallback(
+    debounce((value) => {
+      if (value) {
+        const filteredItems = bankOptions.filter((item) =>
+          item.bankName.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredBankOptions(filteredItems);
+        setIsBankDropdownVisible(true);
+      } else {
+        setFilteredBankOptions([]);
+        setIsBankDropdownVisible(false);
+      }
+    }, 1300),
+    [bankOptions]
+  );
+
   const handleSearchUserName = useCallback(
     debounce((value) => {
       if (value) {
@@ -88,21 +104,7 @@ const Withdraw = () => {
     [allUserNameOptions]
   );
 
-  const handleSearchBank = useCallback(
-    debounce((value) => {
-      if (value) {
-        const filteredItems = bankOptions.filter((item) =>
-          item.bankName.toLowerCase().includes(value.toLowerCase())
-        );
-        setFilteredBankOptions(filteredItems);
-        setIsBankDropdownVisible(true);
-      } else {
-        setFilteredBankOptions([]);
-        setIsBankDropdownVisible(false);
-      }
-    }, 1300),
-    [bankOptions]
-  );
+ 
 
   const handleSearchWebsite = useCallback(
     debounce((value) => {
@@ -223,14 +225,14 @@ const Withdraw = () => {
   return (
     <div className="mt-3" >
       <FullScreenLoader show={isLoading} />
-      <SingleCard className={"   mr-5 ml-5"}  style={{ backgroundColor: "#e6f7ff" }}>
+      <SingleCard className={" mr-5 ml-5"}  style={{ backgroundColor: "#e6f7ff" }}>
         <SingleCard>
       <Container
         className="p-4  "
         style={{
           // backgroundColor: "#f9fafc",
           borderRadius: "8px",
-          maxWidth: "1050px",
+          maxWidth: "1250px",
         }}
       >
         <h3 className="text-bold col d-flex justify-content-center  ">Make New Transaction</h3>
@@ -517,7 +519,7 @@ const Withdraw = () => {
                     <label htmlFor="remarks">Remarks</label>
                     <Field
                       as="textarea"
-                      rows={3}
+                      // rows={3}
                       name="remarks"
                       className="form-control"
                       placeholder="Enter Remarks"

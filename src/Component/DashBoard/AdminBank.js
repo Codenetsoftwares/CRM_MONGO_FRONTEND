@@ -295,6 +295,7 @@ const AdminBank = () => {
               <br />
               <GridCard>
                 {getbankName.map((data) => {
+                  const isInactive = !data.isActive; // Check if the card is inactive
                   return (
                     <div
                       key={data._id}
@@ -330,7 +331,7 @@ const AdminBank = () => {
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isWithdraw ? "":"avoid-clicks"}`}
+                                className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isWithdraw && !isInactive ? "":"avoid-clicks"}`}
                                   data-bs-toggle="modal"
                                   data-bs-target="#modalWthbl"
                                   onClick={() => {
@@ -354,7 +355,7 @@ const AdminBank = () => {
                                   onClick={() => {
                                     handelId(data._id);
                                   }}
-                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isDeposit ? "":"avoid-clicks"}`}
+                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isDeposit && !isInactive? "":"avoid-clicks"}`}
                                   // disabled={!data.isDeposit}
                                   title="Deposit"
                                 >
@@ -383,7 +384,7 @@ const AdminBank = () => {
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isEdit ? "":"avoid-clicks"}`}
+                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isEdit && !isInactive ? "":"avoid-clicks"}`}
                                   onClick={(e) => {
                                     handelEditbank(e, data._id);
                                   }}
@@ -419,7 +420,7 @@ const AdminBank = () => {
                               <div className="col-6 col-sm-4 col-md-3 col-lg-2">
                                 <button
                                   type="button"
-                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isRenew ? "":"avoid-clicks"}`}
+                                  className={`btn btn-steel-blue btn-sm btn-hover-zoom ${data.isRenew && !isInactive ? "":"avoid-clicks"}`}
                                   data-toggle="modal"
                                   data-target="#RenewBankPermission"
                                   onClick={() => {

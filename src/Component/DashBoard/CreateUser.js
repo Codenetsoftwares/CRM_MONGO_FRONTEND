@@ -215,7 +215,11 @@ const CreateUser = () => {
                             ))}
                           </div>
                         </SingleCard>
-
+                        <ErrorMessage
+                          name="roles"
+                          component="div"
+                          className="text-danger text-center"
+                        />
                         <div className="">
                           <div className="row justify-content-center mt-2">
                             <div className="col-md-6 submit-button">

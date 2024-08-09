@@ -139,9 +139,9 @@ const WebsiteDetails = () => {
   const fetchData = async (searchTerm = search) => {
     try {
       setIsLoading(true);
-    
+
       const res = await AccountService.website(auth.user, page, searchTerm);
-  
+
       setGetWebsite(
         searchTerm.length > 0
           ? res.data.data
@@ -150,7 +150,6 @@ const WebsiteDetails = () => {
       setHasMore(page < res.data.pagination.totalPages);
       setTotalPage(res.data.pagination.totalPages);
     } catch (error) {
-    
       errorHandler(error.message, "Something went wrong");
     } finally {
       setIsLoading(false);
@@ -243,7 +242,7 @@ const WebsiteDetails = () => {
         console.log(response.data);
       })
       .catch((err) => {
-       errorHandler(err.message, "Something went wrong");
+        errorHandler(err.message, "Something went wrong");
         // console.error(error);
       });
   };
@@ -362,190 +361,201 @@ const WebsiteDetails = () => {
             >
               <br />
               <GridCard>
-                {getWebsite.map((data) => (
-                  <div
-                    key={data._id}
-                    className="col d-flex justify-content-center align-items-center"
-                    onMouseEnter={() => setHoveredCard(data._id)}
-                    onMouseLeave={() => setHoveredCard(null)}
-                  >
+                {getWebsite.map((data) => {
+                  const isInactive = !data.isActive; // Check if the card is inactive
+                  return (
                     <div
-                      className={`card d-flex justify-content-between ${
-                        hoveredCard === data._id ? "card-hover-highlight" : ""
-                      }`}
-                      style={{
-                        borderRadius: "20px",
-                        height: "200px",
-                        width: "95%",
-                        position: "relative",
-                      }}
-                      onClick={() => handleCardClick(data._id)}
+                      key={data._id}
+                      className="col d-flex justify-content-center align-items-center"
+                      onMouseEnter={() => setHoveredCard(data._id)}
+                      onMouseLeave={() => setHoveredCard(null)}
                     >
-                      <div className="card-body">
-                        <p
-                          className="font-weight-bold fs-4 text-truncate"
-                          style={{ color: "#708090" }}
-                        >
-                          {data.websiteName}
-                          <br />
-                          <span
-                            className="fs-5 text-truncate"
-                            style={{ color: "#A9A9A9" }}
+                      <div
+                        className={`card d-flex justify-content-between ${
+                          hoveredCard === data._id ? "card-hover-highlight" : ""
+                        }`}
+                        style={{
+                          borderRadius: "20px",
+                          height: "200px",
+                          width: "95%",
+                          position: "relative",
+                        }}
+                        onClick={() => handleCardClick(data._id)}
+                      >
+                        <div className="card-body">
+                          <p
+                            className="font-weight-bold fs-4 text-truncate"
+                            style={{ color: "#708090" }}
                           >
-                            Balance: {data.balance}
-                          </span>
-                        </p>
-                        {/* <div className="container"> */}
-                        <div className="row  justify-content-center mt-5">
-                          <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                            <button
-                              type="button"
-                              className="btn btn-custom btn-sm btn-zoom-out"
-                              data-bs-toggle="modal"
-                              data-bs-target="#modalWithdrawBlwebsite"
-                              onClick={() => {
-                                handelId(data._id);
-                              }}
-                              disabled={!data.isWithdraw}
-                              title="Withdraw"
+                            {data.websiteName}
+                            <br />
+                            <span
+                              className="fs-5 text-truncate"
+                              style={{ color: "#A9A9A9" }}
                             >
-                              <FontAwesomeIcon
-                                icon={faMinus}
-                                className="add-icon"
-                              />
-                            </button>
-                          </div>
-                          <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                            <button
-                              type="button"
-                              className={`btn btn-custom btn-sm btn-zoom-out ${data.isDeposit? "" :"avoid-clicks"}`}
-                              data-bs-toggle="modal"
-                              data-bs-target="#modalAddBlWebsite"
-                              onClick={() => {
-                                handelId(data._id);
-                              }}
-                              // disabled={!data.isDeposit}
-                              title="Deposit"
-                            >
-                              <FontAwesomeIcon
-                                icon={faPlus}
-                                className="add-icon"
-                              />
-                            </button>
-                          </div>
-                          <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                            <button
-                              type="button"
-                              className="btn btn-custom btn-sm btn-zoom-out"
-                              onClick={(e) => {
-                                handelstatement(e, data._id);
-                              }}
-                              title="Statement"
-                            >
-                              <FontAwesomeIcon
-                                icon={faFileAlt}
-                                className="add-icon"
-                              />
-                            </button>
-                          </div>
+                              Balance: {data.balance}
+                            </span>
+                          </p>
+                          {/* <div className="container"> */}
+                          <div className="row  justify-content-center mt-5">
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className={`btn btn-custom btn-sm btn-zoom-out ${data.isWithdraw && !isInactive ? "":"avoid-clicks"}`}
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalWithdrawBlwebsite"
+                                onClick={() => {
+                                  handelId(data._id);
+                                }}
+                                disabled={!data.isWithdraw}
+                                title="Withdraw"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faMinus}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className={`btn btn-custom btn-sm btn-zoom-out ${
+                                  data.isDeposit && !isInactive ? "" : "avoid-clicks"
+                                }`}
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalAddBlWebsite"
+                                onClick={() => {
+                                  handelId(data._id);
+                                }}
+                                // disabled={!data.isDeposit}
+                                title="Deposit"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPlus}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className="btn btn-custom btn-sm btn-zoom-out"
+                                onClick={(e) => {
+                                  handelstatement(e, data._id);
+                                }}
+                                title="Statement"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faFileAlt}
+                                  className="add-icon"
+                                />
+                              </button>
+                            </div>
 
-                          <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                            <button
-                              type="button"
-                              className={`btn btn-custom btn-sm btn-zoom-out ${data.isEdit? "" :"avoid-clicks"}`}
-                              onClick={() => {
-                                handelWebsiteEdit(data._id, data.websiteName);
-                              }}
-                              title="Edit Website"
-                              data-toggle="modal"
-                              data-target="#editwebsite"
-                              // disabled={!data.isEdit}
-                            >
-                              <FontAwesomeIcon
-                                icon={faEdit}
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className={`btn btn-custom btn-sm btn-zoom-out ${
+                                  data.isEdit && !isInactive ? "" : "avoid-clicks"
+                                }`}
+                                onClick={() => {
+                                  handelWebsiteEdit(data._id, data.websiteName);
+                                }}
+                                title="Edit Website"
                                 data-toggle="modal"
                                 data-target="#editwebsite"
-                              />
-                            </button>
-                          </div>
-                          <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                            <button
-                              type="button"
-                              className={`btn btn-custom btn-sm btn-zoom-out ${data.isDelete? "" :"avoid-clicks"}`}
-                              onClick={(e) => {
-                                handeldeletewebsite(data._id);
-                              }}
-                              title="Delete"
-                              // disabled={!data.isDelete}
-                            >
-                              <FontAwesomeIcon
-                                icon={faTrashAlt}
-                                className="delete-icon"
-                              />
-                            </button>
-                          </div>
+                                // disabled={!data.isEdit}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faEdit}
+                                  data-toggle="modal"
+                                  data-target="#editwebsite"
+                                />
+                              </button>
+                            </div>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className={`btn btn-custom btn-sm btn-zoom-out ${
+                                  data.isDelete  ? "" : "avoid-clicks"
+                                }`}
+                                onClick={(e) => {
+                                  handeldeletewebsite(data._id);
+                                }}
+                                title="Delete"
+                                // disabled={!data.isDelete}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faTrashAlt}
+                                  className="delete-icon"
+                                />
+                              </button>
+                            </div>
 
-                          <div className="col-6 col-sm-4 col-md-3 col-lg-2">
-                            <button
-                              type="button"
-                              className="btn btn-custom btn-sm btn-zoom-out"
-                              data-toggle="modal"
-                              data-target="#RenewWebsitePermission"
-                              onClick={() => {
-                                handelSubAdmin(data.subAdmins, data._id);
-                              }}
-                              title="Renew Permission"
-                              disabled={!data.isRenew}
-                            >
-                              <FontAwesomeIcon
-                                icon={faEye}
-                                className="permission"
-                              />
-                            </button>
+                            <div className="col-6 col-sm-4 col-md-3 col-lg-2">
+                              <button
+                                type="button"
+                                className={`btn btn-custom btn-sm btn-zoom-out ${
+                                  data.isRenew && !isInactive ? "" : "avoid-clicks"
+                                }`}
+                                data-toggle="modal"
+                                data-target="#RenewWebsitePermission"
+                                onClick={() => {
+                                  handelSubAdmin(data.subAdmins, data._id);
+                                }}
+                                title="Renew Permission"
+                                disabled={!data.isRenew}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faEye}
+                                  className="permission"
+                                />
+                              </button>
+                            </div>
                           </div>
+                          {/* </div> */}
                         </div>
-                        {/* </div> */}
-                      </div>
 
-                      <div className="card-top-right">
-                        {data.isActive === true ? (
-                          <span
-                            type="button"
-                            className="badge-pill badge-success   btn-zoom-out-custom   "
-                            title="Active"
-                            onClick={() => {
-                              handelactive(data._id);
-                            }}
-                          >
-                            Active
-                            <FontAwesomeIcon
-                              icon={faCheckCircle}
-                              className="active-icon ms-1 "
-                            />
-                            {/* <span className="dot dot-green position-absolute top-0 start-100 translate-middle"></span> */}
-                          </span>
-                        ) : (
-                          // <span class="badge badge-pill badge-success">Success</span>
-                          <span
-                            type="button"
-                            className="badge-pill badge-secondary  btn-zoom-out-custom "
-                            title="Inactive"
-                            onClick={() => {
-                              handelinactive(data._id);
-                            }}
-                          >
-                            Inactive
-                            <FontAwesomeIcon
-                              icon={faTimesCircle}
-                              className="active-icon ms-1"
-                            />
-                            {/* <span className="dot dot-red dot-merged position-absolute top-0 start-100 translate-middle"></span> */}
-                          </span>
-                        )}
+                        <div className="card-top-right">
+                          {data.isActive === true ? (
+                            <span
+                              type="button"
+                              className="badge-pill badge-success   btn-zoom-out-custom   "
+                              title="Active"
+                              onClick={() => {
+                                handelactive(data._id);
+                              }}
+                            >
+                              Active
+                              <FontAwesomeIcon
+                                icon={faCheckCircle}
+                                className="active-icon ms-1 "
+                              />
+                              {/* <span className="dot dot-green position-absolute top-0 start-100 translate-middle"></span> */}
+                            </span>
+                          ) : (
+                            // <span class="badge badge-pill badge-success">Success</span>
+                            <span
+                              type="button"
+                              className="badge-pill badge-secondary  btn-zoom-out-custom "
+                              title="Inactive"
+                              onClick={() => {
+                                handelinactive(data._id);
+                              }}
+                            >
+                              Inactive
+                              <FontAwesomeIcon
+                                icon={faTimesCircle}
+                                className="active-icon ms-1"
+                              />
+                              {/* <span className="dot dot-red dot-merged position-absolute top-0 start-100 translate-middle"></span> */}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </GridCard>
             </InfiniteScroll>
           </SingleCard>

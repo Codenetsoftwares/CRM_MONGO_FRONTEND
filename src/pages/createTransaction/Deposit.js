@@ -242,7 +242,7 @@ const Deposit = () => {
           {({ values, setFieldValue, handleChange, handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <Row className="mt-5">
-                <Col md={6}>
+              <Col md={6}>
                   <div className="form-group">
                     <label htmlFor="userName">
                       <FaSearch /> Search Customer Name
@@ -262,25 +262,48 @@ const Deposit = () => {
                       onKeyDown={(e) => handleKeyDown(e, setFieldValue)}
                       placeholder="Search Customer Name"
                     />
-                    {isDropdownVisible && (
-                      <div className="dropdown-menu show w-100">
-                        {filteredUserNameOptions.map((option, index) => (
-                          <div
-                            key={option.userName}
-                            className={`dropdown-item ${index === activeIndex ? "active" : ""
-                              }`}
-                            onClick={() => handleOptionClick(option, setFieldValue)}
-                          >
-                            {option.userName}
-                          </div>
-                        ))}
-                      </div>
-                    )}
                     <ErrorMessage
                       name="userName"
                       component="div"
                       className="text-danger"
                     />
+                    {isDropdownVisible && (
+                      <ul
+                        style={{
+                          border: "1px solid #ccc",
+                          listStyle: "none",
+                          padding: 0,
+                          margin: 0,
+                          position: "absolute",
+                          zIndex: 1,
+                          background: "white",
+                          width: "93%",
+                          maxHeight: "200px",
+                          overflow: "auto",
+                        }}
+                      >
+                        {filteredUserNameOptions.length > 0 ? (
+                          filteredUserNameOptions.map((option, index) => (
+                            <li
+                              key={index}
+                              onClick={() =>
+                                handleOptionClick(option, setFieldValue)
+                              }
+                              style={{
+                                padding: "8px",
+                                cursor: "pointer",
+                                backgroundColor:
+                                  activeIndex === index ? "#f0f0f0" : "white",
+                              }}
+                            >
+                              {option.userName}
+                            </li>
+                          ))
+                        ) : (
+                          <li style={{ padding: "8px" }}>Not found</li>
+                        )}
+                      </ul>
+                    )}
                   </div>
                 </Col>
                 <Col md={6}>

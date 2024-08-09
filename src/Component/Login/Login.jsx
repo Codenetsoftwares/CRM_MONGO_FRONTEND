@@ -38,7 +38,7 @@ const Login = () => {
   const authFormHandler = async (values) => {
     setIsLoading(true);
     try {
-      const res = await AccountService.adminlogin(values); // Corrected here to pass values directly
+      const res = await AccountService.adminlogin(values); // Pass values directly
 
       if (res.status === 200) {
         sessionStorage.setItem("user", res.data.token.accessToken);
@@ -57,11 +57,15 @@ const Login = () => {
     } catch (err) {
       setTimeout(() => {
         setIsLoading(false);
-        if (err.response && err.response.status === 404) {
-          toast.error("User not found");
-          navigate("/");
-        } else {
-          errorHandler(err.message, "Something went wrong");
+        if (err.response) {
+          if (err.response.status === 404) {
+            toast.error("User not found");
+            navigate("/");
+          } else if (err.response.status === 401) {
+            toast.error("Password is incorrect");
+          } else {
+            errorHandler(err.message, "Something went wrong");
+          }
         }
       }, 1000);
     }
