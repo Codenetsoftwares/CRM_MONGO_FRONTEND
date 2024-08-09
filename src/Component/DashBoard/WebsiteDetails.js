@@ -464,7 +464,7 @@ const WebsiteDetails = () => {
                               <FontAwesomeIcon
                                 icon={faEdit}
                                 data-toggle="modal"
-                                data-target="#exampleModalCenter"
+                                data-target="#editwebsite"
                               />
                             </button>
                           </div>

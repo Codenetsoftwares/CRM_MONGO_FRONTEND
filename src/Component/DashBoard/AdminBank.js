@@ -115,10 +115,11 @@ const AdminBank = () => {
 
   console.log("testing", getbankName.length);
   // Refresh data whenever `refresh` changes
-  useEffect(() => {
-    setGetBankName([]);
-    fetchData();
-  }, [refresh,search]);
+  // useEffect(() => {
+  //   setGetBankName([]);
+  //   setPage(1)
+  //   fetchData();
+  // }, [refresh,search]);
 
   // Debounced search handler using lodash
   const debouncedSearchHandler = useCallback(
@@ -291,7 +292,7 @@ const AdminBank = () => {
                 </p>
               }
             >
-              {/* <br /> */}
+              <br />
               <GridCard>
                 {getbankName.map((data) => {
                   return (
